@@ -42,40 +42,52 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
     }
 
     private void drawArrow(Graphics2D g) {
-        //Вычисление границы вершины через подобные треугольники
-        double r = Math.sqrt(Math.pow(target().getCenterX() - source().getCenterX(), 2)
-                + Math.pow(target().getCenterY() - source().getCenterY(), 2));
-        //-------------------------------------------------------
-        double dx = target().getWidth()
-                * (Math.abs(target().getCenterX() - source().getCenterX())) / (2 * r);
-        double dy = target().getWidth()
-                * (Math.abs(target().getCenterY() - source().getCenterY())) / (2 * r);
-        //------------------------------------------------------
-        if (source().getCenterX() > target().getCenterX()) {
-            dx = -dx;
-        }
-        if (source().getCenterY() < target().getCenterY()) {
-            dy = -dy;
-        }
-        //-----------------------------------------------------
-        double x = target().getCenterX() - dx;
-        double y = target().getCenterY() + dy;
-        r = Math.sqrt(Math.pow(x - source().getCenterX(), 2)
-                + Math.pow(y - source().getCenterY(), 2));
-        double vx = (target().getCenterX() - source().getCenterX()) / r; //нормировка вектора
-        double vy = (target().getCenterY() - source().getCenterY()) / r; //нормировка вектора
-        double x3 = x - r * vx / 8;  //вычисление коорд. x точки, лежащей на дуге
-        double y3 = y - r * vy / 8;  //вычисление коорд. y точки, лежащей на дуге
-        //вычисление граничных точек наконечника
-        double x4 = x3 + source().getWidth() * vy / 10;
-        double y4 = y3 - source().getWidth() * vx / 10;
-        double x5 = x3 - source().getWidth() * vy / 10;
-        double y5 = y3 + source().getWidth() * vx / 10;
+        double srcX = source().getCenterX();
+        double srcY = source().getCenterY();
+        double tgtX = target().getCenterX();
+        double tgtY = target().getCenterY();
+
+        // 1. Вектор от исходной вершины к целевой
+        double dx = tgtX - srcX;
+        double dy = tgtY - srcY;
+        double dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 1) return; // Защита от деления на ноль, если центры совпали
+
+        // 2. Нормированный вектор направления (единичный вектор)
+        double vx = dx / dist;
+        double vy = dy / dist;
+
+        // 3. Вычисление точки (x, y) на границе целевой вершины
+        // Если вершины круглые, радиус target — это половина ширины
+        double targetRadius = target().getWidth() / 2.0;
+        double x = tgtX - vx * targetRadius;
+        double y = tgtY - vy * targetRadius;
+
+        // 4. Параметры геометрии самого наконечника стрелки
+        double arrowLength = dist / 8.0; // Длина наконечника
+        if (arrowLength > 15) arrowLength = 15; // Ограничение, чтобы стрелка не была огромной
+        double arrowWidth = arrowLength * 0.6;  // Ширина раскрытия стрелки
+
+        // Точка основания стрелки (отступает назад по вектору направления)
+        double x3 = x - vx * arrowLength;
+        double y3 = y - vy * arrowLength;
+
+        // 5. Вычисление перпендикулярного вектора для "крыльев" стрелки
+        // (vy, -vx) — перпендикуляр к направлению
+        double x4 = x3 + vy * arrowWidth;
+        double y4 = y3 - vx * arrowWidth;
+
+        double x5 = x3 - vy * arrowWidth;
+        double y5 = y3 + vx * arrowWidth;
+
+        // 6. Отрисовка стрелки
         Path2D.Double path = new Path2D.Double();
-        path.moveTo(x, y);
-        path.lineTo(x4, y4);
-        path.lineTo(x5, y5);
+        path.moveTo(x, y);   // Остриё на границе вершины
+        path.lineTo(x4, y4); // Левое крыло
+        path.lineTo(x5, y5); // Правое крыло
         path.closePath();
+
         g.fill(path);
     }
 
