@@ -8,13 +8,14 @@ package graphcollection.algorithms.shortestpaths;
 import graphcollection.algorithms.dfs.TopologicalSort;
 import graphcollection.graph.Graph;
 import graphcollection.graph.WeightedEdge;
+
 import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class DAGShortestPaths<V, E extends WeightedEdge<V, ? extends Number>>
         extends ShortestPaths<V, E> {

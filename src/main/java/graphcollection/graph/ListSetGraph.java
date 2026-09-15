@@ -8,27 +8,28 @@ package graphcollection.graph;
 import graphcollection.util.ListSet;
 
 /**
- * 
- * @author Рома
+ *
  * @param <V>
- * @param <E> 
+ * @param <E>
+ * @author Рома
  */
 public class ListSetGraph<V, E extends Edge<V>>
-  extends AbstractGraph<V, E> {
+        extends AbstractGraph<V, E> {
 
-    public ListSetGraph() {}
-     
+    public ListSetGraph() {
+    }
+
     public ListSetGraph(boolean direction) {
         super(direction);
     }
-    
+
     public ListSetGraph(boolean direction, boolean loop) {
         super(direction, loop);
     }
-   
+
     @Override
     public boolean addVertex(V v) {
-        return addEdgeList(v, new ListSet<E>());  
+        return addEdgeList(v, new ListSet<E>());
     }
 
 } //End of class ListSetGraph<V, E>

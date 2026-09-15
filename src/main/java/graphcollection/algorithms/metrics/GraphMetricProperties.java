@@ -8,6 +8,7 @@ package graphcollection.algorithms.metrics;
 import graphcollection.algorithms.shortestpaths.AllPairsShortestPaths;
 import graphcollection.algorithms.shortestpaths.ShortestPaths;
 import graphcollection.graph.WeightedEdge;
+
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class GraphMetricProperties {
      * @return
      */
     public static <V, E extends WeightedEdge<V, ? extends Number>>
-            Number diametr(AllPairsShortestPaths<V, E> allSpt) {
+    Number diametr(AllPairsShortestPaths<V, E> allSpt) {
         if (allSpt != null && allSpt.decision()) {
             double diametr = -Double.MAX_VALUE;
             for (V u : allSpt.distancesMatrix()) {
@@ -50,7 +51,7 @@ public class GraphMetricProperties {
      * @return
      */
     public static <V, E extends WeightedEdge<V, ? extends Number>>
-            Number radius(AllPairsShortestPaths<V, E> allSpt) {
+    Number radius(AllPairsShortestPaths<V, E> allSpt) {
         if (allSpt != null && allSpt.decision()) {
             double radius = Double.MAX_VALUE;
             for (V u : allSpt.distancesMatrix()) {
@@ -81,7 +82,7 @@ public class GraphMetricProperties {
      * @return
      */
     public static <V, E extends WeightedEdge<V, ? extends Number>>
-            Number eccentricity(ShortestPaths<V, E> spt) {
+    Number eccentricity(ShortestPaths<V, E> spt) {
         if (spt != null && spt.decision()) {
             double eccentricity = -Double.MAX_VALUE;
             for (Map.Entry<V, Number> entry : spt.distances().entrySet()) {

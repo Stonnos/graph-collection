@@ -12,8 +12,8 @@ import java.util.NoSuchElementException;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public class DirectedAdjacencyMatrix<E> extends AdjacencyMatrix<E> {
 

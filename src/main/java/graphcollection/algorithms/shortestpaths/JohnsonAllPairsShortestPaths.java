@@ -7,14 +7,15 @@ package graphcollection.algorithms.shortestpaths;
 
 import graphcollection.graph.Graph;
 import graphcollection.graph.WeightedEdge;
+
 import java.util.Iterator;
 import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class JohnsonAllPairsShortestPaths<V, E extends WeightedEdge<V, Number>>
         extends AllPairsShortestPaths<V, E> {

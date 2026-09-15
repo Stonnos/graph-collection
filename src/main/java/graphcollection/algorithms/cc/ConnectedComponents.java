@@ -11,8 +11,8 @@ import graphcollection.graph.Graph;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class ConnectedComponents<V>
         extends AbstractConnectedComponents<V> {

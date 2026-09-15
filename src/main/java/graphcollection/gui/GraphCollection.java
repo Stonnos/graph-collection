@@ -6,15 +6,11 @@
 package graphcollection.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import graphcollection.graph.*;
-
-import java.util.*;
-
-import graphcollection.algorithms.shortestpaths.*;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
 import javax.swing.*;
+import java.util.Locale;
 
 /**
  *

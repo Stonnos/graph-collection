@@ -8,16 +8,17 @@ package graphcollection.algorithms.dfs;
 import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
-import java.util.HashMap;
+
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class BridgesSearch<V, E extends Edge<V>> implements GraphAlgorithm {
 

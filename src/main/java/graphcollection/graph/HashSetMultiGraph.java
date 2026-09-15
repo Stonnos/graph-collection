@@ -6,54 +6,59 @@
 package graphcollection.graph;
 
 import graphcollection.util.HashMultiSet;
+
 import java.util.Collection;
 import java.util.Iterator;
+
 /**
- * 
- * @author Рома
+ *
  * @param <V>
- * @param <E> 
+ * @param <E>
+ * @author Рома
  */
 public class HashSetMultiGraph<V, E extends Edge<V>>
-    extends AbstractGraph<V, E> implements MultiGraph<V, E> {
+        extends AbstractGraph<V, E> implements MultiGraph<V, E> {
 
     public HashSetMultiGraph() {
         super(false, true);
     }
-     
+
     public HashSetMultiGraph(boolean direction) {
         super(direction, true);
-    }    
-   
+    }
+
     @Override
     public boolean addVertex(V v) {
-        return addEdgeList(v, new HashMultiSet<E>());  
+        return addEdgeList(v, new HashMultiSet<E>());
     }
-    
+
     @Override
     public Collection<E> edges(V v1, V v2) {
         if (edgeList.containsKey(v1) && edgeList.containsKey(v2)) {
-            return ((HashMultiSet<E>)edgeList.get(v1)).
-                    elements((E)new Edge<>(direction(), v1, v2));
+            return ((HashMultiSet<E>) edgeList.get(v1)).
+                    elements((E) new Edge<>(direction(), v1, v2));
+        } else {
+            return null;
         }
-        else return null; 
     }
-     
+
     @Override
     public Iterator<V> adjacencyIterator(V v) {
         if (edgeList.containsKey(v)) {
             return new AdjacencyIterator(new OutEdgeIterator(v,
-                    ((HashMultiSet<E>)edgeList.get(v)).keysIterator())); 
+                    ((HashMultiSet<E>) edgeList.get(v)).keysIterator()));
+        } else {
+            return null;
         }
-        else return null;
     }
-     
-     @Override
-     public int adjacentVerticesNum(V v) {
-         if (edgeList.containsKey(v)) {
-             return ((HashMultiSet<E>)edgeList.get(v)).keysSize();
-         }
-         else return -1;
-     }
-     
+
+    @Override
+    public int adjacentVerticesNum(V v) {
+        if (edgeList.containsKey(v)) {
+            return ((HashMultiSet<E>) edgeList.get(v)).keysSize();
+        } else {
+            return -1;
+        }
+    }
+
 } //End of class HashSetMultiGraph<V, E>

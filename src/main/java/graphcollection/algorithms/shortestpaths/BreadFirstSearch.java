@@ -6,21 +6,22 @@
 package graphcollection.algorithms.shortestpaths;
 
 import graphcollection.algorithms.GraphAlgorithm;
-import graphcollection.algorithms.GraphPaths;
 import graphcollection.algorithms.GraphPathBuilder;
+import graphcollection.algorithms.GraphPaths;
 import graphcollection.algorithms.VertexColor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
-import java.util.HashMap;
-import java.util.Iterator;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class BreadFirstSearch<V> implements GraphAlgorithm, GraphPaths<V> {
 

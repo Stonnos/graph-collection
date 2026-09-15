@@ -20,7 +20,7 @@ public class MatrixParser {
     public double[][] read(String fileName) {
         double[][] matrix = null;
         try (FileInputStream in = new FileInputStream(fileName);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "Cp1251"))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "Cp1251"))) {
             String line = reader.readLine();
             int n = Integer.parseInt(line);
             checkSize(n);

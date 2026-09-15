@@ -6,6 +6,7 @@
 package graphcollection.gui;
 
 import graphcollection.graph.WeightedEdge;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -34,7 +35,7 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
     }
 
     public Edge2D(boolean direction, Vertex source,
-            Vertex target, Color color) {
+                  Vertex target, Color color) {
         this(direction, source, target);
         this.color = color;
     }
@@ -54,7 +55,9 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
         double dy = tgtY - srcY;
         double dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 1) return; // Защита от деления на ноль, если центры совпали
+        if (dist < 1) {
+            return; // Защита от деления на ноль, если центры совпали
+        }
 
         // 2. Нормированный вектор направления (единичный вектор)
         double vx = dx / dist;
@@ -68,7 +71,9 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
 
         // 4. Параметры геометрии самого наконечника стрелки
         double arrowLength = dist / 8.0; // Длина наконечника
-        if (arrowLength > 15) arrowLength = 15; // Ограничение, чтобы стрелка не была огромной
+        if (arrowLength > 15) {
+            arrowLength = 15; // Ограничение, чтобы стрелка не была огромной
+        }
         double arrowWidth = arrowLength * 0.6;  // Ширина раскрытия стрелки
 
         // Точка основания стрелки (отступает назад по вектору направления)

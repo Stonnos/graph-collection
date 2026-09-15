@@ -9,14 +9,15 @@ import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.algorithms.VertexColor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public abstract class AbstractConnectedComponents<V>
         implements GraphAlgorithm {

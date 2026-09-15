@@ -5,14 +5,14 @@
  */
 package graphcollection.util;
 
-import java.util.Iterator;
-import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public class MutableQueue<E>
         implements Cloneable, java.io.Serializable, Iterable<E> {

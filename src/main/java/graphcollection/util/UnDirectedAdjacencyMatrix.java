@@ -12,8 +12,8 @@ import java.util.NoSuchElementException;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public class UnDirectedAdjacencyMatrix<E> extends AdjacencyMatrix<E> {
 
@@ -78,8 +78,9 @@ public class UnDirectedAdjacencyMatrix<E> extends AdjacencyMatrix<E> {
     public boolean remove(int i, int j) {
         rangeCheck(i);
         rangeCheck(j);
-        if (i == j)
-           return false;
+        if (i == j) {
+            return false;
+        }
         if (i < j) {
             j ^= (i ^= j);
             i ^= j;
@@ -98,8 +99,9 @@ public class UnDirectedAdjacencyMatrix<E> extends AdjacencyMatrix<E> {
     public E get(int i, int j) {
         rangeCheck(i);
         rangeCheck(j);
-        if (i == j)
-           return null;
+        if (i == j) {
+            return null;
+        }
         if (i < j) {
             j ^= (i ^= j);
             i ^= j;

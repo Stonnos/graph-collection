@@ -9,14 +9,15 @@ import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.algorithms.VertexColor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
-import java.util.LinkedList;
+
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class AllPathsSearch<V> implements GraphAlgorithm {
 

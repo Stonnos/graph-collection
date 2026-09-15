@@ -7,13 +7,14 @@ package graphcollection.algorithms.dfs;
 
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
+
 import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class EulerTourSearch<V, E extends Edge<V>>
         extends AbstractTourSearch<V, E> {

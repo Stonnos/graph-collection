@@ -496,75 +496,75 @@ public class JGraphFrame extends JFrame {
         //-------------------------------------------------
         //-------------------------------------------------
         directedMatrixGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Matrix_Graph, true);
-            }
-        }
+                                                  @Override
+                                                  public void actionPerformed(ActionEvent evt) {
+                                                      createGraph(GraphView.Matrix_Graph, true);
+                                                  }
+                                              }
         );
         directedHashSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Hash_Set_Graph, true);
-            }
-        }
+                                                 @Override
+                                                 public void actionPerformed(ActionEvent evt) {
+                                                     createGraph(GraphView.Hash_Set_Graph, true);
+                                                 }
+                                             }
         );
         directedTreeSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Tree_Set_Graph, true);
-            }
-        }
+                                                 @Override
+                                                 public void actionPerformed(ActionEvent evt) {
+                                                     createGraph(GraphView.Tree_Set_Graph, true);
+                                                 }
+                                             }
         );
         directedListSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.List_Set_Graph, true);
-            }
-        }
+                                                 @Override
+                                                 public void actionPerformed(ActionEvent evt) {
+                                                     createGraph(GraphView.List_Set_Graph, true);
+                                                 }
+                                             }
         );
         directedSortedSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Sorted_Set_Graph, true);
-            }
-        }
+                                                   @Override
+                                                   public void actionPerformed(ActionEvent evt) {
+                                                       createGraph(GraphView.Sorted_Set_Graph, true);
+                                                   }
+                                               }
         );
         //-------------------------------------------------
         undirectedMatrixGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Matrix_Graph, false);
-            }
-        }
+                                                    @Override
+                                                    public void actionPerformed(ActionEvent evt) {
+                                                        createGraph(GraphView.Matrix_Graph, false);
+                                                    }
+                                                }
         );
         undirectedHashSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Hash_Set_Graph, false);
-            }
-        }
+                                                   @Override
+                                                   public void actionPerformed(ActionEvent evt) {
+                                                       createGraph(GraphView.Hash_Set_Graph, false);
+                                                   }
+                                               }
         );
         undirectedTreeSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Tree_Set_Graph, false);
-            }
-        }
+                                                   @Override
+                                                   public void actionPerformed(ActionEvent evt) {
+                                                       createGraph(GraphView.Tree_Set_Graph, false);
+                                                   }
+                                               }
         );
         undirectedListSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.List_Set_Graph, false);
-            }
-        }
+                                                   @Override
+                                                   public void actionPerformed(ActionEvent evt) {
+                                                       createGraph(GraphView.List_Set_Graph, false);
+                                                   }
+                                               }
         );
         undirectedSortedSGraph.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createGraph(GraphView.Sorted_Set_Graph, false);
-            }
-        }
+                                                     @Override
+                                                     public void actionPerformed(ActionEvent evt) {
+                                                         createGraph(GraphView.Sorted_Set_Graph, false);
+                                                     }
+                                                 }
         );
         //-----------------------------------------------
         directedGraphAlgorithms = new JMenu("Алгоритмы для ориентированных графов");
@@ -578,37 +578,37 @@ public class JGraphFrame extends JFrame {
         referenceMenu.add(aboutProgrammMenu);
         //------------------------------------------------
         aboutProgrammMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
-                frame.setVisible(true);
-                frame.readInfoFromFile("О программе.txt");
-            }
-        }
+                                                @Override
+                                                public void actionPerformed(ActionEvent evt) {
+                                                    ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
+                                                    frame.setVisible(true);
+                                                    frame.readInfoFromFile("О программе.txt");
+                                                }
+                                            }
         );
         reference.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                ReferenceBase frame = new Reference(aboutProgrammMenu);
-                frame.setVisible(true);
-            }
-        }
+                                        @Override
+                                        public void actionPerformed(ActionEvent evt) {
+                                            ReferenceBase frame = new Reference(aboutProgrammMenu);
+                                            frame.setVisible(true);
+                                        }
+                                    }
         );
         //------------------------------------------
         JMenuItem animationMenu = new JMenuItem("Cкорость анимации");
         optionMenu.add(animationMenu);
         //------------------------------------------
         animationMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
-                option.setVisible(true);
-                if (option.dialogResult()) {
-                    animationSpeed = option.getAnimationSpeed();
-                }
-                option.dispose();
-            }
-        }
+                                            @Override
+                                            public void actionPerformed(ActionEvent evt) {
+                                                OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
+                                                option.setVisible(true);
+                                                if (option.dialogResult()) {
+                                                    animationSpeed = option.getAnimationSpeed();
+                                                }
+                                                option.dispose();
+                                            }
+                                        }
         );
         this.setJMenuBar(menu);
     }
@@ -676,126 +676,126 @@ public class JGraphFrame extends JFrame {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         //-------------------------------------------------------
         addV.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startAddVertex(vertexNumText);
-                commentTxt.setText("Щелкните по полю правой кнопкой мыши для того, "
-                        + "чтобы добавить вершину.");
-                input.setMode(true);
-            }
-        }
+                                   @Override
+                                   public void actionPerformed(ActionEvent evt) {
+                                       graphPanel.startAddVertex(vertexNumText);
+                                       commentTxt.setText("Щелкните по полю правой кнопкой мыши для того, "
+                                               + "чтобы добавить вершину.");
+                                       input.setMode(true);
+                                   }
+                               }
         );
         removeV.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startRemoveVertex(vertexNumText, edgeNumText);
-                commentTxt.setText("Щелкните правой кнопкой мыши по вершине, которую хотите удалить.");
-                input.setEnabled(false);
-            }
-        }
+                                      @Override
+                                      public void actionPerformed(ActionEvent evt) {
+                                          graphPanel.startRemoveVertex(vertexNumText, edgeNumText);
+                                          commentTxt.setText("Щелкните правой кнопкой мыши по вершине, которую хотите удалить.");
+                                          input.setEnabled(false);
+                                      }
+                                  }
         );
         addE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startAddEdge(edgeNumText);
-                commentTxt.setText("Соедините две вершины на поле, для того чтобы добавить ребро.");
-                input.setMode(false);
-            }
-        }
+                                   @Override
+                                   public void actionPerformed(ActionEvent evt) {
+                                       graphPanel.startAddEdge(edgeNumText);
+                                       commentTxt.setText("Соедините две вершины на поле, для того чтобы добавить ребро.");
+                                       input.setMode(false);
+                                   }
+                               }
         );
         removeE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startRemoveEdge(edgeNumText);
-                commentTxt.setText("Выберите правой кнопкой мыши вершины, "
-                        + "для того, чтобы удалить ребро между ними.");
-                input.setEnabled(false);
-            }
-        }
+                                      @Override
+                                      public void actionPerformed(ActionEvent evt) {
+                                          graphPanel.startRemoveEdge(edgeNumText);
+                                          commentTxt.setText("Выберите правой кнопкой мыши вершины, "
+                                                  + "для того, чтобы удалить ребро между ними.");
+                                          input.setEnabled(false);
+                                      }
+                                  }
         );
         updateE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startUpdateEdge();
-                commentTxt.setText("Выберите правой кнопкой мыши вершины, "
-                        + "для того, чтобы изменить вес ребра между ними.");
-                input.setEnabled(false);
-            }
-        }
+                                      @Override
+                                      public void actionPerformed(ActionEvent evt) {
+                                          graphPanel.startUpdateEdge();
+                                          commentTxt.setText("Выберите правой кнопкой мыши вершины, "
+                                                  + "для того, чтобы изменить вес ребра между ними.");
+                                          input.setEnabled(false);
+                                      }
+                                  }
         );
         clearEdges.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.clearEdges();
-                setNumbers();
-                CancelAllOperationsWithGraph();
-                input.setEnabled(false);
-            }
-        }
+                                         @Override
+                                         public void actionPerformed(ActionEvent evt) {
+                                             graphPanel.clearEdges();
+                                             setNumbers();
+                                             CancelAllOperationsWithGraph();
+                                             input.setEnabled(false);
+                                         }
+                                     }
         );
         clear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.clearGraph();
-                setNumbers();
-                CancelAllOperationsWithGraph();
-                input.setEnabled(false);
-            }
-        }
+                                    @Override
+                                    public void actionPerformed(ActionEvent evt) {
+                                        graphPanel.clearGraph();
+                                        setNumbers();
+                                        CancelAllOperationsWithGraph();
+                                        input.setEnabled(false);
+                                    }
+                                }
         );
         move.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startMoveGraph();
-                commentTxt.setText("Начните передвигать правой кнопкой мыши любую вершину на поле.");
-                input.setEnabled(false);
-            }
-        }
+                                   @Override
+                                   public void actionPerformed(ActionEvent evt) {
+                                       graphPanel.startMoveGraph();
+                                       commentTxt.setText("Начните передвигать правой кнопкой мыши любую вершину на поле.");
+                                       input.setEnabled(false);
+                                   }
+                               }
         );
         removeOutE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startRemoveOutEdges(edgeNumText);
-                commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
-                        + " для того, чтобы удалить исходяшие ребра.");
-                input.setEnabled(false);
-            }
-        }
+                                         @Override
+                                         public void actionPerformed(ActionEvent evt) {
+                                             graphPanel.startRemoveOutEdges(edgeNumText);
+                                             commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
+                                                     + " для того, чтобы удалить исходяшие ребра.");
+                                             input.setEnabled(false);
+                                         }
+                                     }
         );
         removeInE.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                graphPanel.startRemoveInEdges(edgeNumText);
-                commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
-                        + " для того, чтобы удалить входящие ребра.");
-                input.setEnabled(false);
-            }
-        }
+                                        @Override
+                                        public void actionPerformed(ActionEvent evt) {
+                                            graphPanel.startRemoveInEdges(edgeNumText);
+                                            commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
+                                                    + " для того, чтобы удалить входящие ребра.");
+                                            input.setEnabled(false);
+                                        }
+                                    }
         );
         //---------------------------------------------------
         transform.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                String[] items = {GraphView.Matrix_Graph.getText(),
-                    GraphView.Hash_Set_Graph.getText(),
-                    GraphView.Tree_Set_Graph.getText(),
-                    GraphView.List_Set_Graph.getText(),
-                    GraphView.Sorted_Set_Graph.getText()};
-                String result = (String) JOptionPane.showInputDialog(JGraphFrame.this,
-                        "Типа представления:", "Преобразование графа",
-                        JOptionPane.INFORMATION_MESSAGE, null, items,
-                        graphPanel.graphView().getText());
-                //--------------------------------------------
-                for (GraphView newView : GraphView.values()) {
-                    if (newView.getText().equals(result)) {
-                        graphPanel.transform(newView);
-                        graphPanel.repaint();
-                        setInfo();
-                        return;
-                    }
-                }
-            }
-        }
+                                        @Override
+                                        public void actionPerformed(ActionEvent evt) {
+                                            String[] items = {GraphView.Matrix_Graph.getText(),
+                                                    GraphView.Hash_Set_Graph.getText(),
+                                                    GraphView.Tree_Set_Graph.getText(),
+                                                    GraphView.List_Set_Graph.getText(),
+                                                    GraphView.Sorted_Set_Graph.getText()};
+                                            String result = (String) JOptionPane.showInputDialog(JGraphFrame.this,
+                                                    "Типа представления:", "Преобразование графа",
+                                                    JOptionPane.INFORMATION_MESSAGE, null, items,
+                                                    graphPanel.graphView().getText());
+                                            //--------------------------------------------
+                                            for (GraphView newView : GraphView.values()) {
+                                                if (newView.getText().equals(result)) {
+                                                    graphPanel.transform(newView);
+                                                    graphPanel.repaint();
+                                                    setInfo();
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
         );
     }
 
@@ -960,24 +960,24 @@ public class JGraphFrame extends JFrame {
         JMenuItem bridgesSearchMenu = new JMenuItem("Поиск всех мостов");
         undirectedGraphAlgorithms.add(bridgesSearchMenu);
         bridgesSearchMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
-                if (bs.connected()) {
-                    StringBuilder result
-                            = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
-                                    + SEPARATOR + "Ребра мосты: " + SEPARATOR);
-                    for (Edge2D e : bs.bridges()) {
-                        result.append(e.print()).append(SEPARATOR);
-                    }
-                    createResultFrame(bridgesSearchMenu, result.toString());
-                    showEdges(bs.bridges(), "Отобразить мосты");
-                } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
-                            null, JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
+                                                @Override
+                                                public void actionPerformed(ActionEvent evt) {
+                                                    BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
+                                                    if (bs.connected()) {
+                                                        StringBuilder result
+                                                                = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
+                                                                + SEPARATOR + "Ребра мосты: " + SEPARATOR);
+                                                        for (Edge2D e : bs.bridges()) {
+                                                            result.append(e.print()).append(SEPARATOR);
+                                                        }
+                                                        createResultFrame(bridgesSearchMenu, result.toString());
+                                                        showEdges(bs.bridges(), "Отобразить мосты");
+                                                    } else {
+                                                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
+                                                                null, JOptionPane.WARNING_MESSAGE);
+                                                    }
+                                                }
+                                            }
         );
     }
 
@@ -988,30 +988,30 @@ public class JGraphFrame extends JFrame {
         JMenuItem topoSortMenu = new JMenuItem("Топологическая сортировка");
         directedGraphAlgorithms.add(topoSortMenu);
         topoSortMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                TopologicalSort<Vertex> topoSort = new TopologicalSort<>(graph());
-                if (topoSort.acyclic()) {
-                    StringBuilder result
-                            = new StringBuilder("Последовательность вершин топологической сортировки:"
-                                    + SEPARATOR);
-                    result.append(topoSort.sequence());
-                    createResultFrame(topoSortMenu, result.toString());
-                } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть ациклическим!",
-                            null, JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
+                                           @Override
+                                           public void actionPerformed(ActionEvent evt) {
+                                               TopologicalSort<Vertex> topoSort = new TopologicalSort<>(graph());
+                                               if (topoSort.acyclic()) {
+                                                   StringBuilder result
+                                                           = new StringBuilder("Последовательность вершин топологической сортировки:"
+                                                           + SEPARATOR);
+                                                   result.append(topoSort.sequence());
+                                                   createResultFrame(topoSortMenu, result.toString());
+                                               } else {
+                                                   JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть ациклическим!",
+                                                           null, JOptionPane.WARNING_MESSAGE);
+                                               }
+                                           }
+                                       }
         );
     }
 
     private void showConnectedComponents(AbstractConnectedComponents<Vertex> connComp,
-            Component component) {
+                                         Component component) {
         StringBuilder result
                 = new StringBuilder("Количество связных компонет: "
-                        + connComp.componentsNum() + SEPARATOR
-                        + "Связные компонеты графа:" + SEPARATOR);
+                + connComp.componentsNum() + SEPARATOR
+                + "Связные компонеты графа:" + SEPARATOR);
         result.append(connComp);
         //--------------------------------------------------------
         createResultFrame(component, result.toString());
@@ -1027,22 +1027,22 @@ public class JGraphFrame extends JFrame {
         undirectedGraphAlgorithms.add(connectedComponentsMenu);
         directedGraphAlgorithms.add(stronglyConnectedComponentsMenu);
         connectedComponentsMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                showConnectedComponents(new ConnectedComponents<>(graph()),
-                        connectedComponentsMenu);
+                                                      @Override
+                                                      public void actionPerformed(ActionEvent evt) {
+                                                          showConnectedComponents(new ConnectedComponents<>(graph()),
+                                                                  connectedComponentsMenu);
 
-            }
-        }
+                                                      }
+                                                  }
         );
         stronglyConnectedComponentsMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                showConnectedComponents(new StronglyConnectedComponents<>(graph()),
-                        stronglyConnectedComponentsMenu);
+                                                              @Override
+                                                              public void actionPerformed(ActionEvent evt) {
+                                                                  showConnectedComponents(new StronglyConnectedComponents<>(graph()),
+                                                                          stronglyConnectedComponentsMenu);
 
-            }
-        }
+                                                              }
+                                                          }
         );
     }
 
@@ -1073,7 +1073,7 @@ public class JGraphFrame extends JFrame {
                     case Prim:
                         mst
                                 = new PrimMinimumSpanningTree<Vertex, Edge2D>(graph(),
-                                        firstVertex());
+                                firstVertex());
                         break;
 
                     case Kruskal:
@@ -1118,18 +1118,18 @@ public class JGraphFrame extends JFrame {
         mstMenu.add(kruskalMstMenu);
         undirectedGraphAlgorithms.add(mstMenu);
         primMstMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createMst(MstType.Prim, primMstMenu, "Результаты алгоритма Прима:");
-            }
-        }
+                                          @Override
+                                          public void actionPerformed(ActionEvent evt) {
+                                              createMst(MstType.Prim, primMstMenu, "Результаты алгоритма Прима:");
+                                          }
+                                      }
         );
         kruskalMstMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                createMst(MstType.Kruskal, kruskalMstMenu, "Результаты алгоритма Крускала:");
-            }
-        }
+                                             @Override
+                                             public void actionPerformed(ActionEvent evt) {
+                                                 createMst(MstType.Kruskal, kruskalMstMenu, "Результаты алгоритма Крускала:");
+                                             }
+                                         }
         );
     }
 
@@ -1162,7 +1162,8 @@ public class JGraphFrame extends JFrame {
             public void actionPerformed(ActionEvent evt) {
                 input.setEnabled(false);
                 if (!NumberParser.isNullWeights(graph())) {
-                    showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда", allSptMenuFloydWarshall);
+                    showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда",
+                            allSptMenuFloydWarshall);
                 } else {
                     JOptionPane.showMessageDialog(JGraphFrame.this,
                             "Не все веса ребер заданы!",
@@ -1227,14 +1228,14 @@ public class JGraphFrame extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(JGraphFrame.this,
                             "Пути из '" + u + "' в '"
-                            + v + "' не существует!",
+                                    + v + "' не существует!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
         //----------------------------------------------
         addSptComponents(source, target, showPath);
-          //--------------------------------------------------------------
+        //--------------------------------------------------------------
 
     }
 
@@ -1247,7 +1248,7 @@ public class JGraphFrame extends JFrame {
             Pair<String, String> result = createAllSptDecision(allSpt);
             SptResultsFrame resultFrame
                     = new SptResultsFrame(item, title,
-                            result.getKey(), result.getValue());
+                    result.getKey(), result.getValue());
             resultFrame.setVisible(true);
             showAllPaths(allSpt);
             CancelAllOperationsWithGraph();
@@ -1365,7 +1366,7 @@ public class JGraphFrame extends JFrame {
                         String result = "Эксцентриситет вершины:" + SEPARATOR
                                 + "e(" + s + ") = "
                                 + GraphMetricProperties.eccentricity(
-                                        new DijkstraShortestPaths<>(graph(), s));
+                                new DijkstraShortestPaths<>(graph(), s));
                         createResultFrame(graphDiametrMenu, result);
                     } else {
                         JOptionPane.showMessageDialog(JGraphFrame.this,
@@ -1410,7 +1411,7 @@ public class JGraphFrame extends JFrame {
      * @param error
      */
     private void searchTour(TourType type, Component component,
-            String title, String error) {
+                            String title, String error) {
         ConnectedComponents<Vertex> connComp
                 = new ConnectedComponents<>(graph());
         if (connComp.connected()) {
@@ -1521,11 +1522,11 @@ public class JGraphFrame extends JFrame {
      * @param showPath
      */
     private void addSptComponents(JComboBox<String> source, JComboBox<String> target,
-            JButton showPath) {
+                                  JButton showPath) {
         setEnabledForOperations(false);
         JLabel txt = new JLabel("Кратчайший путь:");
         JButton exit = new JButton("Выход");
-          //------------------------------------------
+        //------------------------------------------
         //-------------------------------------------
         accessuryPanel.removeAll();
         accessuryPanel.add(txt, new GridBagConstraints(0, 0, 4, 1, 1, 0,
@@ -1566,7 +1567,7 @@ public class JGraphFrame extends JFrame {
      * @param spt
      */
     private void showPaths(final GraphPaths<Vertex> spt) {
-         //--------------------------------------------------         
+        //--------------------------------------------------
         //------------------------------------------
         JComboBox<String> source = new JComboBox<String>();
         source.addItem(spt.getSource().toString());
@@ -1589,14 +1590,14 @@ public class JGraphFrame extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(JGraphFrame.this,
                             "Пути из '" + spt.getSource() + "' в '"
-                            + u + "' не существует!",
+                                    + u + "' не существует!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
         //----------------------------------------------
         addSptComponents(source, target, showPath);
-          //--------------------------------------------------------------
+        //--------------------------------------------------------------
 
     }
 
@@ -1679,12 +1680,12 @@ public class JGraphFrame extends JFrame {
      * @param error
      */
     private void sptSearch(ShortestPaths<Vertex, Edge2D> spt, Component component,
-            String title, String error) {
+                           String title, String error) {
         if (spt.decision()) {
             Pair<String, String> result = createSptDecision(spt);
             SptResultsFrame resultFrame
                     = new SptResultsFrame(component, title,
-                            result.getKey(), result.getValue());
+                    result.getKey(), result.getValue());
             resultFrame.setVisible(true);
             showPaths(spt);
             CancelAllOperationsWithGraph();
@@ -1754,7 +1755,7 @@ public class JGraphFrame extends JFrame {
                     Pair<String, String> result = createSptDecision(bfs);
                     SptResultsFrame resultFrame
                             = new SptResultsFrame(bfsMenu, "Кратчайшик пути (BFS)",
-                                    result.getKey(), result.getValue());
+                            result.getKey(), result.getValue());
                     resultFrame.setVisible(true);
                     showPaths(bfs);
                     CancelAllOperationsWithGraph();
@@ -1789,7 +1790,7 @@ public class JGraphFrame extends JFrame {
                 //--------------------------------------------
                 DFSResultsFrame resultFrame
                         = new DFSResultsFrame(dfsMenu, paths.toString(), discovery.toString(),
-                                finishing.toString());
+                        finishing.toString());
                 resultFrame.setVisible(true);
                 CancelAllOperationsWithGraph();
                 //--------------------------------------------------               
@@ -1818,7 +1819,7 @@ public class JGraphFrame extends JFrame {
                     AllPathsSearch<Vertex> allPaths = new AllPathsSearch<Vertex>(graph(), u, v);
                     StringBuilder result
                             = new StringBuilder("Количество путей: " + allPaths.size() + SEPARATOR
-                                    + "Структуры путей:" + SEPARATOR);
+                            + "Структуры путей:" + SEPARATOR);
                     result.append(allPaths);
                     createResultFrame(allPathsMenu, result.toString());
                 }
@@ -1852,8 +1853,8 @@ public class JGraphFrame extends JFrame {
                                 = new MinimumSpanningTreeClustering(n, distances);
                         StringBuilder result
                                 = new StringBuilder("Количество кластеров: " + clustering.clustersSize()
-                                        + SEPARATOR
-                                        + "Структуры кластеров:" + SEPARATOR);
+                                + SEPARATOR
+                                + "Структуры кластеров:" + SEPARATOR);
                         result.append(clustering);
                         createResultFrame(mstClusteringMenu, result.toString());
                     } catch (InternalError | IllegalArgumentException e) {

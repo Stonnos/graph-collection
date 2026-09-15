@@ -6,18 +6,16 @@
 package graphcollection.graph;
 
 import java.util.AbstractSet;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public abstract class AbstractGraph<V, E extends Edge<V>>
         implements Graph<V, E>, Cloneable, java.io.Serializable {

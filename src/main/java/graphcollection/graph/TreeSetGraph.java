@@ -8,27 +8,28 @@ package graphcollection.graph;
 import java.util.TreeSet;
 
 /**
- * 
- * @author Рома
+ *
  * @param <V>
- * @param <E> 
+ * @param <E>
+ * @author Рома
  */
 public class TreeSetGraph<V, E extends Edge<V>>
-  extends AbstractGraph<V, E> {
+        extends AbstractGraph<V, E> {
 
-    public TreeSetGraph() {}
-     
+    public TreeSetGraph() {
+    }
+
     public TreeSetGraph(boolean direction) {
         super(direction);
     }
-    
+
     public TreeSetGraph(boolean direction, boolean loop) {
         super(direction, loop);
     }
-   
+
     @Override
     public boolean addVertex(V v) {
-        return addEdgeList(v, new TreeSet<E>(new EdgeComparator<V,E>()));  
+        return addEdgeList(v, new TreeSet<E>(new EdgeComparator<V, E>()));
     }
 
 } //End of class TreeSetGraph<V, E>

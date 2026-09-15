@@ -8,13 +8,14 @@ package graphcollection.algorithms.dfs;
 import graphcollection.algorithms.VertexColor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class GamiltonTourSearch<V, E extends Edge<V>>
         extends AbstractTourSearch<V, E> {

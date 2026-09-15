@@ -5,16 +5,16 @@
  */
 package graphcollection.algorithms.cc;
 
-import graphcollection.algorithms.dfs.DFSVisitor;
 import graphcollection.algorithms.GraphReverse;
 import graphcollection.algorithms.VertexColor;
+import graphcollection.algorithms.dfs.DFSVisitor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class StronglyConnectedComponents<V>
         extends AbstractConnectedComponents<V> {

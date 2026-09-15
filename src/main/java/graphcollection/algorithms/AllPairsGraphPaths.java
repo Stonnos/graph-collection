@@ -6,12 +6,13 @@
 package graphcollection.algorithms;
 
 import graphcollection.util.MatrixMap;
+
 import java.util.Collection;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public interface AllPairsGraphPaths<V> {
 

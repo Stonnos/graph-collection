@@ -6,20 +6,21 @@
 package graphcollection.algorithms.trees;
 
 import graphcollection.algorithms.GraphAlgorithm;
-import graphcollection.util.DisjointSets;
 import graphcollection.graph.Graph;
 import graphcollection.graph.WeightedEdge;
+import graphcollection.util.DisjointSets;
+
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.PriorityQueue;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.PriorityQueue;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class KruskalMinimumSpanningTree<V, E extends WeightedEdge<V, ? extends Number>>
         implements GraphAlgorithm, MinimumSpanningTree<E> {

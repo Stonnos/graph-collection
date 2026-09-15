@@ -5,21 +5,23 @@
  */
 package graphcollection.gui;
 
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author Рома
  */
 public class VertexFormat {
-     public static final String format = "[a-zA-Zа-яА-Я0-9]{1,10}";
-     
-     public static final String getRegEx() {
-          return "^" + format + "$";
-     }
-     
-     public static boolean isFormat(String v) {
-         Pattern p = Pattern.compile(getRegEx());  
-         Matcher m = p.matcher(v);  
-         return m.matches();
-     }
+    public static final String format = "[a-zA-Zа-яА-Я0-9]{1,10}";
+
+    public static final String getRegEx() {
+        return "^" + format + "$";
+    }
+
+    public static boolean isFormat(String v) {
+        Pattern p = Pattern.compile(getRegEx());
+        Matcher m = p.matcher(v);
+        return m.matches();
+    }
 }

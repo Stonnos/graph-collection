@@ -8,17 +8,16 @@ package graphcollection.graph;
 import graphcollection.util.AdjacencyMatrix;
 import graphcollection.util.DirectedAdjacencyMatrix;
 import graphcollection.util.UnDirectedAdjacencyMatrix;
+
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class AdjacencyMatrixGraph<V, E extends Edge<V>>
         implements Graph<V, E>, Cloneable, java.io.Serializable {

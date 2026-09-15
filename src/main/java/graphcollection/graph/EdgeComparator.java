@@ -9,9 +9,9 @@ import java.util.Comparator;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class EdgeComparator<V, E extends Edge<V>>
         implements Comparator<E> {

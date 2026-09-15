@@ -10,15 +10,16 @@ import graphcollection.algorithms.GraphPathBuilder;
 import graphcollection.algorithms.VertexColor;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
+
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class DepthFirstSearch<V> implements GraphAlgorithm {
 

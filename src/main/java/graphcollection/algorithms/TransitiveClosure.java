@@ -8,13 +8,14 @@ package graphcollection.algorithms;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
 import graphcollection.util.MatrixMap;
+
 import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class TransitiveClosure<V, E extends Edge<V>> implements GraphAlgorithm {
 

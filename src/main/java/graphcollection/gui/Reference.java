@@ -5,16 +5,17 @@
  */
 package graphcollection.gui;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
  * @author Рома
  */
 public class Reference extends ReferenceBase {
-    
+
     public Reference(Component component) {
         super(component);
         this.setTitle("Справка");
@@ -30,25 +31,25 @@ public class Reference extends ReferenceBase {
         JMenu algorithms = new JMenu("Алгоритмы");
         userMenu.add(algorithms);
         JMenu directedGraphAlgoritms = new
-              JMenu("Алгоритмы для орграфов");
+                JMenu("Алгоритмы для орграфов");
         JMenu undirectedGraphAlgoritms = new
-              JMenu("Алгоритмы для неорграфов");
+                JMenu("Алгоритмы для неорграфов");
         algorithms.add(directedGraphAlgoritms);
         algorithms.add(undirectedGraphAlgoritms);
         //------------------------------------------------------
         userRef.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Руководство пользователя.txt");
-            }
-         }
+                                      @Override
+                                      public void actionPerformed(ActionEvent evt) {
+                                          readInfoFromFile("Руководство пользователя.txt");
+                                      }
+                                  }
         );
         literature.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Используемые источники.txt");
-            }
-         }
+                                         @Override
+                                         public void actionPerformed(ActionEvent evt) {
+                                             readInfoFromFile("Используемые источники.txt");
+                                         }
+                                     }
         );
         //-------------------------------------------------------
         JMenuItem euler = new JMenuItem("Поиск Эйлерова цикла");
@@ -61,32 +62,32 @@ public class Reference extends ReferenceBase {
         undirectedGraphAlgoritms.add(undirectedOther);
         //--------------------------------------------------------
         euler.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Поиск Эйлерова цикла.txt");
-            }
-         }
+                                    @Override
+                                    public void actionPerformed(ActionEvent evt) {
+                                        readInfoFromFile("Поиск Эйлерова цикла.txt");
+                                    }
+                                }
         );
         gamilton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Поиск Гамильтонова цикла.txt");
-            }
-         }
-        );    
+                                       @Override
+                                       public void actionPerformed(ActionEvent evt) {
+                                           readInfoFromFile("Поиск Гамильтонова цикла.txt");
+                                       }
+                                   }
+        );
         mst.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Алгоритм минимального покрывающего дерева.txt");
-            }
-         }
+                                  @Override
+                                  public void actionPerformed(ActionEvent evt) {
+                                      readInfoFromFile("Алгоритм минимального покрывающего дерева.txt");
+                                  }
+                              }
         );
         undirectedOther.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Дополнительные алгоритмы для неорграфов.txt");
-            }
-         }
+                                              @Override
+                                              public void actionPerformed(ActionEvent evt) {
+                                                  readInfoFromFile("Дополнительные алгоритмы для неорграфов.txt");
+                                              }
+                                          }
         );
         //------------------------------------------------------------------
         JMenuItem topoSort = new JMenuItem("Топологическая сортировка");
@@ -99,33 +100,33 @@ public class Reference extends ReferenceBase {
         directedGraphAlgoritms.add(directedOther);
         //--------------------------------------------------------
         topoSort.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Топологическая сортировка.txt");
-            }
-         }
+                                       @Override
+                                       public void actionPerformed(ActionEvent evt) {
+                                           readInfoFromFile("Топологическая сортировка.txt");
+                                       }
+                                   }
         );
         spt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Кратчайшие пути из одной вершины.txt");
-            }
-         }
-        );   
+                                  @Override
+                                  public void actionPerformed(ActionEvent evt) {
+                                      readInfoFromFile("Кратчайшие пути из одной вершины.txt");
+                                  }
+                              }
+        );
         allSpt.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Кратчайшие пути между всеми парами вершин.txt");
-            }
-         }
-        ); 
+                                     @Override
+                                     public void actionPerformed(ActionEvent evt) {
+                                         readInfoFromFile("Кратчайшие пути между всеми парами вершин.txt");
+                                     }
+                                 }
+        );
         directedOther.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                readInfoFromFile("Дополнительные алгоритмы для орграфов.txt");
-            }
-         }
+                                            @Override
+                                            public void actionPerformed(ActionEvent evt) {
+                                                readInfoFromFile("Дополнительные алгоритмы для орграфов.txt");
+                                            }
+                                        }
         );
     }
-    
+
 } //End of class Reference

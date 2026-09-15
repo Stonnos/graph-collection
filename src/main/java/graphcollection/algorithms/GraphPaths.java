@@ -5,13 +5,13 @@
  */
 package graphcollection.algorithms;
 
-import java.util.Map;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public interface GraphPaths<V> {
 

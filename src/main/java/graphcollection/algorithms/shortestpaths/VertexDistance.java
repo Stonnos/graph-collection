@@ -7,9 +7,9 @@ package graphcollection.algorithms.shortestpaths;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <D>
+ * @author Рома
  */
 public class VertexDistance<V, D extends Number>
         implements Comparable<VertexDistance<V, D>>, Cloneable, java.io.Serializable {

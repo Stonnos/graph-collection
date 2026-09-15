@@ -6,9 +6,9 @@
 package graphcollection.util;
 
 import java.util.AbstractSet;
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *

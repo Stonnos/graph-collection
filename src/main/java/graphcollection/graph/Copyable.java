@@ -7,8 +7,8 @@ package graphcollection.graph;
 
 /**
  *
- * @author Рома
  * @param <T>
+ * @author Рома
  */
 public interface Copyable<T> {
 

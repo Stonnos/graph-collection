@@ -5,16 +5,16 @@
  */
 package graphcollection.util;
 
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <K1>
  * @param <K2>
  * @param <V>
+ * @author Рома
  */
 public class MatrixMap<K1, K2, V>
         implements Iterable<K1>, Cloneable, java.io.Serializable {

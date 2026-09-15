@@ -6,16 +6,17 @@
 package graphcollection.algorithms.shortestpaths;
 
 import graphcollection.graph.Graph;
-import graphcollection.util.MutableQueue;
 import graphcollection.graph.WeightedEdge;
-import java.util.Iterator;
+import graphcollection.util.MutableQueue;
+
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class DijkstraShortestPaths<V, E extends WeightedEdge<V, ? extends Number>>
         extends ShortestPaths<V, E> {

@@ -8,10 +8,10 @@ package graphcollection.graph;
 import java.util.Collection;
 
 /**
- * 
- * @author Рома
+ *
  * @param <V>
- * @param <E> 
+ * @param <E>
+ * @author Рома
  */
 public interface MultiGraph<V, E extends Edge<V>> {
     public Collection<E> edges(V v1, V v2);

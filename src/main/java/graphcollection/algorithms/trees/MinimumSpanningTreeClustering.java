@@ -6,12 +6,12 @@
 package graphcollection.algorithms.trees;
 
 import graphcollection.algorithms.GraphAlgorithm;
-import graphcollection.algorithms.trees.PrimMinimumSpanningTree;
-import java.util.Map;
-import java.util.HashMap;
 import graphcollection.graph.AdjacencyMatrixGraph;
 import graphcollection.graph.Graph;
 import graphcollection.graph.WeightedEdge;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

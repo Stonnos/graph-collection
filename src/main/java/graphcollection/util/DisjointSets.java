@@ -10,8 +10,8 @@ import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public class DisjointSets<E> implements Cloneable,
         Iterable<E>, java.io.Serializable {

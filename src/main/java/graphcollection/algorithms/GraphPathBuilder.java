@@ -5,10 +5,11 @@
  */
 package graphcollection.algorithms;
 
+import graphcollection.util.MatrixMap;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
-import graphcollection.util.MatrixMap;
 
 /**
  *

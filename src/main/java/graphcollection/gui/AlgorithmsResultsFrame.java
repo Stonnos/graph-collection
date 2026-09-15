@@ -5,24 +5,31 @@
  */
 package graphcollection.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 /**
- * 
+ *
  * @author Рома
  */
 public class AlgorithmsResultsFrame extends JFrame {
-   
+
     private JTextArea textInfo;
     private Component component;
-    
+
     /**
-     * 
+     *
      * @param component
-     * @param result 
+     * @param result
      */
     public AlgorithmsResultsFrame(Component component, String result) {
         this.setResizable(false);
@@ -33,13 +40,13 @@ public class AlgorithmsResultsFrame extends JFrame {
         component.setEnabled(false);
         //-------------------------------------
         addWindowListener(new WindowAdapter() {
-             @Override
-             public void windowClosing(WindowEvent evt) {
-                 component.setEnabled(true);
-             }
+            @Override
+            public void windowClosing(WindowEvent evt) {
+                component.setEnabled(true);
+            }
         });
         //-------------------------------------
-        textInfo = new JTextArea(15,30);
+        textInfo = new JTextArea(15, 30);
         textInfo.setWrapStyleWord(true);
         textInfo.setLineWrap(true);
         textInfo.setEditable(false);
@@ -51,30 +58,29 @@ public class AlgorithmsResultsFrame extends JFrame {
         JButton okButton = new JButton("OK");
         //-----------------------------------
         saveFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-               try {
-                  GraphFileChooser fileChooser = new GraphFileChooser();
-                  File file = fileChooser.saveFile(AlgorithmsResultsFrame.this);
-                  if (file != null) {
-                      saveToFile(file.getPath());
-                  }
-                }
-                catch(InternalError | Exception e) {
-                    JOptionPane.showMessageDialog(AlgorithmsResultsFrame.this,e,
-                            null, JOptionPane.ERROR_MESSAGE);
-                }                
-            }
-         }
+                                             @Override
+                                             public void actionPerformed(ActionEvent evt) {
+                                                 try {
+                                                     GraphFileChooser fileChooser = new GraphFileChooser();
+                                                     File file = fileChooser.saveFile(AlgorithmsResultsFrame.this);
+                                                     if (file != null) {
+                                                         saveToFile(file.getPath());
+                                                     }
+                                                 } catch (InternalError | Exception e) {
+                                                     JOptionPane.showMessageDialog(AlgorithmsResultsFrame.this, e,
+                                                             null, JOptionPane.ERROR_MESSAGE);
+                                                 }
+                                             }
+                                         }
         );
         //-----------------------------------
         okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                component.setEnabled(true);
-                dispose();
-            }
-         }
+                                       @Override
+                                       public void actionPerformed(ActionEvent evt) {
+                                           component.setEnabled(true);
+                                           dispose();
+                                       }
+                                   }
         );
         //-----------------------------------
         menuPanel.add(saveFileButton);
@@ -83,32 +89,32 @@ public class AlgorithmsResultsFrame extends JFrame {
         add(scrollPanel);
         add(menuPanel);
         //-----------------------------------------------------------------
-	add(scrollPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.8, 
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 15, 2, 15), 0, 0));
-	add(menuPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 0,
-            GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 15, 5, 15), 0, 0));
+        add(scrollPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.8,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 15, 2, 15), 0, 0));
+        add(menuPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 15, 5, 15), 0, 0));
         //-----------------------------------------------------------------
         this.pack();
         this.setLocationRelativeTo(null);
     }
-    
+
     protected final void setResults(String text) {
         textInfo.setText(text);
         textInfo.setCaretPosition(0);
     }
+
     /**
      * Метод для чтения информации из файла с именем name
-     * @param name 
+     *
+     * @param name
      */
     public final void saveToFile(String name) {
         try (FileOutputStream out = new FileOutputStream(name);
-              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out,"Cp1251")) )
-        {
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "Cp1251"))) {
             writer.write(textInfo.getText());
-        }
-        catch (IOException e) {
-           JOptionPane.showMessageDialog(AlgorithmsResultsFrame.this,e,
-                            "", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(AlgorithmsResultsFrame.this, e,
+                    "", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

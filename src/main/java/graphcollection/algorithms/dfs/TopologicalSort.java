@@ -7,12 +7,13 @@ package graphcollection.algorithms.dfs;
 
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
+
 import java.util.Collection;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public class TopologicalSort<V> extends DFSVisitor<V> {
 

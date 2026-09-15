@@ -8,6 +8,7 @@ package graphcollection.algorithms;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
 import graphcollection.graph.HashSetGraph;
+
 import java.util.Iterator;
 
 /**

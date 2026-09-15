@@ -9,15 +9,16 @@ import graphcollection.algorithms.AllPairsGraphPaths;
 import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.algorithms.GraphPathBuilder;
 import graphcollection.graph.Graph;
-import graphcollection.util.MatrixMap;
 import graphcollection.graph.WeightedEdge;
+import graphcollection.util.MatrixMap;
+
 import java.util.Collection;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public abstract class AllPairsShortestPaths<V, E extends WeightedEdge<V, ? extends Number>>
         implements GraphAlgorithm, AllPairsGraphPaths<V> {

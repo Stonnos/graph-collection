@@ -6,23 +6,24 @@
 package graphcollection.algorithms.trees;
 
 import graphcollection.algorithms.GraphAlgorithm;
-import graphcollection.algorithms.GraphPaths;
 import graphcollection.algorithms.GraphPathBuilder;
+import graphcollection.algorithms.GraphPaths;
 import graphcollection.algorithms.shortestpaths.VertexDistance;
 import graphcollection.graph.Graph;
-import graphcollection.util.MutableQueue;
 import graphcollection.graph.WeightedEdge;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
+import graphcollection.util.MutableQueue;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class PrimMinimumSpanningTree<V, E extends WeightedEdge<V, ? extends Number>>
         implements GraphAlgorithm, MinimumSpanningTree<E>, GraphPaths<V> {

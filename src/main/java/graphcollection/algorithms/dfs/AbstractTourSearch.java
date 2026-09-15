@@ -8,13 +8,14 @@ package graphcollection.algorithms.dfs;
 import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
-import java.util.LinkedList;
+
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  *
- * @author Рома
  * @param <V>
+ * @author Рома
  */
 public abstract class AbstractTourSearch<V, E extends Edge<V>>
         implements GraphAlgorithm {

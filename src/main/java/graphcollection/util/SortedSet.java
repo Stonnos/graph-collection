@@ -6,15 +6,15 @@
 package graphcollection.util;
 
 import java.util.AbstractSet;
-import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public class SortedSet<E> extends AbstractSet<E>
         implements Cloneable, java.io.Serializable {

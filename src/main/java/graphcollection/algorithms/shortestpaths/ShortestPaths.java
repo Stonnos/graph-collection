@@ -6,32 +6,33 @@
 package graphcollection.algorithms.shortestpaths;
 
 import graphcollection.algorithms.GraphAlgorithm;
-import graphcollection.algorithms.GraphPaths;
 import graphcollection.algorithms.GraphPathBuilder;
+import graphcollection.algorithms.GraphPaths;
 import graphcollection.graph.Graph;
 import graphcollection.graph.WeightedEdge;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Number>>
         implements GraphAlgorithm, GraphPaths<V> {
-    
+
     protected Graph<V, E> graph;
     protected V source;
     protected HashMap<V, V> p = new HashMap<V, V>();
     protected HashMap<V, Number> h = new HashMap<V, Number>();
     protected boolean decision = true;
     public static final double max_distance = Double.MAX_VALUE;
-    
+
     protected abstract void shortestPathsSearch();
-    
+
     protected ShortestPaths(Graph<V, E> g, V s) {
         if (g == null) {
             throw new NullPointerException();
@@ -46,7 +47,7 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
         source = s;
         initialize();
     }
-    
+
     private void initialize() {
         for (V u : graph) {
             h.put(u, max_distance);
@@ -54,33 +55,33 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
         }
         h.put(source, 0.0);
     }
-    
+
     protected boolean relaxed(V u, V v, Number w) {
         return (h.get(u).doubleValue() != max_distance
                 && h.get(u).doubleValue() + w.doubleValue() < h.get(v).doubleValue());
     }
-    
+
     protected void relax(V u, V v, Number w) {
         if (relaxed(u, v, w)) {
             h.put(v, h.get(u).doubleValue() + w.doubleValue());
             p.put(v, u);
         }
     }
-    
+
     public boolean decision() {
         return decision;
     }
-    
+
     @Override
     public Map<V, V> predecessors() {
         return (decision() ? p : null);
     }
-    
+
     @Override
     public Map<V, Number> distances() {
         return (decision() ? h : null);
     }
-    
+
     @Override
     public Collection<V> getPath(V target) {
         if (isPath(target)) {
@@ -89,12 +90,12 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
             return null;
         }
     }
-    
+
     @Override
     public V getSource() {
         return source;
     }
-    
+
     @Override
     public boolean isPath(V target) {
         if (decision() && graph.containsVertex(target)) {
@@ -103,17 +104,17 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
             return false;
         }
     }
-    
+
     @Override
     public Number getDistance(V target) {
         return (decision() ? h.get(target) : null);
     }
-    
+
     @Override
     public V getPredecessor(V target) {
         return (decision() ? p.get(target) : null);
     }
-    
+
     public String getPaths() {
         if (decision()) {
             String separator = System.getProperty("line.separator");
@@ -134,7 +135,7 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
             return null;
         }
     }
-    
+
     @Override
     public String toString() {
         if (decision()) {
@@ -155,5 +156,5 @@ public abstract class ShortestPaths<V, E extends WeightedEdge<V, ? extends Numbe
             return null;
         }
     }
-    
+
 } //End of class ShortestPaths<V,E>

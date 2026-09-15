@@ -6,14 +6,22 @@
 package graphcollection.gui;
 
 import graphcollection.graph.Edge;
-import graphcollection.graph.HashSetGraph;
 import graphcollection.graph.Graph;
-import java.util.LinkedList;
+import graphcollection.graph.HashSetGraph;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
-import java.util.ListIterator;
 import java.util.Iterator;
-import java.io.*;
-import java.util.regex.*;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -29,7 +37,7 @@ public class GraphParser {
 
     public <V, E extends Edge<V>> void write(Graph<V, E> g, String fileName) {
         try (FileOutputStream out = new FileOutputStream(fileName);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, code))) {
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, code))) {
             if (g.direction()) {
                 writer.write("directed");
             } else {
@@ -66,7 +74,7 @@ public class GraphParser {
     public Graph<Vertex, Edge2D> read(String fileName) {
         Graph<Vertex, Edge2D> g;
         try (FileInputStream in = new FileInputStream(fileName);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, code))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in, code))) {
             //-----------------------------------------------------
             String line = reader.readLine();
             if (line != null && line.equals("directed")) {

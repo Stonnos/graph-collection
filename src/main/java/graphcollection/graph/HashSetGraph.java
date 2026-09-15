@@ -9,9 +9,9 @@ import java.util.HashSet;
 
 /**
  *
- * @author Рома
  * @param <V>
  * @param <E>
+ * @author Рома
  */
 public class HashSetGraph<V, E extends Edge<V>> extends AbstractGraph<V, E> {
 

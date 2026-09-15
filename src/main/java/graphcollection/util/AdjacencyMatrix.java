@@ -10,8 +10,8 @@ import java.util.Iterator;
 
 /**
  *
- * @author Рома
  * @param <E>
+ * @author Рома
  */
 public abstract class AdjacencyMatrix<E> implements Iterable<E>, Cloneable,
         java.io.Serializable {

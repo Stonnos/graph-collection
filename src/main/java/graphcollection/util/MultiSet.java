@@ -8,45 +8,50 @@ package graphcollection.util;
 import java.util.ListIterator;
 
 /**
- * 
+ *
+ * @param <E>
  * @author Рома
- * @param <E> 
  */
 public class MultiSet<E> extends ListSet<E> {
-   
-    public MultiSet() {}
-    
+
+    public MultiSet() {
+    }
+
     @Override
     public boolean add(E obj) {
         ListIterator<E> iter = searchFirst(obj);
         if (iter != null) {
             iter.add(obj);
+        } else {
+            set.add(obj);
         }
-        else set.add(obj);
         return true;
     }
-    
+
     @Override
     public boolean remove(Object obj) {
         ListIterator<E> iter = searchFirst(obj);
         if (iter != null) {
-           iter.remove();
-           while (iter.hasNext()) {
-               if (iter.next().equals(obj)) { 
-                   iter.remove();
-               }
-               else break;
-           } 
-           return true;
+            iter.remove();
+            while (iter.hasNext()) {
+                if (iter.next().equals(obj)) {
+                    iter.remove();
+                } else {
+                    break;
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
-        else return false;
     }
-    
+
     private ListIterator<E> searchFirst(Object obj) {
         ListIterator<E> iter = set.listIterator();
         while (iter.hasNext()) {
-            if (iter.next().equals(obj)) 
-               return iter;
+            if (iter.next().equals(obj)) {
+                return iter;
+            }
         }
         return null;
     }

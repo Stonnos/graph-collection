@@ -5,12 +5,13 @@
  */
 package graphcollection.gui;
 
-import graphcollection.graph.TreeSetGraph;
-import graphcollection.graph.SortedSetGraph;
 import graphcollection.graph.AdjacencyMatrixGraph;
-import graphcollection.graph.HashSetGraph;
 import graphcollection.graph.Graph;
+import graphcollection.graph.HashSetGraph;
 import graphcollection.graph.ListSetGraph;
+import graphcollection.graph.SortedSetGraph;
+import graphcollection.graph.TreeSetGraph;
+
 import java.util.Iterator;
 import java.util.Random;
 
