@@ -31,6 +31,8 @@ import graphcollection.algorithms.trees.MinimumSpanningTree;
 import graphcollection.algorithms.trees.MinimumSpanningTreeClustering;
 import graphcollection.algorithms.trees.PrimMinimumSpanningTree;
 import graphcollection.graph.Graph;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -57,6 +59,7 @@ public class JGraphFrame extends JFrame {
     private static final String TITLE = "Приложение для работы с графом";
     private static final String SEPARATOR = System.getProperty("line.separator");
     private static final Color FRAME_COLOR = new Color(227, 232, 234);
+    private static final int ICON_SIZE = 18;
     private int animationSpeed = 2000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -356,9 +359,13 @@ public class JGraphFrame extends JFrame {
     private void createMenu() {
         JMenuBar menu = new JMenuBar();
         graphMenu = new JMenu("Граф");
+        graphMenu.setIcon(IconFontSwing.buildIcon(FontAwesome.SHARE_ALT, ICON_SIZE, Color.BLACK));
         algoritmsMenu = new JMenu("Алгоритмы");
+        algoritmsMenu.setIcon(IconFontSwing.buildIcon(FontAwesome.SITEMAP, ICON_SIZE, Color.BLACK));
         JMenu referenceMenu = new JMenu("Справка");
+        referenceMenu.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION, ICON_SIZE, Color.BLACK));
         JMenu optionMenu = new JMenu("Настройки");
+        optionMenu.setIcon(IconFontSwing.buildIcon(FontAwesome.COGS, ICON_SIZE));
         menu.add(graphMenu);
         menu.add(algoritmsMenu);
         menu.add(optionMenu);
@@ -367,8 +374,11 @@ public class JGraphFrame extends JFrame {
         JMenu create = new JMenu("Создать граф");
         JMenuItem generate = new JMenuItem("Создать случайный граф");
         JMenuItem open = new JMenuItem("Загрузить из файла");
+        open.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN, ICON_SIZE, Color.ORANGE));
         JMenuItem save = new JMenuItem("Сохранить в файл");
+        save.setIcon(IconFontSwing.buildIcon(FontAwesome.FLOPPY_O, ICON_SIZE, Color.BLUE));
         JMenuItem saveImage = new JMenuItem("Сохранить изображение");
+        saveImage.setIcon(IconFontSwing.buildIcon(FontAwesome.FLOPPY_O, ICON_SIZE, Color.BLUE));
         graphMenu.add(create);
         graphMenu.add(generate);
         graphMenu.addSeparator();
