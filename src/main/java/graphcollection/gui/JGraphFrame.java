@@ -932,7 +932,7 @@ public class JGraphFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 for (Edge2D e : tree) {
-                    e.color = Edge2D.default_color;
+                    e.color = Edge2D.DARK_GRAY;
                     e.dimension = Edge2D.default_dimension;
                 }
                 graphPanel.repaint();
@@ -1372,7 +1372,7 @@ public class JGraphFrame extends JFrame {
         Iterator<Edge2D> edge = graph().edgeIterator();
         while (edge.hasNext()) {
             Edge2D e = edge.next();
-            e.color = Edge2D.default_color;
+            e.color = Edge2D.DARK_GRAY;
             e.dimension = Edge2D.default_dimension;
         }
     }

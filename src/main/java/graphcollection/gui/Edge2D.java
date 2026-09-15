@@ -16,10 +16,12 @@ import java.awt.geom.Path2D;
  */
 public class Edge2D extends WeightedEdge<Vertex, Number> {
 
-    public static final Color default_color = Color.DARK_GRAY;
-    public static final Color default_weight_color = Color.RED;
-    public Color color = default_color;
-    public Color weightColor = default_weight_color;
+    public static final Color DARK_GRAY = Color.DARK_GRAY;
+    public static final Color DEFAULT_WEIGHT_COLOR = Color.BLUE;
+    public static final int WEIGHT_FONT_SIZE = 14;
+    public static final String WEIGHT_FONT = "Arial";
+    public Color color = DARK_GRAY;
+    public Color weightColor = DEFAULT_WEIGHT_COLOR;
     public static final int default_dimension = 1;
     public int dimension = default_dimension;
 
@@ -99,10 +101,12 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
             double vy = (target().getCenterY() - source().getCenterY()) / r; //нормировка вектора
             double x = target().getCenterX() - r * vx / 3;  //вычисление коорд. x точки, лежащей на дуге
             double y = target().getCenterY() - r * vy / 3;  //вычисление коорд. y точки, лежащей на дуге
-            //----------------------------------------------          
+            Font oldFont = g.getFont();
+            Font weightFont = new Font(WEIGHT_FONT, Font.BOLD, WEIGHT_FONT_SIZE);
+            g.setFont(weightFont);
             g.setPaint(weightColor);
             g.drawString(getWeight().toString(), (float) x, (float) y);
-            //---------------------------------------------
+            g.setFont(oldFont);
         }
     }
 
