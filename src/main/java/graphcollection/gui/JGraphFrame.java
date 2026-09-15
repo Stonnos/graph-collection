@@ -63,7 +63,6 @@ public class JGraphFrame extends JFrame {
     private JPanel infoPanel;
     private JPanel workPanel;
     private JPanel operationPanel;
-    private JPanel graphInfoPanel;
     private JPanel buttonsPanel;
     private JPanel accessuryPanel;
     private JGraphDrawer graphPanel;
@@ -282,7 +281,6 @@ public class JGraphFrame extends JFrame {
         this.operationPanel.setBackground(mainColor);
         this.lowPanel.setBackground(mainColor);
         this.workPanel.setBackground(mainColor);
-        this.graphInfoPanel.setBackground(mainColor);
         this.accessuryPanel.setBackground(mainColor);
     }
 
@@ -606,26 +604,15 @@ public class JGraphFrame extends JFrame {
         this.setJMenuBar(menu);
     }
 
-    private void addGraphInfoComponents() {
+    private void addInfoComponents() {
         JLabel vertexNumLabel = new JLabel("Количество вершин:");
         JLabel edgeNumLabel = new JLabel("Количество ребер:");
-        vertexNumText = new JTextField();
-        edgeNumText = new JTextField();
+        vertexNumText = new JTextField(5);
+        edgeNumText = new JTextField(5);
         vertexNumText.setBackground(Color.WHITE);
         edgeNumText.setBackground(Color.WHITE);
         vertexNumText.setEditable(false);
         edgeNumText.setEditable(false);
-        graphInfoPanel.add(vertexNumLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(10, 0, 0, 0), 0, 0));
-        graphInfoPanel.add(vertexNumText, new GridBagConstraints(0, 1, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        graphInfoPanel.add(edgeNumLabel, new GridBagConstraints(0, 2, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        graphInfoPanel.add(edgeNumText, new GridBagConstraints(0, 3, 1, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 10, 0), 0, 0));
-    }
-
-    private void addInfoComponents() {
         JLabel graphViewLabel = new JLabel("Тип представления:");
         JLabel graphDirectedLabel = new JLabel("Тип графа:");
         graphViewText = new JTextField(16);
@@ -634,10 +621,14 @@ public class JGraphFrame extends JFrame {
         graphDirectedText.setBackground(Color.WHITE);
         graphViewText.setEditable(false);
         graphDirectedText.setEditable(false);
-        infoPanel.add(graphViewLabel);
-        infoPanel.add(graphViewText);
+        infoPanel.add(vertexNumLabel);
+        infoPanel.add(vertexNumText);
+        infoPanel.add(edgeNumLabel);
+        infoPanel.add(edgeNumText);
         infoPanel.add(graphDirectedLabel);
         infoPanel.add(graphDirectedText);
+        infoPanel.add(graphViewLabel);
+        infoPanel.add(graphViewText);
     }
 
     private void addOperationButtons() {
@@ -852,9 +843,6 @@ public class JGraphFrame extends JFrame {
         workPanel.add(graphPanel, new GridBagConstraints(1, 0, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         //-----------------------------------------------
-        graphInfoPanel = new JPanel(new GridBagLayout());
-        graphInfoPanel.setBorder(BorderFactory.
-                createEtchedBorder(new Color(0, 0, 0), null));
         buttonsPanel = new JPanel(new GridBagLayout());
         buttonsPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
@@ -862,11 +850,9 @@ public class JGraphFrame extends JFrame {
         accessuryPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
         //-----------------------------------------------
-        operationPanel.add(graphInfoPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
+        operationPanel.add(buttonsPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        operationPanel.add(buttonsPanel, new GridBagConstraints(0, 1, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        operationPanel.add(accessuryPanel, new GridBagConstraints(0, 2, 1, 1, 1, 1,
+        operationPanel.add(accessuryPanel, new GridBagConstraints(0, 1, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         //-----------------------------------------------
         setColor();
@@ -874,7 +860,6 @@ public class JGraphFrame extends JFrame {
         setWindowListener();
         addInfoComponents();
         addOperationButtons();
-        addGraphInfoComponents();
         addInputComponents();
         setInfo();
         setAlgorithmsEnabled();
