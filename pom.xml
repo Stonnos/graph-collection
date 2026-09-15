@@ -22,6 +22,9 @@
         <assertj.core.version>3.17.2</assertj.core.version>
         <maven-surefire-plugin>3.2.2</maven-surefire-plugin>
         <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
+        <flatlaf.version>3.6.1</flatlaf.version>
+        <jifont-swing.version>1.0.1</jifont-swing.version>
+        <jifont-swing-fontawesome.version>4.7.0.1</jifont-swing-fontawesome.version>
         <jacoco.minCoverage>0</jacoco.minCoverage>
     </properties>
 
@@ -57,6 +60,24 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jiconfont</groupId>
+            <artifactId>jiconfont-swing</artifactId>
+            <version>${jifont-swing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jiconfont</groupId>
+            <artifactId>jiconfont-font_awesome</artifactId>
+            <version>${jifont-swing-fontawesome.version}</version>
         </dependency>
 
         <dependency>

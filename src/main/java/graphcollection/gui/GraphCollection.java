@@ -5,9 +5,17 @@
  */
 package graphcollection.gui;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import graphcollection.graph.*;
+
 import java.util.*;
+
 import graphcollection.algorithms.shortestpaths.*;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+
+import javax.swing.*;
+
 /**
  *
  * @author Рома
@@ -15,36 +23,19 @@ import graphcollection.algorithms.shortestpaths.*;
 
 public class GraphCollection {
 
+    private static final Locale RUSSIAN_LOCALE = new Locale("ru", "RU");
 
     /**
      * @param args the command line arguments
-     */   
-    public static void main(String[] args) {
-       JGraphFrame graph = new JGraphFrame();
-       graph.setVisible(true);
-       /* String[] vertices = {"A","B","C","D","E", "F"};
-        AdjacencyMatrixGraph<String, WeightedEdge<String, Number>> graph =
-                new AdjacencyMatrixGraph<>(true, vertices);
-        Random r = new Random();
-        graph.addEdge(EdgeFactory.directedWeightedEdge("A", "B", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("A", "C", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("A", "D", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("B", "D", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("B", "E", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("B", "A", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("D", "E", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("E", "C", r.nextInt(10)));
-        graph.addEdge(EdgeFactory.directedWeightedEdge("D", "C", r.nextInt(10)));
-        System.out.println("Graph's structure:");
-        System.out.println(graph);
-        AllPairsShortestPaths<String, WeightedEdge<String, Number>> spt =
-                new JohnsonAllPairsShortestPaths<>(graph, "S");
-        System.out.println("Distances:");
-        System.out.println(spt);
-        System.out.println("Paths:");
-        System.out.println(spt.getPaths());
-        //--------------------------------
-        */
+     */
+    public static void main(String[] args) throws UnsupportedLookAndFeelException {
+        Locale.setDefault(RUSSIAN_LOCALE);
+        // Sets Look and feel UI theme
+        UIManager.setLookAndFeel(new FlatLightLaf());
+        // Register FontAwesome icon fonts
+        IconFontSwing.register(FontAwesome.getIconFont());
+        JGraphFrame graph = new JGraphFrame();
+        graph.setVisible(true);
     }
-    
+
 }

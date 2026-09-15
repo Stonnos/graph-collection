@@ -54,10 +54,9 @@ import java.util.TimerTask;
  */
 public class JGraphFrame extends JFrame {
 
-    //-------------------------------------------------------------------
-    private static final String title = "Приложение для работы с графом";
-    private static final String separator = System.getProperty("line.separator");
-    private static final Color mainColor = Color.CYAN;
+    private static final String TITLE = "Приложение для работы с графом";
+    private static final String SEPARATOR = System.getProperty("line.separator");
+    private static final Color FRAME_COLOR = new Color(227, 232, 234);
     private int animationSpeed = 2000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -275,13 +274,13 @@ public class JGraphFrame extends JFrame {
     }
 
     private void setColor() {
-        this.mainPanel.setBackground(mainColor);
-        this.infoPanel.setBackground(mainColor);
-        this.buttonsPanel.setBackground(mainColor);
-        this.operationPanel.setBackground(mainColor);
-        this.lowPanel.setBackground(mainColor);
-        this.workPanel.setBackground(mainColor);
-        this.accessuryPanel.setBackground(mainColor);
+        this.mainPanel.setBackground(FRAME_COLOR);
+        this.infoPanel.setBackground(FRAME_COLOR);
+        this.buttonsPanel.setBackground(FRAME_COLOR);
+        this.operationPanel.setBackground(FRAME_COLOR);
+        this.lowPanel.setBackground(FRAME_COLOR);
+        this.workPanel.setBackground(FRAME_COLOR);
+        this.accessuryPanel.setBackground(FRAME_COLOR);
     }
 
     private void setEnabledForOperations(boolean aFlag) {
@@ -792,7 +791,7 @@ public class JGraphFrame extends JFrame {
 
     private void makeGUI() {
         this.setSize(1000, 700);
-        this.setTitle(title);
+        this.setTitle(TITLE);
         this.createMenu();
         this.setLayout(new GridBagLayout());
         mainPanel = new JPanel(new GridBagLayout());
@@ -957,9 +956,9 @@ public class JGraphFrame extends JFrame {
                 if (bs.connected()) {
                     StringBuilder result
                             = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
-                                    + separator + "Ребра мосты: " + separator);
+                                    + SEPARATOR + "Ребра мосты: " + SEPARATOR);
                     for (Edge2D e : bs.bridges()) {
-                        result.append(e.print()).append(separator);
+                        result.append(e.print()).append(SEPARATOR);
                     }
                     createResultFrame(bridgesSearchMenu, result.toString());
                     showEdges(bs.bridges(), "Отобразить мосты");
@@ -985,7 +984,7 @@ public class JGraphFrame extends JFrame {
                 if (topoSort.acyclic()) {
                     StringBuilder result
                             = new StringBuilder("Последовательность вершин топологической сортировки:"
-                                    + separator);
+                                    + SEPARATOR);
                     result.append(topoSort.sequence());
                     createResultFrame(topoSortMenu, result.toString());
                 } else {
@@ -1001,8 +1000,8 @@ public class JGraphFrame extends JFrame {
             Component component) {
         StringBuilder result
                 = new StringBuilder("Количество связных компонет: "
-                        + connComp.componentsNum() + separator
-                        + "Связные компонеты графа:" + separator);
+                        + connComp.componentsNum() + SEPARATOR
+                        + "Связные компонеты графа:" + SEPARATOR);
         result.append(connComp);
         //--------------------------------------------------------
         createResultFrame(component, result.toString());
@@ -1074,12 +1073,12 @@ public class JGraphFrame extends JFrame {
                 }
                 if (mst != null) {
                     StringBuilder result = new StringBuilder(title
-                            + separator + "Вес остова: " + mst.getMinimumSpanningTreeWeight()
-                            + separator + "Ребра остова:" + separator);
+                            + SEPARATOR + "Вес остова: " + mst.getMinimumSpanningTreeWeight()
+                            + SEPARATOR + "Ребра остова:" + SEPARATOR);
                     //--------------------------------------------
                     final Collection<Edge2D> tree = mst.getMinimumSpanningTreeEdges();
                     for (Edge2D e : tree) {
-                        result.append(e.print()).append(separator);
+                        result.append(e.print()).append(SEPARATOR);
                     }
                     //--------------------------------------------------
                     createResultFrame(component, result.toString());
@@ -1172,22 +1171,22 @@ public class JGraphFrame extends JFrame {
      */
     private Pair<String, String> createAllSptDecision(AllPairsShortestPaths<Vertex, Edge2D> allSpt) {
         StringBuilder dist
-                = new StringBuilder("Кратчайшие расстояния между вершинами:" + separator);
+                = new StringBuilder("Кратчайшие расстояния между вершинами:" + SEPARATOR);
         StringBuilder paths
-                = new StringBuilder("Структуры путей:" + separator);
+                = new StringBuilder("Структуры путей:" + SEPARATOR);
         for (Vertex u : graph()) {
             for (Vertex v : graph()) {
                 if (allSpt.isPath(u, v)) {
                     dist.append("w[p(").append(u).append(",")
                             .append(v).append(")] = ").append(allSpt.getDistance(u, v))
-                            .append(separator);
+                            .append(SEPARATOR);
                     paths.append("p(").append(u).append(",").append(v)
-                            .append(") = ").append(allSpt.getPath(u, v)).append(separator);
+                            .append(") = ").append(allSpt.getPath(u, v)).append(SEPARATOR);
                 } else {
                     dist.append("Пути из ").append(u).append(" в ").append(v)
-                            .append(" не существует!").append(separator);
+                            .append(" не существует!").append(SEPARATOR);
                     paths.append("Пути из ").append(u).append(" в ").append(v)
-                            .append(" не существует!").append(separator);
+                            .append(" не существует!").append(SEPARATOR);
                 }
             }
         }
@@ -1262,13 +1261,13 @@ public class JGraphFrame extends JFrame {
                 TransitiveClosure<Vertex, Edge2D> tc
                         = new TransitiveClosure<>(graph());
                 StringBuilder result
-                        = new StringBuilder("Результаты транзитивного замыкания:" + separator);
+                        = new StringBuilder("Результаты транзитивного замыкания:" + SEPARATOR);
                 for (Vertex u : graph()) {
                     for (Vertex v : graph()) {
                         String isPath = tc.isPath(u, v)
                                 ? " существует!" : " не существует!";
                         result.append("Путь из ").append(u).append(" в ")
-                                .append(v).append(isPath).append(separator);
+                                .append(v).append(isPath).append(SEPARATOR);
                     }
                 }
                 //------------------------------------------
@@ -1294,7 +1293,7 @@ public class JGraphFrame extends JFrame {
                     FloydWarshallAllPairsShortestPaths<Vertex, Edge2D> allSpt
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
                     if (allSpt.decision()) {
-                        String result = "Радиус графа:" + separator + "r(G) = "
+                        String result = "Радиус графа:" + SEPARATOR + "r(G) = "
                                 + GraphMetricProperties.radius(allSpt);
                         createResultFrame(graphRadiusMenu, result);
                     } else {
@@ -1319,7 +1318,7 @@ public class JGraphFrame extends JFrame {
                     FloydWarshallAllPairsShortestPaths<Vertex, Edge2D> allSpt
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
                     if (allSpt.decision()) {
-                        String result = "Диаметр графа:" + separator + "d(G) = "
+                        String result = "Диаметр графа:" + SEPARATOR + "d(G) = "
                                 + GraphMetricProperties.diametr(allSpt);
                         createResultFrame(graphDiametrMenu, result);
                     } else {
@@ -1353,7 +1352,7 @@ public class JGraphFrame extends JFrame {
                         return;
                     }
                     if (!NumberParser.isNegativeWeights(graph())) {
-                        String result = "Эксцентриситет вершины:" + separator
+                        String result = "Эксцентриситет вершины:" + SEPARATOR
                                 + "e(" + s + ") = "
                                 + GraphMetricProperties.eccentricity(
                                         new DijkstraShortestPaths<>(graph(), s));
@@ -1485,7 +1484,7 @@ public class JGraphFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 searchTour(TourType.euler_tour, eulerTourMenu,
-                        "Структура Эйлерова цикла:" + separator, "Эйлерова цикла не существует!");
+                        "Структура Эйлерова цикла:" + SEPARATOR, "Эйлерова цикла не существует!");
             }
         });
     }
@@ -1500,7 +1499,7 @@ public class JGraphFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 searchTour(TourType.gamilton_tour, gamiltonTourMenu,
-                        "Структура Гамильтонова цикла:" + separator, "Гамильтонова цикла не существует!");
+                        "Структура Гамильтонова цикла:" + SEPARATOR, "Гамильтонова цикла не существует!");
             }
         });
     }
@@ -1598,21 +1597,21 @@ public class JGraphFrame extends JFrame {
      */
     private Pair<String, String> createSptDecision(GraphPaths<Vertex> spt) {
         StringBuilder dist
-                = new StringBuilder("Кратчайшие расстояния между вершинами:" + separator);
+                = new StringBuilder("Кратчайшие расстояния между вершинами:" + SEPARATOR);
         StringBuilder paths
-                = new StringBuilder("Структуры путей:" + separator);
+                = new StringBuilder("Структуры путей:" + SEPARATOR);
         for (Vertex v : graph()) {
             if (spt.isPath(v)) {
                 dist.append("w[p(").append(spt.getSource()).append(",")
                         .append(v).append(")] = ").append(spt.getDistance(v))
-                        .append(separator);
+                        .append(SEPARATOR);
                 paths.append("p(").append(spt.getSource()).append(",")
-                        .append(v).append(") = ").append(spt.getPath(v)).append(separator);
+                        .append(v).append(") = ").append(spt.getPath(v)).append(SEPARATOR);
             } else {
                 dist.append("Пути из ").append(spt.getSource()).append(" в ")
-                        .append(v).append(" не существует!").append(separator);
+                        .append(v).append(" не существует!").append(SEPARATOR);
                 paths.append("Пути из ").append(spt.getSource()).append(" в ")
-                        .append(v).append(" не существует!").append(separator);
+                        .append(v).append(" не существует!").append(SEPARATOR);
             }
         }
         return new Pair<>(dist.toString(), paths.toString());
@@ -1766,16 +1765,16 @@ public class JGraphFrame extends JFrame {
                 DepthFirstSearch<Vertex> dfs
                         = new DepthFirstSearch<>(graph());
 
-                StringBuilder paths = new StringBuilder("Структуры путей:" + separator);
-                StringBuilder discovery = new StringBuilder("Метки обнаружения" + separator);
-                StringBuilder finishing = new StringBuilder("Метки завершения:" + separator);
+                StringBuilder paths = new StringBuilder("Структуры путей:" + SEPARATOR);
+                StringBuilder discovery = new StringBuilder("Метки обнаружения" + SEPARATOR);
+                StringBuilder finishing = new StringBuilder("Метки завершения:" + SEPARATOR);
                 for (Vertex v : graph()) {
                     paths.append("p[").append(v).append("] = ")
-                            .append(dfs.getPath(v)).append(separator);
+                            .append(dfs.getPath(v)).append(SEPARATOR);
                     discovery.append("d[").append(v).append("] = ")
-                            .append(dfs.discoveryTime(v)).append(separator);
+                            .append(dfs.discoveryTime(v)).append(SEPARATOR);
                     finishing.append("f[").append(v).append("] = ")
-                            .append(dfs.finishingTime(v)).append(separator);
+                            .append(dfs.finishingTime(v)).append(SEPARATOR);
                 }
                 //--------------------------------------------
                 DFSResultsFrame resultFrame
@@ -1808,8 +1807,8 @@ public class JGraphFrame extends JFrame {
                     }
                     AllPathsSearch<Vertex> allPaths = new AllPathsSearch<Vertex>(graph(), u, v);
                     StringBuilder result
-                            = new StringBuilder("Количество путей: " + allPaths.size() + separator
-                                    + "Структуры путей:" + separator);
+                            = new StringBuilder("Количество путей: " + allPaths.size() + SEPARATOR
+                                    + "Структуры путей:" + SEPARATOR);
                     result.append(allPaths);
                     createResultFrame(allPathsMenu, result.toString());
                 }
@@ -1843,8 +1842,8 @@ public class JGraphFrame extends JFrame {
                                 = new MinimumSpanningTreeClustering(n, distances);
                         StringBuilder result
                                 = new StringBuilder("Количество кластеров: " + clustering.clustersSize()
-                                        + separator
-                                        + "Структуры кластеров:" + separator);
+                                        + SEPARATOR
+                                        + "Структуры кластеров:" + SEPARATOR);
                         result.append(clustering);
                         createResultFrame(mstClusteringMenu, result.toString());
                     } catch (InternalError | IllegalArgumentException e) {
