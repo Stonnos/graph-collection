@@ -19,6 +19,7 @@ import java.awt.geom.Line2D;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -27,6 +28,8 @@ import java.util.Random;
  */
 public class JGraphDrawer extends JPanel {
 
+    public static final int MAX_VERTEX_COUNT = 40;
+    private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
     private Graph<Vertex, Edge2D> graph; //граф
     private GraphView graphView;
     private Map<String, Vertex> vertexMap = new HashMap<>(); //словарь имен вершин
@@ -38,7 +41,8 @@ public class JGraphDrawer extends JPanel {
     private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private int dwidth, dheight; //вспомогательные поля для хранения предыдущего размера окна
-    public static final int maxCount = 40;
+    private final PopupFactory popupFactory = new PopupFactory();
+    private EdgeWeightPopup edgeWeightPopup;
 
     public JGraphDrawer() {
         this(GraphView.Hash_Set_Graph, false, 0, 0);
@@ -209,10 +213,9 @@ public class JGraphDrawer extends JPanel {
     }
 
     private void fillGraph(Graph<Vertex, Edge2D> g) {
-        if (g.verticesNum() > maxCount) {
+        if (g.verticesNum() > MAX_VERTEX_COUNT) {
             g.clear();
-            throw new IllegalArgumentException("Количество вершин не должно превышать "
-                    + String.valueOf(maxCount));
+            throw new IllegalArgumentException("Количество вершин не должно превышать " + MAX_VERTEX_COUNT);
         }
         clear();
         graph = g;
@@ -233,18 +236,14 @@ public class JGraphDrawer extends JPanel {
     }
 
     private void checkVertexCount(int V) {
-        if (V > maxCount) {
-            throw new IllegalArgumentException("Количество вершин не должно превышать "
-                    + String.valueOf(maxCount));
+        if (V > MAX_VERTEX_COUNT) {
+            throw new IllegalArgumentException("Количество вершин не должно превышать " + MAX_VERTEX_COUNT);
         }
     }
 
-    /**
-     *
-     */
     private class VertexDrawer implements Runnable {
         private final Vertex v;
-        private static final int flashCount = 6;
+        private static final int FLASH_COUNT = 6;
         private final Thread thr;
 
         public VertexDrawer(Vertex v) {
@@ -259,7 +258,7 @@ public class JGraphDrawer extends JPanel {
                 setStrokeForVertex(g);
                 setFont(g, (int) v.getWidth() / 2);
                 double x = v.getX(), y = v.getY(), r = v.getWidth();
-                for (int i = flashCount; i >= 1; i--) {
+                for (int i = FLASH_COUNT; i >= 1; i--) {
                     v.ellipse.setFrame(x - r / (2 * i), y - r / (2 * i),
                             r / i, r / i);
                     g.clearRect((int) v.getX(), (int) v.getY(),
@@ -343,7 +342,7 @@ public class JGraphDrawer extends JPanel {
             @Override
             public void mouseClicked(MouseEvent me) {
                 if (me.getButton() == MouseEvent.BUTTON1) {
-                    if (graph.verticesNum() == maxCount) {
+                    if (graph.verticesNum() == MAX_VERTEX_COUNT) {
                         JOptionPane.showMessageDialog(JGraphDrawer.this,
                                 "Добавлять вершины больше нельзя!",
                                 "Добавление вершины", JOptionPane.WARNING_MESSAGE);
@@ -656,6 +655,7 @@ public class JGraphDrawer extends JPanel {
             @Override
             public void mouseClicked(MouseEvent me) {
                 if (me.getButton() == MouseEvent.BUTTON1) {
+                    Optional.ofNullable(edgeWeightPopup).ifPresent(EdgeWeightPopup::hide);
                     Vertex z = searchVertex(me.getX(), me.getY());
                     if (z != null) {
                         if (u == null) {
@@ -667,11 +667,12 @@ public class JGraphDrawer extends JPanel {
                         } else {
                             Edge2D e = graph.edge(u, z);
                             if (e == null) {
-                                JOptionPane.showMessageDialog(JGraphDrawer.this, "Ребра не существует!",
-                                        "Изменение веса ребра", JOptionPane.WARNING_MESSAGE);
+                                //JOptionPane.showMessageDialog(JGraphDrawer.this, "Ребра не существует!",
+                                //        "Изменение веса ребра", JOptionPane.WARNING_MESSAGE);
+                                return;
                             } else {
                                 //--------------------------------------------
-                                String strWeight = (String) JOptionPane.showInputDialog(JGraphDrawer.this,
+                                /*String strWeight = (String) JOptionPane.showInputDialog(JGraphDrawer.this,
                                         "Введите вес:",
                                         "Изменение веса ребра", JOptionPane.INFORMATION_MESSAGE, null,
                                         null, e.getWeight());
@@ -684,8 +685,11 @@ public class JGraphDrawer extends JPanel {
                                     } else {
                                         e.setWeight(newWeight);
                                     }
-                                }
-                                //---------------------------------------------
+                                }(/
+
+                                 */
+                                edgeWeightPopup = new EdgeWeightPopup(e);
+                                edgeWeightPopup.show();
                             }
                             u.borderColor = Color.BLACK;
                             u = null;
@@ -818,5 +822,63 @@ public class JGraphDrawer extends JPanel {
         }
         drawGraph(g2d);
     }
+
+    private class EdgeWeightPopup {
+
+        Edge2D edge2D;
+        Popup popup;
+        JTextField edgeWeightText;
+
+        EdgeWeightPopup(Edge2D edge2D) {
+            this.edge2D = edge2D;
+        }
+
+        void show() {
+            JPanel infoPanel = createNeuronInfoPanel();
+            double r = Math.sqrt(Math.pow(edge2D.target().getCenterX() - edge2D.source().getCenterX(), 2)
+                    + Math.pow(edge2D.target().getCenterY() - edge2D.source().getCenterY(), 2));
+            double vx = (edge2D.target().getCenterX() - edge2D.source().getCenterX()) / r; //нормировка вектора
+            double vy = (edge2D.target().getCenterY() - edge2D.source().getCenterY()) / r; //нормировка вектора
+            double x = edge2D.target().getCenterX() - r * vx / 3;  //вычисление коорд. x точки, лежащей на дуге
+            double y = edge2D.target().getCenterY() - r * vy / 3 - 15;
+            Point point = new Point((int) x, (int) y);
+            SwingUtilities.convertPointToScreen(point, JGraphDrawer.this);
+            this.popup = popupFactory.getPopup(JGraphDrawer.this, infoPanel,
+                    (int) point.getX(), (int) point.getY());
+            popup.show();
+            edgeWeightText.requestFocusInWindow();
+        }
+
+        void hide() {
+            updatedWeight();
+            Optional.ofNullable(popup).ifPresent(Popup::hide);
+        }
+
+        JPanel createNeuronInfoPanel() {
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            infoPanel.setBackground(Color.WHITE);
+            edgeWeightText = new JTextField(2);
+            edgeWeightText.setBackground(Color.WHITE);
+            edgeWeightText.setDocument(new DoubleDocument(EDGE_WEIGHT_TEXT_LENGTH));
+            if (edge2D.getWeight() != null) {
+                edgeWeightText.setText(String.valueOf(edge2D.getWeight()));
+            }
+            edgeWeightText.addActionListener(e -> {
+                hide();
+            });
+            infoPanel.add(edgeWeightText, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
+            return infoPanel;
+        }
+
+        void updatedWeight() {
+            if (edgeWeightText.getText() != null && !edgeWeightText.getText().isEmpty()) {
+                Number newWeight = NumberParser.parse(edgeWeightText.getText());
+                edge2D.setWeight(newWeight);
+            }
+        }
+    }
+
 
 }
