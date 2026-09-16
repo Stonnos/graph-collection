@@ -33,6 +33,7 @@ import graphcollection.algorithms.trees.PrimMinimumSpanningTree;
 import graphcollection.graph.Graph;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import lombok.Setter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -49,7 +50,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.TimerTask;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  *
@@ -94,6 +98,8 @@ public class JGraphFrame extends JFrame {
         private final Collection<Vertex> path;
         private Iterator<Vertex> vertex;
         private Vertex s;
+        @Setter
+        private ActionListener finishListener;
 
         public PathDrawer(Collection<Vertex> path) {
             this.path = path;
@@ -109,14 +115,16 @@ public class JGraphFrame extends JFrame {
                 e.dimension = 3;
                 s = v;
                 graphPanel.repaint();
-            } else {
-                timer.cancel();
-                JGraphFrame.this.setEnabled(true);
+                if (!vertex.hasNext())  {
+                    timer.cancel();
+                    Optional.ofNullable(finishListener).ifPresent(
+                            actionListener ->
+                                    actionListener.actionPerformed(new ActionEvent(this, 0, EMPTY)));
+                }
             }
         }
 
         public void start() {
-            JGraphFrame.this.setEnabled(false);
             vertex = path.iterator();
             s = vertex.next();
             s.borderColor = Color.RED;
@@ -1003,35 +1011,41 @@ public class JGraphFrame extends JFrame {
     }
 
     private void showAllPaths(final AllPairsShortestPaths<Vertex, Edge2D> allSpt) {
-        //--------------------------------------------------         
-        JComboBox<String> source = new JComboBox<String>();
-        JComboBox<String> target = new JComboBox<String>();
+        JComboBox<String> source = new JComboBox<>();
+        JComboBox<String> target = new JComboBox<>();
         for (Vertex u : graph()) {
             source.addItem(u.toString());
             target.addItem(u.toString());
         }
-        //-------------------------------------------
         JButton showPath = new JButton("Показать");
-        showPath.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                Vertex u = graphPanel.vertex((String) source.getSelectedItem());
-                Vertex v = graphPanel.vertex((String) target.getSelectedItem());
-                if (allSpt.isPath(u, v)) {
-                    setDefaultColorForEdges();
-                    setDefaultColorForVerticesBorders();
-                    graphPanel.repaint();
-                    PathDrawer drawer = new PathDrawer(allSpt.getPath(u, v));
-                    drawer.start();
-                } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Пути из '" + u + "' в '"
-                                    + v + "' не существует!",
-                            null, JOptionPane.WARNING_MESSAGE);
-                }
+        JButton exit = new JButton("Выход");
+        showPath.addActionListener(evt -> {
+            Vertex u = graphPanel.vertex((String) source.getSelectedItem());
+            Vertex v = graphPanel.vertex((String) target.getSelectedItem());
+            if (allSpt.isPath(u, v)) {
+                setDefaultColorForEdges();
+                setDefaultColorForVerticesBorders();
+                showPath.setEnabled(false);
+                source.setEnabled(false);
+                target.setEnabled(false);
+                exit.setEnabled(false);
+                graphPanel.repaint();
+                PathDrawer drawer = new PathDrawer(allSpt.getPath(u, v));
+                drawer.setFinishListener(e -> {
+                    showPath.setEnabled(true);
+                    source.setEnabled(true);
+                    target.setEnabled(true);
+                    exit.setEnabled(true);
+                });
+                drawer.start();
+            } else {
+                JOptionPane.showMessageDialog(JGraphFrame.this,
+                        "Пути из '" + u + "' в '"
+                                + v + "' не существует!",
+                        null, JOptionPane.WARNING_MESSAGE);
             }
         });
-        addSptComponents(source, target, showPath);
+        addSptComponents(source, target, showPath, exit);
     }
 
     private void showAllSpt(final AllPairsShortestPaths<Vertex, Edge2D> allSpt, String title, JMenuItem item) {
@@ -1164,7 +1178,6 @@ public class JGraphFrame extends JFrame {
                                 null, JOptionPane.WARNING_MESSAGE);
                     }
                 }
-                //------------------------------------------
             }
         });
     }
@@ -1240,22 +1253,20 @@ public class JGraphFrame extends JFrame {
                 new Insets(2, 0, 2, 0), 0, 0));
         algorithmsStepPanel.revalidate();
 
-        showTour.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                setDefaultColorForEdges();
-                setDefaultColorForVerticesBorders();
-                graphPanel.repaint();
-                PathDrawer drawer = new PathDrawer(tour);
-                drawer.start();
-            }
+        showTour.addActionListener(evt -> {
+            setDefaultColorForEdges();
+            setDefaultColorForVerticesBorders();
+            showTour.setEnabled(false);
+            exit.setEnabled(false);
+            graphPanel.repaint();
+            PathDrawer drawer = new PathDrawer(tour);
+            drawer.setFinishListener(e -> {
+                showTour.setEnabled(true);
+                exit.setEnabled(true);
+            });
+            drawer.start();
         });
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                clearGraphPanel();
-            }
-        });
+        exit.addActionListener(evt -> clearGraphPanel());
     }
 
     private void eulerTour() {
@@ -1282,11 +1293,12 @@ public class JGraphFrame extends JFrame {
         });
     }
 
-    private void addSptComponents(JComboBox<String> source, JComboBox<String> target,
-                                  JButton showPath) {
+    private void addSptComponents(JComboBox<String> source,
+                                  JComboBox<String> target,
+                                  JButton showPath,
+                                  JButton exit) {
         setEnabledForOperations(false);
         JLabel txt = new JLabel("Кратчайший путь:");
-        JButton exit = new JButton("Выход");
 
         algorithmsStepPanel.removeAll();
         algorithmsStepPanel.add(txt, new GridBagConstraints(0, 0, 4, 1, 1, 0,
@@ -1314,58 +1326,46 @@ public class JGraphFrame extends JFrame {
                 new Insets(2, 0, 2, 0), 0, 0));
         algorithmsStepPanel.revalidate();
 
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                clearGraphPanel();
-            }
-        });
+        exit.addActionListener(evt -> clearGraphPanel());
     }
 
-    /**
-     *
-     * @param spt
-     */
     private void showPaths(final GraphPaths<Vertex> spt) {
-        //--------------------------------------------------
-        //------------------------------------------
         JComboBox<String> source = new JComboBox<String>();
         source.addItem(spt.getSource().toString());
         JComboBox<String> target = new JComboBox<String>();
         for (Vertex u : graph()) {
             target.addItem(u.toString());
         }
-        //-------------------------------------------
         JButton showPath = new JButton("Показать");
-        showPath.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                Vertex u = graphPanel.vertex((String) target.getSelectedItem());
-                if (spt.isPath(u)) {
-                    setDefaultColorForEdges();
-                    setDefaultColorForVerticesBorders();
-                    graphPanel.repaint();
-                    PathDrawer drawer = new PathDrawer(spt.getPath(u));
-                    drawer.start();
-                } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Пути из '" + spt.getSource() + "' в '"
-                                    + u + "' не существует!",
-                            null, JOptionPane.WARNING_MESSAGE);
-                }
+        JButton exit = new JButton("Выход");
+        showPath.addActionListener(evt -> {
+            Vertex u = graphPanel.vertex((String) target.getSelectedItem());
+            if (spt.isPath(u)) {
+                setDefaultColorForEdges();
+                setDefaultColorForVerticesBorders();
+                showPath.setEnabled(false);
+                source.setEnabled(false);
+                target.setEnabled(false);
+                exit.setEnabled(false);
+                graphPanel.repaint();
+                PathDrawer drawer = new PathDrawer(spt.getPath(u));
+                drawer.setFinishListener(e -> {
+                    showPath.setEnabled(true);
+                    source.setEnabled(true);
+                    target.setEnabled(true);
+                    exit.setEnabled(true);
+                });
+                drawer.start();
+            } else {
+                JOptionPane.showMessageDialog(JGraphFrame.this,
+                        "Пути из '" + spt.getSource() + "' в '"
+                                + u + "' не существует!",
+                        null, JOptionPane.WARNING_MESSAGE);
             }
         });
-        //----------------------------------------------
-        addSptComponents(source, target, showPath);
-        //--------------------------------------------------------------
-
+        addSptComponents(source, target, showPath, exit);
     }
 
-    /**
-     *
-     * @param spt
-     * @return
-     */
     private Pair<String, String> createSptDecision(GraphPaths<Vertex> spt) {
         StringBuilder dist
                 = new StringBuilder("Кратчайшие расстояния между вершинами:" + SEPARATOR);
@@ -1433,12 +1433,6 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    /**
-     *
-     * @param spt
-     * @param title
-     * @param error
-     */
     private void sptSearch(ShortestPaths<Vertex, Edge2D> spt, Component component,
                            String title, String error) {
         if (spt.decision()) {
