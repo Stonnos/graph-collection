@@ -115,7 +115,7 @@ public class JGraphFrame extends JFrame {
                 e.dimension = 3;
                 s = v;
                 graphPanel.repaint();
-                if (!vertex.hasNext())  {
+                if (!vertex.hasNext()) {
                     timer.cancel();
                     Optional.ofNullable(finishListener).ifPresent(
                             actionListener ->
@@ -281,7 +281,7 @@ public class JGraphFrame extends JFrame {
         menu.add(algoritmsMenu);
         menu.add(optionMenu);
         menu.add(referenceMenu);
-        //-----------------------------------------------
+
         JMenu create = new JMenu("Создать граф");
         JMenuItem generate = new JMenuItem("Создать случайный граф");
         JMenuItem open = new JMenuItem("Загрузить из файла");
@@ -297,7 +297,7 @@ public class JGraphFrame extends JFrame {
         graphMenu.add(save);
         graphMenu.add(saveImage);
         graphMenu.addSeparator();
-        //-----------------------------------------------
+
         open.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -316,7 +316,7 @@ public class JGraphFrame extends JFrame {
                 }
             }
         });
-        //---------------------------------------------------------
+
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -334,7 +334,7 @@ public class JGraphFrame extends JFrame {
                 }
             }
         });
-        //---------------------------------------------------------
+
         saveImage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -352,7 +352,7 @@ public class JGraphFrame extends JFrame {
                 }
             }
         });
-        //-----------------------------------------------
+
         generate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -379,7 +379,7 @@ public class JGraphFrame extends JFrame {
                 dialog.dispose();
             }
         });
-        //-----------------------------------------------
+
         JMenu directedGraph = new JMenu("Ориентированный");
         JMenu undirectedGraph = new JMenu("Неориентированный");
         create.add(directedGraph);
@@ -414,7 +414,7 @@ public class JGraphFrame extends JFrame {
         );
         directedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, true)
         );
-        //-------------------------------------------------
+
         undirectedMatrixGraph.addActionListener(evt -> createGraph(GraphView.MATRIX_GRAPH, false)
         );
         undirectedHashSGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, false)
@@ -425,17 +425,17 @@ public class JGraphFrame extends JFrame {
         );
         undirectedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, false)
         );
-        //-----------------------------------------------
+
         directedGraphAlgorithms = new JMenu("Алгоритмы для ориентированных графов");
         undirectedGraphAlgorithms = new JMenu("Алгоритмы для неориентированных графов");
         algoritmsMenu.add(directedGraphAlgorithms);
         algoritmsMenu.add(undirectedGraphAlgorithms);
-        //------------------------------------------------
+
         JMenuItem reference = new JMenuItem("Посмотреть справку");
         JMenuItem aboutProgrammMenu = new JMenuItem("О программе");
         referenceMenu.add(reference);
         referenceMenu.add(aboutProgrammMenu);
-        //------------------------------------------------
+
         aboutProgrammMenu.addActionListener(evt -> {
                     ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
                     frame.setVisible(true);
@@ -447,10 +447,10 @@ public class JGraphFrame extends JFrame {
                     frame.setVisible(true);
                 }
         );
-        //------------------------------------------
+
         JMenuItem animationMenu = new JMenuItem("Cкорость анимации");
         optionMenu.add(animationMenu);
-        //------------------------------------------
+
         animationMenu.addActionListener(evt -> {
                     OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
                     option.setVisible(true);
@@ -635,7 +635,7 @@ public class JGraphFrame extends JFrame {
                             "Типа представления:", "Преобразование графа",
                             JOptionPane.INFORMATION_MESSAGE, null, items,
                             graphPanel.graphView().getText());
-                    //--------------------------------------------
+
                     for (GraphView newView : GraphView.values()) {
                         if (newView.getText().equals(result)) {
                             graphPanel.transform(newView);
@@ -669,7 +669,7 @@ public class JGraphFrame extends JFrame {
         commentTxt.setForeground(Color.BLUE);
         commentTxt.setWrapStyleWord(true);
         commentTxt.setLineWrap(true);
-        //-------------------------------------
+
         commentScrollPanel = new JScrollPane(commentTxt);
         commentScrollPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
@@ -750,12 +750,9 @@ public class JGraphFrame extends JFrame {
         graphPanel.setVertexErrorListener(e -> {
             setEnabledForOperations(!Boolean.parseBoolean(e.getActionCommand()));
         });
-        graphPanel.setUpdateGraphListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                vertexNumText.setText(String.valueOf(graph().verticesNum()));
-                edgeNumText.setText(String.valueOf(graph().edgesNum()));
-            }
+        graphPanel.setUpdateGraphListener(e -> {
+            vertexNumText.setText(String.valueOf(graph().verticesNum()));
+            edgeNumText.setText(String.valueOf(graph().edgesNum()));
         });
     }
 
@@ -772,28 +769,22 @@ public class JGraphFrame extends JFrame {
                 new Insets(2, 0, 2, 0), 0, 0));
         algorithmsStepPanel.revalidate();
 
-        showTree.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                for (Edge2D e : tree) {
-                    e.color = Color.GREEN;
-                    e.dimension = 3;
-                }
-                graphPanel.repaint();
+        showTree.addActionListener(evt -> {
+            for (Edge2D e : tree) {
+                e.color = Color.GREEN;
+                e.dimension = 3;
             }
+            graphPanel.repaint();
         });
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                for (Edge2D e : tree) {
-                    e.color = Edge2D.DARK_GRAY;
-                    e.dimension = Edge2D.default_dimension;
-                }
-                graphPanel.repaint();
-                algorithmsStepPanel.removeAll();
-                algorithmsStepPanel.repaint();
-                setEnabledForOperations(true);
+        exit.addActionListener(evt -> {
+            for (Edge2D e : tree) {
+                e.color = Edge2D.DARK_GRAY;
+                e.dimension = Edge2D.default_dimension;
             }
+            graphPanel.repaint();
+            algorithmsStepPanel.removeAll();
+            algorithmsStepPanel.repaint();
+            setEnabledForOperations(true);
         });
     }
 
@@ -801,43 +792,40 @@ public class JGraphFrame extends JFrame {
         JMenuItem bridgesSearchMenu = new JMenuItem("Поиск всех мостов");
         undirectedGraphAlgorithms.add(bridgesSearchMenu);
         bridgesSearchMenu.addActionListener(evt -> {
-            BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
-            if (bs.connected()) {
-                StringBuilder result
-                        = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
-                        + SEPARATOR + "Ребра мосты: " + SEPARATOR);
-                for (Edge2D e : bs.bridges()) {
-                    result.append(e.print()).append(SEPARATOR);
+                    BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
+                    if (bs.connected()) {
+                        StringBuilder result
+                                = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
+                                + SEPARATOR + "Ребра мосты: " + SEPARATOR);
+                        for (Edge2D e : bs.bridges()) {
+                            result.append(e.print()).append(SEPARATOR);
+                        }
+                        createResultFrame(bridgesSearchMenu, result.toString());
+                        showEdges(bs.bridges(), "Отобразить мосты");
+                    } else {
+                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
+                                null, JOptionPane.WARNING_MESSAGE);
+                    }
                 }
-                createResultFrame(bridgesSearchMenu, result.toString());
-                showEdges(bs.bridges(), "Отобразить мосты");
-            } else {
-                JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
-                        null, JOptionPane.WARNING_MESSAGE);
-            }
-        }
         );
     }
 
     private void topologicalSort() {
         JMenuItem topoSortMenu = new JMenuItem("Топологическая сортировка");
         directedGraphAlgorithms.add(topoSortMenu);
-        topoSortMenu.addActionListener(new ActionListener() {
-                                           @Override
-                                           public void actionPerformed(ActionEvent evt) {
-                                               TopologicalSort<Vertex> topoSort = new TopologicalSort<>(graph());
-                                               if (topoSort.acyclic()) {
-                                                   StringBuilder result
-                                                           = new StringBuilder("Последовательность вершин топологической сортировки:"
-                                                           + SEPARATOR);
-                                                   result.append(topoSort.sequence());
-                                                   createResultFrame(topoSortMenu, result.toString());
-                                               } else {
-                                                   JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть ациклическим!",
-                                                           null, JOptionPane.WARNING_MESSAGE);
-                                               }
-                                           }
-                                       }
+        topoSortMenu.addActionListener(evt -> {
+                    TopologicalSort<Vertex> topoSort = new TopologicalSort<>(graph());
+                    if (topoSort.acyclic()) {
+                        StringBuilder result
+                                = new StringBuilder("Последовательность вершин топологической сортировки:"
+                                + SEPARATOR);
+                        result.append(topoSort.sequence());
+                        createResultFrame(topoSortMenu, result.toString());
+                    } else {
+                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть ациклическим!",
+                                null, JOptionPane.WARNING_MESSAGE);
+                    }
+                }
         );
     }
 
@@ -848,24 +836,20 @@ public class JGraphFrame extends JFrame {
                 + connComp.componentsNum() + SEPARATOR
                 + "Связные компонеты графа:" + SEPARATOR);
         result.append(connComp);
-        //--------------------------------------------------------
         createResultFrame(component, result.toString());
     }
 
-    /**
-     *
-     */
     private void connectedComponents() {
         JMenuItem connectedComponentsMenu = new JMenuItem("Связные компоненты");
         JMenuItem stronglyConnectedComponentsMenu
                 = new JMenuItem("Сильно связные компоненты");
         undirectedGraphAlgorithms.add(connectedComponentsMenu);
         directedGraphAlgorithms.add(stronglyConnectedComponentsMenu);
-        connectedComponentsMenu.addActionListener(evt -> showConnectedComponents(new ConnectedComponents<>(graph()),
-                connectedComponentsMenu)
+        connectedComponentsMenu.addActionListener(evt ->
+                showConnectedComponents(new ConnectedComponents<>(graph()), connectedComponentsMenu)
         );
-        stronglyConnectedComponentsMenu.addActionListener(evt -> showConnectedComponents(new StronglyConnectedComponents<>(graph()),
-                stronglyConnectedComponentsMenu)
+        stronglyConnectedComponentsMenu.addActionListener(evt ->
+                showConnectedComponents(new StronglyConnectedComponents<>(graph()), stronglyConnectedComponentsMenu)
         );
     }
 
@@ -883,32 +867,28 @@ public class JGraphFrame extends JFrame {
         if (connComp.connected()) {
             if (!NumberParser.isNegativeWeights(graph())) {
                 MinimumSpanningTree<Edge2D> mst = null;
-                //--------------------------------------------
                 switch (type) {
                     case Prim:
                         mst
-                                = new PrimMinimumSpanningTree<Vertex, Edge2D>(graph(),
+                                = new PrimMinimumSpanningTree<>(graph(),
                                 firstVertex());
                         break;
 
                     case Kruskal:
                         mst
-                                = new KruskalMinimumSpanningTree<Vertex, Edge2D>(graph());
+                                = new KruskalMinimumSpanningTree<>(graph());
                         break;
                 }
                 if (mst != null) {
                     StringBuilder result = new StringBuilder(title
                             + SEPARATOR + "Вес остова: " + mst.getMinimumSpanningTreeWeight()
                             + SEPARATOR + "Ребра остова:" + SEPARATOR);
-                    //--------------------------------------------
                     final Collection<Edge2D> tree = mst.getMinimumSpanningTreeEdges();
                     for (Edge2D e : tree) {
                         result.append(e.print()).append(SEPARATOR);
                     }
-                    //--------------------------------------------------
                     createResultFrame(component, result.toString());
                     showEdges(tree, "Отобразить дерево");
-                    //-------------------------------------------
                 }
             } else {
                 JOptionPane.showMessageDialog(JGraphFrame.this,
@@ -929,19 +909,11 @@ public class JGraphFrame extends JFrame {
         mstMenu.add(primMstMenu);
         mstMenu.add(kruskalMstMenu);
         undirectedGraphAlgorithms.add(mstMenu);
-        primMstMenu.addActionListener(new ActionListener() {
-                                          @Override
-                                          public void actionPerformed(ActionEvent evt) {
-                                              createMst(MstType.Prim, primMstMenu, "Результаты алгоритма Прима:");
-                                          }
-                                      }
+        primMstMenu.addActionListener(evt ->
+                createMst(MstType.Prim, primMstMenu, "Результаты алгоритма Прима:")
         );
-        kruskalMstMenu.addActionListener(new ActionListener() {
-                                             @Override
-                                             public void actionPerformed(ActionEvent evt) {
-                                                 createMst(MstType.Kruskal, kruskalMstMenu, "Результаты алгоритма Крускала:");
-                                             }
-                                         }
+        kruskalMstMenu.addActionListener(
+                evt -> createMst(MstType.Kruskal, kruskalMstMenu, "Результаты алгоритма Крускала:")
         );
     }
 
@@ -964,10 +936,8 @@ public class JGraphFrame extends JFrame {
                             "Не все веса ребер заданы!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
-                //------------------------------------------------
             }
         });
-        //--------------------------------------------------------
         allSptMenuFloydWarshall.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -980,7 +950,6 @@ public class JGraphFrame extends JFrame {
                             "Не все веса ребер заданы!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
-                //--------------------------------------------------------
             }
         });
 
@@ -1085,7 +1054,6 @@ public class JGraphFrame extends JFrame {
                                 .append(v).append(isPath).append(SEPARATOR);
                     }
                 }
-                //------------------------------------------
                 createResultFrame(transitiveClosureMenu, result.toString());
             }
         });
@@ -1121,10 +1089,8 @@ public class JGraphFrame extends JFrame {
                             "Не все веса ребер заданы!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
-                //------------------------------------------
             }
         });
-        //----------------------------------------------------
         graphDiameterMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -1146,10 +1112,8 @@ public class JGraphFrame extends JFrame {
                             "Не все веса ребер заданы!",
                             null, JOptionPane.WARNING_MESSAGE);
                 }
-                //------------------------------------------
             }
         });
-        //----------------------------------------------------
         eccentricityMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -1388,10 +1352,6 @@ public class JGraphFrame extends JFrame {
         return new Pair<>(dist.toString(), paths.toString());
     }
 
-    /**
-     *
-     * @param algorithm
-     */
     private void sptDialog(SptAlgorithm algorithm, Component component) {
 
         if (!NumberParser.isNullWeights(graph())) {
@@ -1407,7 +1367,6 @@ public class JGraphFrame extends JFrame {
                             null, JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                //-----------------------------------------------
                 switch (algorithm) {
                     case dijkstra:
                         sptSearch(new DijkstraShortestPaths<>(graph(), s),
@@ -1425,7 +1384,6 @@ public class JGraphFrame extends JFrame {
                         break;
                 }
             }
-            //----------------------------------------------------
         } else {
             JOptionPane.showMessageDialog(JGraphFrame.this,
                     "Не все веса ребер заданы!",
@@ -1449,9 +1407,6 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    /**
-     *
-     */
     private void shortestPaths() {
         JMenu sptMenu = new JMenu("Кратчайшие пути из одной вершины");
         directedGraphAlgorithms.add(sptMenu);
@@ -1461,60 +1416,40 @@ public class JGraphFrame extends JFrame {
         sptMenu.add(dijkstraSptMenu);
         sptMenu.add(bellmanFordSptMenu);
         sptMenu.add(dagSptMenu);
-        //----------------------------------------------------
-        dijkstraSptMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                sptDialog(SptAlgorithm.dijkstra, dijkstraSptMenu);
-            }
-        });
-        //----------------------------------------------------
-        bellmanFordSptMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                sptDialog(SptAlgorithm.bellman_ford, bellmanFordSptMenu);
-            }
-        });
-        //----------------------------------------------------
-        dagSptMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                sptDialog(SptAlgorithm.dag, dagSptMenu);
-            }
-        });
+
+        dijkstraSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dijkstra, dijkstraSptMenu));
+
+        bellmanFordSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.bellman_ford, bellmanFordSptMenu));
+
+        dagSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dag, dagSptMenu));
     }
 
     private void bfsVisit() {
         JMenuItem bfsMenu = new JMenuItem("Кратчайшие пути (BFS)");
         algoritmsMenu.add(bfsMenu);
-        bfsMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        bfsMenu.addActionListener(evt -> {
 
-                String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
-                        "Вершина:",
-                        "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
-                        null, null);
-                if (v != null) {
-                    Vertex s = graphPanel.vertex(v);
-                    if (s == null) {
-                        JOptionPane.showMessageDialog(JGraphFrame.this,
-                                "Такой вершины не существует!",
-                                null, JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    //---------------------------------
-                    BreadFirstSearch<Vertex> bfs
-                            = new BreadFirstSearch<>(graph(), s);
-                    Pair<String, String> result = createSptDecision(bfs);
-                    SptResultsFrame resultFrame
-                            = new SptResultsFrame(bfsMenu, "Кратчайшик пути (BFS)",
-                            result.getKey(), result.getValue());
-                    resultFrame.setVisible(true);
-                    showPaths(bfs);
-                    cancelAllOperationsWithGraph();
+            String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
+                    "Вершина:",
+                    "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
+                    null, null);
+            if (v != null) {
+                Vertex s = graphPanel.vertex(v);
+                if (s == null) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this,
+                            "Такой вершины не существует!",
+                            null, JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
-                //--------------------------------------------------               
+                BreadFirstSearch<Vertex> bfs
+                        = new BreadFirstSearch<>(graph(), s);
+                Pair<String, String> result = createSptDecision(bfs);
+                SptResultsFrame resultFrame
+                        = new SptResultsFrame(bfsMenu, "Кратчайшик пути (BFS)",
+                        result.getKey(), result.getValue());
+                resultFrame.setVisible(true);
+                showPaths(bfs);
+                cancelAllOperationsWithGraph();
             }
         });
     }
@@ -1522,105 +1457,84 @@ public class JGraphFrame extends JFrame {
     private void dfsVisit() {
         JMenuItem dfsMenu = new JMenuItem("Обход в ширину (DFS)");
         algoritmsMenu.add(dfsMenu);
-        dfsMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                //---------------------------------
-
-                DepthFirstSearch<Vertex> dfs
-                        = new DepthFirstSearch<>(graph());
-
-                StringBuilder paths = new StringBuilder("Структуры путей:" + SEPARATOR);
-                StringBuilder discovery = new StringBuilder("Метки обнаружения" + SEPARATOR);
-                StringBuilder finishing = new StringBuilder("Метки завершения:" + SEPARATOR);
-                for (Vertex v : graph()) {
-                    paths.append("p[").append(v).append("] = ")
-                            .append(dfs.getPath(v)).append(SEPARATOR);
-                    discovery.append("d[").append(v).append("] = ")
-                            .append(dfs.discoveryTime(v)).append(SEPARATOR);
-                    finishing.append("f[").append(v).append("] = ")
-                            .append(dfs.finishingTime(v)).append(SEPARATOR);
-                }
-                //--------------------------------------------
-                DFSResultsFrame resultFrame
-                        = new DFSResultsFrame(dfsMenu, paths.toString(), discovery.toString(),
-                        finishing.toString());
-                resultFrame.setVisible(true);
-                cancelAllOperationsWithGraph();
-                //--------------------------------------------------               
+        dfsMenu.addActionListener(evt -> {
+            DepthFirstSearch<Vertex> dfs = new DepthFirstSearch<>(graph());
+            StringBuilder paths = new StringBuilder("Структуры путей:" + SEPARATOR);
+            StringBuilder discovery = new StringBuilder("Метки обнаружения" + SEPARATOR);
+            StringBuilder finishing = new StringBuilder("Метки завершения:" + SEPARATOR);
+            for (Vertex v : graph()) {
+                paths.append("p[").append(v).append("] = ")
+                        .append(dfs.getPath(v)).append(SEPARATOR);
+                discovery.append("d[").append(v).append("] = ")
+                        .append(dfs.discoveryTime(v)).append(SEPARATOR);
+                finishing.append("f[").append(v).append("] = ")
+                        .append(dfs.finishingTime(v)).append(SEPARATOR);
             }
+            DFSResultsFrame resultFrame
+                    = new DFSResultsFrame(dfsMenu, paths.toString(), discovery.toString(),
+                    finishing.toString());
+            resultFrame.setVisible(true);
+            cancelAllOperationsWithGraph();
+
         });
     }
 
     private void allPathsSearch() {
         JMenuItem allPathsMenu = new JMenuItem("Поиск всех путей");
         algoritmsMenu.add(allPathsMenu);
-        allPathsMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                //---------------------------------
-                VertexInputDialog dialog = new VertexInputDialog(JGraphFrame.this);
-                dialog.setVisible(true);
-                if (dialog.dialogResult()) {
-                    Vertex u = graphPanel.vertex(dialog.source());
-                    Vertex v = graphPanel.vertex(dialog.target());
-                    if (u == null || v == null) {
-                        JOptionPane.showMessageDialog(JGraphFrame.this,
-                                "Таких вершин не существует!",
-                                null, JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    AllPathsSearch<Vertex> allPaths = new AllPathsSearch<Vertex>(graph(), u, v);
-                    StringBuilder result
-                            = new StringBuilder("Количество путей: " + allPaths.size() + SEPARATOR
-                            + "Структуры путей:" + SEPARATOR);
-                    result.append(allPaths);
-                    createResultFrame(allPathsMenu, result.toString());
+        allPathsMenu.addActionListener(evt -> {
+            VertexInputDialog dialog = new VertexInputDialog(JGraphFrame.this);
+            dialog.setVisible(true);
+            if (dialog.dialogResult()) {
+                Vertex u = graphPanel.vertex(dialog.source());
+                Vertex v = graphPanel.vertex(dialog.target());
+                if (u == null || v == null) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this,
+                            "Таких вершин не существует!",
+                            null, JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
-                dialog.dispose();
-                //--------------------------------------------------               
+                AllPathsSearch<Vertex> allPaths = new AllPathsSearch<Vertex>(graph(), u, v);
+                StringBuilder result
+                        = new StringBuilder("Количество путей: " + allPaths.size() + SEPARATOR
+                        + "Структуры путей:" + SEPARATOR);
+                result.append(allPaths);
+                createResultFrame(allPathsMenu, result.toString());
             }
+            dialog.dispose();
         });
     }
 
-    /**
-     *
-     */
     private void mstClustering() {
         JMenuItem mstClusteringMenu = new JMenuItem("Кластеризация "
                 + "(Алгоритм минимального покрывающего дерева)");
         algoritmsMenu.add(mstClusteringMenu);
-        mstClusteringMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                //---------------------------------
-                ClusteringAlgorithmInputDialog dialog
-                        = new ClusteringAlgorithmInputDialog(JGraphFrame.this);
-                dialog.setVisible(true);
-                if (dialog.dialogResult()) {
-                    int n = dialog.number();
-                    String file = dialog.matrixFile();
-                    MatrixParser parser = new MatrixParser();
-                    try {
-                        double[][] distances = parser.read(file);
-                        MinimumSpanningTreeClustering clustering
-                                = new MinimumSpanningTreeClustering(n, distances);
-                        StringBuilder result
-                                = new StringBuilder("Количество кластеров: " + clustering.clustersSize()
-                                + SEPARATOR
-                                + "Структуры кластеров:" + SEPARATOR);
-                        result.append(clustering);
-                        createResultFrame(mstClusteringMenu, result.toString());
-                    } catch (InternalError | IllegalArgumentException e) {
-                        JOptionPane.showMessageDialog(JGraphFrame.this, e,
-                                null, JOptionPane.ERROR_MESSAGE);
-                    }
+        mstClusteringMenu.addActionListener(evt -> {
+            ClusteringAlgorithmInputDialog dialog = new ClusteringAlgorithmInputDialog(JGraphFrame.this);
+            dialog.setVisible(true);
+            if (dialog.dialogResult()) {
+                int n = dialog.number();
+                String file = dialog.matrixFile();
+                MatrixParser parser = new MatrixParser();
+                try {
+                    double[][] distances = parser.read(file);
+                    MinimumSpanningTreeClustering clustering
+                            = new MinimumSpanningTreeClustering(n, distances);
+                    StringBuilder result
+                            = new StringBuilder("Количество кластеров: " + clustering.clustersSize()
+                            + SEPARATOR
+                            + "Структуры кластеров:" + SEPARATOR);
+                    result.append(clustering);
+                    createResultFrame(mstClusteringMenu, result.toString());
+                } catch (InternalError | IllegalArgumentException e) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this, e,
+                            null, JOptionPane.ERROR_MESSAGE);
                 }
-                dialog.dispose();
-                //--------------------------------------------------               
             }
+            dialog.dispose();
+
         });
 
     }
 
-} //End of class JGraphFrame
+}
