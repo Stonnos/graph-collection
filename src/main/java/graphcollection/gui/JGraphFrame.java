@@ -862,21 +862,17 @@ public class JGraphFrame extends JFrame {
     }
 
     private void createMst(MstType type, Component component, String title) {
-        ConnectedComponents<Vertex> connComp
-                = new ConnectedComponents<>(graph());
+        ConnectedComponents<Vertex> connComp = new ConnectedComponents<>(graph());
         if (connComp.connected()) {
             if (!NumberParser.isNegativeWeights(graph())) {
                 MinimumSpanningTree<Edge2D> mst = null;
                 switch (type) {
                     case Prim:
-                        mst
-                                = new PrimMinimumSpanningTree<>(graph(),
-                                firstVertex());
+                        mst = new PrimMinimumSpanningTree<>(graph(), firstVertex());
                         break;
 
                     case Kruskal:
-                        mst
-                                = new KruskalMinimumSpanningTree<>(graph());
+                        mst = new KruskalMinimumSpanningTree<>(graph());
                         break;
                 }
                 if (mst != null) {
