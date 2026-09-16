@@ -9,48 +9,65 @@ import java.awt.event.ItemListener;
 
 public class GraphGeneratorDialog extends JDialog {
 
+    private static final String[] GRAPH_VIEWS = new String[] {
+            GraphView.MATRIX_GRAPH.getText(),
+            GraphView.HASH_SET_GRAPH.getText(),
+            GraphView.TREE_SET_GRAPH.getText(),
+            GraphView.LIST_SET_GRAPH.getText(),
+            GraphView.SORTED_SET_GRAPH.getText()
+    };
     private final JTextField vertexNumText;
     private final JTextField edgeNumText;
-    private final JRadioButton directedG;
+    private final JRadioButton directedGraph;
     private final JComboBox<String> graphView;
     private final JCheckBox isWeighted;
-    private final JTextField lower;
-    private final JTextField upper;
+    private final JTextField weighLowerBound;
+    private final JTextField weighUpperBound;
     private boolean dialogResult = false;
 
     public GraphGeneratorDialog(JFrame parent) {
         super(parent, "Создание случайного графа", true);
         this.setResizable(false);
         this.setLayout(new GridBagLayout());
-        this.add(new JLabel("Количество вершин:"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+        JLabel numVerticesLabel = new JLabel("Количество вершин:");
+        numVerticesLabel.setFont(numVerticesLabel.getFont().deriveFont(Font.BOLD));
+        JLabel numEdgesLabel = new JLabel("Количество ребер:");
+        numEdgesLabel.setFont(numEdgesLabel.getFont().deriveFont(Font.BOLD));
+        JLabel graphTypeLabel = new JLabel("Тип графа:");
+        graphTypeLabel.setFont(graphTypeLabel.getFont().deriveFont(Font.BOLD));
+        this.add(numVerticesLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 10, 5), 0, 0));
         vertexNumText = new JTextField(3);
+        vertexNumText.setInputVerifier(new TextFieldInputVerifier());
+        vertexNumText.setDocument(new IntegerDocument(3));
+        vertexNumText.setText("0");
         edgeNumText = new JTextField(3);
+        edgeNumText.setInputVerifier(new TextFieldInputVerifier());
+        edgeNumText.setDocument(new IntegerDocument(3));
+        edgeNumText.setText("0");
         this.add(vertexNumText, new GridBagConstraints(1, 0, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10, 5, 10, 5), 0, 0));
-        this.add(new JLabel("Количество ребер:"), new GridBagConstraints(0, 1, 1, 1, 0, 0,
+        this.add(numEdgesLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 10, 5), 0, 0));
         this.add(edgeNumText, new GridBagConstraints(1, 1, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10, 5, 10, 5), 0, 0));
-        this.add(new JLabel("Тип графа:"), new GridBagConstraints(0, 2, 2, 1, 0, 0,
+        this.add(graphTypeLabel, new GridBagConstraints(0, 2, 2, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 5, 5, 5), 0, 0));
         ButtonGroup group = new ButtonGroup();
-        directedG = new JRadioButton("Ориентированный", false);
-        JRadioButton undirectedG = new JRadioButton("Неориентированный", true);
-        group.add(directedG);
-        group.add(undirectedG);
-        this.add(directedG, new GridBagConstraints(0, 3, 2, 1, 0, 0,
+        directedGraph = new JRadioButton("Ориентированный", false);
+        directedGraph.setFont(directedGraph.getFont().deriveFont(Font.BOLD));
+        JRadioButton undirectedGraph = new JRadioButton("Неориентированный", true);
+        undirectedGraph.setFont(undirectedGraph.getFont().deriveFont(Font.BOLD));
+        group.add(directedGraph);
+        group.add(undirectedGraph);
+        this.add(directedGraph, new GridBagConstraints(0, 3, 2, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(0, 5, 0, 5), 0, 0));
-        this.add(undirectedG, new GridBagConstraints(0, 4, 2, 1, 0, 0,
+        this.add(undirectedGraph, new GridBagConstraints(0, 4, 2, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(0, 5, 5, 5), 0, 0));
 
         JLabel graphViewLabel = new JLabel("Тип представления:");
-        String[] items = {GraphView.MATRIX_GRAPH.getText(),
-                GraphView.HASH_SET_GRAPH.getText(),
-                GraphView.TREE_SET_GRAPH.getText(),
-                GraphView.LIST_SET_GRAPH.getText(),
-                GraphView.SORTED_SET_GRAPH.getText()};
-        graphView = new JComboBox<String>(items);
+        graphViewLabel.setFont(graphViewLabel.getFont().deriveFont(Font.BOLD));
+        graphView = new JComboBox<>(GRAPH_VIEWS);
         this.add(graphViewLabel, new GridBagConstraints(0, 5, 2, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 5, 5, 5), 0, 0));
         this.add(graphView, new GridBagConstraints(0, 6, 2, 1, 0, 0,
@@ -62,26 +79,24 @@ public class GraphGeneratorDialog extends JDialog {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                String errorMessage = "Только целые числа!";
-                try {
-                    Integer.parseInt(vertexNumText.getText());
-                    Integer.parseInt(edgeNumText.getText());
-                    if (isWeighted()) {
-                        int a = Integer.parseInt(lower.getText());
-                        int b = Integer.parseInt(upper.getText());
-                        if (a >= b) {
-                            errorMessage = "Нижняя граница не должна превышать верхнюю!";
-                            throw new NumberFormatException();
-                        }
-                    }
-                    dialogResult = true;
-                    setVisible(false);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(GraphGeneratorDialog.this,
-                            errorMessage,
-                            "Ошибка ввода", JOptionPane.WARNING_MESSAGE);
-                    vertexNumText.requestFocusInWindow();
+                if (GuiUtils.isEmpty(vertexNumText) || GuiUtils.isEmpty(edgeNumText)) {
+                    return;
                 }
+                if (isWeighted()) {
+                    if (GuiUtils.isEmpty(weighLowerBound) || GuiUtils.isEmpty(weighUpperBound)) {
+                        return;
+                    }
+                    int lowerBound = Integer.parseInt(weighLowerBound.getText());
+                    int upperBound = Integer.parseInt(weighUpperBound.getText());
+                    if (lowerBound >= upperBound) {
+                        weighLowerBound.setToolTipText("Нижняя граница не должна превышать верхнюю!");
+                        GuiUtils.showToolTipProgrammatically(weighLowerBound, weighLowerBound.getWidth() / 10,
+                                weighLowerBound.getHeight());
+                        return;
+                    }
+                }
+                dialogResult = true;
+                setVisible(false);
             }
         });
 
@@ -94,32 +109,44 @@ public class GraphGeneratorDialog extends JDialog {
         });
 
         isWeighted = new JCheckBox("Сгенерировать веса");
+        isWeighted.setFont(isWeighted.getFont().deriveFont(Font.BOLD));
 
         isWeighted.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent evt) {
-                lower.setEditable(isWeighted.isSelected());
-                upper.setEditable(isWeighted.isSelected());
+                weighLowerBound.setEditable(isWeighted.isSelected());
+                weighUpperBound.setEditable(isWeighted.isSelected());
+                if (isWeighted.isSelected()) {
+                    weighLowerBound.setInputVerifier(new TextFieldInputVerifier());
+                    weighUpperBound.setInputVerifier(new TextFieldInputVerifier());
+                } else {
+                    weighLowerBound.setInputVerifier(null);
+                    weighUpperBound.setInputVerifier(null);
+                    weighLowerBound.setToolTipText(null);
+                }
             }
         });
 
         this.add(isWeighted, new GridBagConstraints(0, 7, 2, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 5, 5, 5), 0, 0));
-        lower = new JTextField(12);
-        lower.setToolTipText("Нижняя граница");
-        upper = new JTextField(12);
-        upper.setToolTipText("Верхняя граница");
-        lower.setEditable(isWeighted.isSelected());
-        upper.setEditable(isWeighted.isSelected());
-        this.add(lower, new GridBagConstraints(0, 8, 1, 1, 0, 0,
+        weighLowerBound = new JTextField(12);
+        weighLowerBound.setDocument(new IntegerDocument(12));
+        weighLowerBound.setToolTipText("Нижняя граница");
+        weighLowerBound.putClientProperty("JTextField.placeholderText", "Нижняя граница");
+        weighUpperBound = new JTextField(12);
+        weighUpperBound.putClientProperty("JTextField.placeholderText", "Верхняя граница");
+        weighUpperBound.setDocument(new IntegerDocument(12));
+        weighLowerBound.setEditable(isWeighted.isSelected());
+        weighUpperBound.setEditable(isWeighted.isSelected());
+        this.add(weighLowerBound, new GridBagConstraints(0, 8, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(0, 10, 0, 10), 0, 0));
-        this.add(upper, new GridBagConstraints(1, 8, 1, 1, 0, 0,
+        this.add(weighUpperBound, new GridBagConstraints(1, 8, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.CENTER, new Insets(0, 10, 0, 10), 0, 0));
 
         this.add(okButton, new GridBagConstraints(0, 9, 1, 1, 1, 1,
-                GridBagConstraints.EAST, GridBagConstraints.CENTER, new Insets(10, 5, 15, 5), 0, 0));
+                GridBagConstraints.EAST, GridBagConstraints.CENTER, new Insets(25, 5, 15, 5), 0, 0));
         this.add(cancelButton, new GridBagConstraints(1, 9, 1, 1, 1, 1,
-                GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(10, 5, 15, 5), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(25, 5, 15, 5), 0, 0));
         this.pack();
         this.setLocationRelativeTo(parent);
         vertexNumText.requestFocusInWindow();
@@ -134,7 +161,7 @@ public class GraphGeneratorDialog extends JDialog {
     }
 
     public boolean direction() {
-        return directedG.isSelected();
+        return directedGraph.isSelected();
     }
 
     public boolean isWeighted() {
@@ -142,11 +169,11 @@ public class GraphGeneratorDialog extends JDialog {
     }
 
     public Integer lowerBound() {
-        return isWeighted() ? Integer.valueOf(lower.getText()) : null;
+        return isWeighted() ? Integer.valueOf(weighLowerBound.getText()) : null;
     }
 
     public Integer upperBound() {
-        return isWeighted() ? Integer.valueOf(upper.getText()) : null;
+        return isWeighted() ? Integer.valueOf(weighUpperBound.getText()) : null;
     }
 
     public boolean dialogResult() {

@@ -218,20 +218,18 @@ public class JGraphDrawer extends JPanel {
         }
     }
 
-    private class VertexDrawer implements Runnable {
+    private class VertexDrawer extends SwingWorker<Void, Void> {
         private final Vertex v;
         private final boolean manuallySetName;
         private static final int FLASH_COUNT = 6;
-        private final Thread thr;
 
         public VertexDrawer(Vertex v, boolean manuallySetName) {
             this.v = v;
             this.manuallySetName = manuallySetName;
-            thr = new Thread(this);
         }
 
         @Override
-        public void run() {
+        protected Void doInBackground() throws Exception {
             Graphics2D g = (Graphics2D) JGraphDrawer.this.getGraphics();
             try {
                 setStrokeForVertex(g);
@@ -253,14 +251,15 @@ public class JGraphDrawer extends JPanel {
             }
             v.drawVertexName(g);
             repaint();
+            return null;
+        }
+
+        @Override
+        protected void done() {
             if (manuallySetName) {
                 vertexNamePopup = new VertexNamePopup(v);
                 vertexNamePopup.show();
             }
-        }
-
-        public void start() {
-            thr.start();
         }
 
     }
@@ -333,7 +332,7 @@ public class JGraphDrawer extends JPanel {
                             vertexMap.put(v.getName(), v);
                             vertexDisplayNameMap.put(v.getDisplayName(), v);
                             VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetName);
-                            vertexDrawer.start();
+                            vertexDrawer.execute();
                             notifyUpdateGraphEvent();
                         }
                     }
@@ -871,7 +870,7 @@ public class JGraphDrawer extends JPanel {
         }
 
         boolean updatedDisplayName() {
-            if (vertexNameText.getText() != null && !vertexNameText.getText().isEmpty()) {
+            if (!GuiUtils.isEmpty(vertexNameText)) {
                 if (!Objects.equals(vertex.getDisplayName(), vertexNameText.getText())
                         && vertexDisplayNameMap.containsKey(vertexNameText.getText())) {
                     vertexNameText.setForeground(Color.RED);

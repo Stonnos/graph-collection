@@ -15,6 +15,7 @@
         <logback.version>1.2.3</logback.version>
         <logstash.logback.version>6.4</logstash.logback.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <org-apache-commons.version>3.14.0</org-apache-commons.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
         <github.maven-plugin>0.12</github.maven-plugin>
@@ -72,6 +73,12 @@
             <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-swing</artifactId>
             <version>${jifont-swing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org-apache-commons.version}</version>
         </dependency>
 
         <dependency>
