@@ -147,6 +147,7 @@ public class GraphGeneratorDialog extends JDialog {
                 GridBagConstraints.EAST, GridBagConstraints.CENTER, new Insets(25, 5, 15, 5), 0, 0));
         this.add(cancelButton, new GridBagConstraints(1, 9, 1, 1, 1, 1,
                 GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(25, 5, 15, 5), 0, 0));
+        this.getRootPane().setDefaultButton(okButton);
         this.pack();
         this.setLocationRelativeTo(parent);
         vertexNumText.requestFocusInWindow();

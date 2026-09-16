@@ -1489,7 +1489,7 @@ public class JGraphFrame extends JFrame {
         JMenuItem allPathsMenu = new JMenuItem("Поиск всех путей");
         algoritmsMenu.add(allPathsMenu);
         allPathsMenu.addActionListener(evt -> {
-            VertexInputDialog dialog = new VertexInputDialog(JGraphFrame.this);
+            VertexInputDialog dialog = new VertexInputDialog(JGraphFrame.this, getVertices());
             dialog.setVisible(true);
             if (dialog.dialogResult()) {
                 Vertex u = graphPanel.vertex(dialog.source());
