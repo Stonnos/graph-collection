@@ -1,16 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui;
 
 import graphcollection.graph.Graph;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,37 +16,51 @@ import java.awt.geom.Line2D;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- *
- * @author Рома
- */
+import static graphcollection.gui.Edge2D.WEIGHT_FONT_SIZE;
+import static graphcollection.gui.GuiUtils.showToolTipProgrammatically;
+
 public class JGraphDrawer extends JPanel {
 
     public static final int MAX_VERTEX_COUNT = 40;
     private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
+    public static final int POPUP_MARGIN = 50;
+    private int vertexSize = 40;
     private Graph<Vertex, Edge2D> graph; //граф
     private GraphView graphView;
-    private Map<String, Vertex> vertexMap = new HashMap<>(); //словарь имен вершин
+    private final Map<String, Vertex> vertexMap = new HashMap<>(); //словарь имен вершин
+    private final Map<String, Vertex> vertexDisplayNameMap = new HashMap<>();
     private Vertex u; //вспомогательная вершина;
-    private int x, y; //координаты мыши;
-    private boolean isAddEdgeMode; //режим (вставка ребра/др.)
-    private String vertexName; //имя вершины
-    private Number weight; //вес ребра
+    private int x; //координаты мыши;
+    private int y; //координаты мыши;
+    private boolean isAddEdgeMode; //режим (вставка ребра/др.)вес ребра
     private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private int dwidth, dheight; //вспомогательные поля для хранения предыдущего размера окна
     private final PopupFactory popupFactory = new PopupFactory();
     private EdgeWeightPopup edgeWeightPopup;
+    private VertexNamePopup vertexNamePopup;
+    private Popup errorPopup;
+
+    private final AtomicBoolean hasVertexError = new AtomicBoolean();
+
+    @Getter
+    @Setter
+    private ActionListener vertexErrorListener;
+    @Getter
+    @Setter
+    private ActionListener updateGraphListener;
 
     public JGraphDrawer() {
-        this(GraphView.Hash_Set_Graph, false, 0, 0);
+        this(GraphView.HASH_SET_GRAPH, false, 0, 0);
     }
 
     public JGraphDrawer(boolean direction) {
-        this(GraphView.Hash_Set_Graph, direction, 0, 0);
+        this(GraphView.HASH_SET_GRAPH, direction, 0, 0);
     }
 
     public JGraphDrawer(GraphView gView, boolean direction) {
@@ -122,25 +133,14 @@ public class JGraphDrawer extends JPanel {
         return graph;
     }
 
-    public Map<String, Vertex> vertexMap() {
-        return vertexMap;
-    }
-
     public Vertex vertex(String v) {
         return vertexMap.get(v);
-    }
-
-    public void setNextVertex(String vertexName) {
-        this.vertexName = vertexName;
-    }
-
-    public void setNextWeight(Number weight) {
-        this.weight = weight;
     }
 
     public void clear() {
         graph.clear();
         vertexMap.clear();
+        vertexDisplayNameMap.clear();
     }
 
     public void clearGraph() {
@@ -175,39 +175,10 @@ public class JGraphDrawer extends JPanel {
         dheight = getHeight();
     }
 
-    public void setComponentListener() {
-        this.addComponentListener(new ComponentListener() {
-
-            private static final int minimumSize = 40;
-
-            @Override
-            public void componentShown(ComponentEvent evt) {
-
-            }
-
-            @Override
-            public void componentResized(ComponentEvent evt) {
-                if (getWidth() > minimumSize && getHeight() > minimumSize) {
-                    resize();
-                }
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent evt) {
-
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent evt) {
-
-            }
-        });
-    }
-
     private void createGraph(GraphView gView, boolean direction, int V, int E) {
         RandomGraph r = new RandomGraph();
         graph = r.generate(gView, direction, V, E);
-        fillMap();
+        fillVerticesMap();
         this.generateCoordinatesForVertices();
         graphView = gView;
     }
@@ -219,20 +190,26 @@ public class JGraphDrawer extends JPanel {
         }
         clear();
         graph = g;
-        graphView = GraphView.Hash_Set_Graph;
-        fillMap();
+        graphView = GraphView.HASH_SET_GRAPH;
+        fillVerticesMap();
         this.generateCoordinatesForVertices();
         repaint();
     }
 
-    private void fillMap() {
+    private void fillVerticesMap() {
         for (Vertex v : graph) {
-            vertexMap.put(v.name, v);
+            vertexMap.put(v.getName(), v);
+            vertexDisplayNameMap.put(v.getDisplayName(), v);
         }
     }
 
+    private void notifyUpdateGraphEvent() {
+        Optional.ofNullable(updateGraphListener).ifPresent(actionListener ->
+                actionListener.actionPerformed(new ActionEvent(this,0, null)));
+    }
+
     private double getVertexSize() {
-        return getHeight() / 20.0;
+        return vertexSize;
     }
 
     private void checkVertexCount(int V) {
@@ -243,11 +220,13 @@ public class JGraphDrawer extends JPanel {
 
     private class VertexDrawer implements Runnable {
         private final Vertex v;
+        private final boolean manuallySetName;
         private static final int FLASH_COUNT = 6;
         private final Thread thr;
 
-        public VertexDrawer(Vertex v) {
+        public VertexDrawer(Vertex v, boolean manuallySetName) {
             this.v = v;
+            this.manuallySetName = manuallySetName;
             thr = new Thread(this);
         }
 
@@ -270,11 +249,14 @@ public class JGraphDrawer extends JPanel {
                     v.drawVertexBorder(g);
                     Thread.sleep(80);
                 }
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
-            //---------------------------------
             v.drawVertexName(g);
             repaint();
+            if (manuallySetName) {
+                vertexNamePopup = new VertexNamePopup(v);
+                vertexNamePopup.show();
+            }
         }
 
         public void start() {
@@ -292,9 +274,6 @@ public class JGraphDrawer extends JPanel {
         g.setFont(font);
     }
 
-    //-------------------------------------
-    //---------------------------------------
-
     private Vertex searchVertex(int x, int y) {
         for (Vertex v : graph) {
             if (v.contains(x, y)) {
@@ -304,7 +283,7 @@ public class JGraphDrawer extends JPanel {
         return null;
     }
 
-    public void end() {
+    public void reset() {
         for (MouseListener listener : this.getMouseListeners()) {
             this.removeMouseListener(listener);
         }
@@ -319,29 +298,29 @@ public class JGraphDrawer extends JPanel {
             u.drawVertexBorder(g);
             u = null;
         }
+        hideVertexNamePopup();
+        hideEdgeWeightPopup();
     }
 
-    public void startAddVertex(final JTextField text) {
-        end();
-        //-------------------------------------
+    public void startAddVertex(boolean manuallySetName) {
+        reset();
         this.addMouseListener(new MouseListener() {
 
             private Vertex generateVertex(int x, int y) {
                 Random r = new Random();
-                String v = vertexName;
-                if (vertexName == null) {
-                    do {
-                        v = String.valueOf(r.nextInt(99));
-                    }
-                    while (vertexMap.containsKey(v));
+                String nextVertexName;
+                do {
+                    nextVertexName = String.valueOf(r.nextInt(99));
                 }
-                //----------------------------------------
-                return new Vertex(v, new Ellipse2D.Double(x, y, getVertexSize(), getVertexSize()));
+                while (vertexMap.containsKey(nextVertexName));
+                return new Vertex(nextVertexName, new Ellipse2D.Double(x, y, getVertexSize(), getVertexSize()));
             }
 
             @Override
             public void mouseClicked(MouseEvent me) {
-                if (me.getButton() == MouseEvent.BUTTON1) {
+                hideErrorPopup();
+                if (me.getButton() == MouseEvent.BUTTON1 && !hasVertexError.get()) {
+                    hideVertexNamePopup();
                     if (graph.verticesNum() == MAX_VERTEX_COUNT) {
                         JOptionPane.showMessageDialog(JGraphDrawer.this,
                                 "Добавлять вершины больше нельзя!",
@@ -349,20 +328,13 @@ public class JGraphDrawer extends JPanel {
                     } else {
                         Vertex v = searchVertex(me.getX(), me.getY());
                         if (v == null) {
-                            if (vertexMap.containsKey(vertexName)) {
-                                JOptionPane.showMessageDialog(JGraphDrawer.this,
-                                        "Вершина '" + vertexName + "' существует!",
-                                        "Добавление вершины", JOptionPane.WARNING_MESSAGE);
-                            } else {
-                                v = generateVertex(me.getX(), me.getY());
-                                graph.addVertex(v);
-                                vertexMap.put(v.name, v);
-                                if (text != null) {
-                                    text.setText(String.valueOf(graph.verticesNum()));
-                                }
-                                VertexDrawer vertex = new VertexDrawer(v);
-                                vertex.start();
-                            }
+                            v = generateVertex(me.getX(), me.getY());
+                            graph.addVertex(v);
+                            vertexMap.put(v.getName(), v);
+                            vertexDisplayNameMap.put(v.getDisplayName(), v);
+                            VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetName);
+                            vertexDrawer.start();
+                            notifyUpdateGraphEvent();
                         }
                     }
                 }
@@ -388,26 +360,20 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
-    public void startRemoveVertex(final JTextField text1, final JTextField text2) {
-        end();
-        //-------------------------------------
+    public void startRemoveVertex() {
+        reset();
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
-                        vertexMap.remove(u.name);
+                        vertexMap.remove(u.getName());
+                        vertexDisplayNameMap.remove(u.getDisplayName());
                         graph.removeVertex(u);
-                        if (text1 != null) {
-                            text1.setText(String.valueOf(graph.verticesNum()));
-                        }
-                        if (text2 != null) {
-                            text2.setText(String.valueOf(graph.edgesNum()));
-                        }
+                        notifyUpdateGraphEvent();
                         u = null;
                         repaint();
                     }
@@ -434,12 +400,10 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
-    public void startRemoveOutEdges(final JTextField text) {
-        end();
-        //-------------------------------------
+    public void startRemoveOutEdges() {
+        reset();
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -447,9 +411,7 @@ public class JGraphDrawer extends JPanel {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
                         graph.removeOutEdges(u);
-                        if (text != null) {
-                            text.setText(String.valueOf(graph.edgesNum()));
-                        }
+                        notifyUpdateGraphEvent();
                         u = null;
                         repaint();
                     }
@@ -476,12 +438,10 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
-    public void startRemoveInEdges(final JTextField text) {
-        end();
-        //-------------------------------------
+    public void startRemoveInEdges() {
+        reset();
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -489,9 +449,7 @@ public class JGraphDrawer extends JPanel {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
                         graph.removeInEdges(u);
-                        if (text != null) {
-                            text.setText(String.valueOf(graph.edgesNum()));
-                        }
+                        notifyUpdateGraphEvent();
                         u = null;
                         repaint();
                     }
@@ -518,14 +476,11 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
-    public void startAddEdge(final JTextField text) {
-        end();
+    public void startAddEdge(boolean setWeight) {
+        reset();
         isAddEdgeMode = true;
-        //-------------------------------------
-        //-----------------------------------------------
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -544,6 +499,7 @@ public class JGraphDrawer extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
@@ -560,22 +516,27 @@ public class JGraphDrawer extends JPanel {
                 if (u != null) {
                     Vertex v = searchVertex(me.getX(), me.getY());
                     if (v != null) {
-                        if (!graph.addEdge(new Edge2D(graph.direction(), u, v, weight))) {
-                            JOptionPane.showMessageDialog(JGraphDrawer.this,
-                                    "Невозможно добавить ребро!",
-                                    "Добавление ребра", JOptionPane.WARNING_MESSAGE);
+                        Edge2D edge2D = new Edge2D(graph.direction(), u, v);
+                        if (u.getName().equals(v.getName())) {
+                            createErrorMessagePopup("Не допускается создание петель!",
+                                    (int) (v.getX() + POPUP_MARGIN), (int) (v.getY() + POPUP_MARGIN));
+                        } else if (!graph.addEdge(edge2D)) {
+                            createErrorMessagePopup(
+                                    String.format("Ребро между вершинами %s и %s уже существует!", u.getDisplayName(),
+                                            v.getDisplayName()),
+                                    (int) (v.getX() + POPUP_MARGIN), (int) (v.getY() + POPUP_MARGIN));
+                        } else if (setWeight) {
+                            edgeWeightPopup = new EdgeWeightPopup(edge2D);
+                            edgeWeightPopup.show();
                         }
                     }
-                    if (text != null) {
-                        text.setText(String.valueOf(graph.edgesNum()));
-                    }
+                    notifyUpdateGraphEvent();
                     u.borderColor = Color.BLACK;
                     u = null;
                     repaint();
                 }
             }
         });
-        //-----------------------------------------------
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent me) {
@@ -592,13 +553,13 @@ public class JGraphDrawer extends JPanel {
         });
     }
 
-    public void startRemoveEdge(final JTextField text) {
-        end();
-        //-------------------------------------
+    public void startRemoveEdge() {
+        reset();
         this.addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     Vertex z = searchVertex(me.getX(), me.getY());
                     if (z != null) {
@@ -610,12 +571,11 @@ public class JGraphDrawer extends JPanel {
                             u.drawVertexBorder(g);
                         } else {
                             if (graph.removeEdge(new Edge2D(graph.direction(), u, z)) == 0) {
-                                JOptionPane.showMessageDialog(JGraphDrawer.this, "Ребра не существует!",
-                                        "Удаление ребра", JOptionPane.WARNING_MESSAGE);
+                                createErrorMessagePopup(String.format("Ребра между вершинами %s и %s не существует!",
+                                                u.getDisplayName(), z.getDisplayName()),
+                                        (int) (z.getX() + POPUP_MARGIN), (int) (z.getY() + POPUP_MARGIN));
                             }
-                            if (text != null) {
-                                text.setText(String.valueOf(graph.edgesNum()));
-                            }
+                            notifyUpdateGraphEvent();
                             u.borderColor = Color.BLACK;
                             u = null;
                             repaint();
@@ -644,18 +604,16 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
     public void startUpdateEdge() {
-        end();
-        //-------------------------------------
+        reset();
         this.addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent me) {
                 if (me.getButton() == MouseEvent.BUTTON1) {
-                    Optional.ofNullable(edgeWeightPopup).ifPresent(EdgeWeightPopup::hide);
+                    hideEdgeWeightPopup();
                     Vertex z = searchVertex(me.getX(), me.getY());
                     if (z != null) {
                         if (u == null) {
@@ -667,27 +625,8 @@ public class JGraphDrawer extends JPanel {
                         } else {
                             Edge2D e = graph.edge(u, z);
                             if (e == null) {
-                                //JOptionPane.showMessageDialog(JGraphDrawer.this, "Ребра не существует!",
-                                //        "Изменение веса ребра", JOptionPane.WARNING_MESSAGE);
                                 return;
                             } else {
-                                //--------------------------------------------
-                                /*String strWeight = (String) JOptionPane.showInputDialog(JGraphDrawer.this,
-                                        "Введите вес:",
-                                        "Изменение веса ребра", JOptionPane.INFORMATION_MESSAGE, null,
-                                        null, e.getWeight());
-                                if (strWeight != null) {
-                                    Number newWeight = NumberParser.parse(strWeight);
-                                    if (newWeight == null) {
-                                        JOptionPane.showMessageDialog(JGraphDrawer.this,
-                                                "Вес ребра должен быть числовой!",
-                                                "Изменение веса ребра", JOptionPane.WARNING_MESSAGE);
-                                    } else {
-                                        e.setWeight(newWeight);
-                                    }
-                                }(/
-
-                                 */
                                 edgeWeightPopup = new EdgeWeightPopup(e);
                                 edgeWeightPopup.show();
                             }
@@ -719,14 +658,11 @@ public class JGraphDrawer extends JPanel {
 
             }
         });
-        //-----------------------------------------------
     }
 
 
     public void startMoveGraph() {
-        end();
-        //-------------------------------------
-        //-----------------------------------------------
+        reset();
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -765,7 +701,6 @@ public class JGraphDrawer extends JPanel {
                 }
             }
         });
-        //-----------------------------------------------
         this.addMouseMotionListener(new MouseMotionListener() {
 
             @Override
@@ -834,7 +769,7 @@ public class JGraphDrawer extends JPanel {
         }
 
         void show() {
-            JPanel infoPanel = createNeuronInfoPanel();
+            JPanel infoPanel = createInputTextPanel();
             double r = Math.sqrt(Math.pow(edge2D.target().getCenterX() - edge2D.source().getCenterX(), 2)
                     + Math.pow(edge2D.target().getCenterY() - edge2D.source().getCenterY(), 2));
             double vx = (edge2D.target().getCenterX() - edge2D.source().getCenterX()) / r; //нормировка вектора
@@ -854,11 +789,12 @@ public class JGraphDrawer extends JPanel {
             Optional.ofNullable(popup).ifPresent(Popup::hide);
         }
 
-        JPanel createNeuronInfoPanel() {
+        JPanel createInputTextPanel() {
             JPanel infoPanel = new JPanel(new GridBagLayout());
             infoPanel.setBackground(Color.WHITE);
             edgeWeightText = new JTextField(2);
             edgeWeightText.setBackground(Color.WHITE);
+            edgeWeightText.setFont(new Font("Arial", Font.PLAIN, WEIGHT_FONT_SIZE));
             edgeWeightText.setDocument(new DoubleDocument(EDGE_WEIGHT_TEXT_LENGTH));
             if (edge2D.getWeight() != null) {
                 edgeWeightText.setText(String.valueOf(edge2D.getWeight()));
@@ -880,5 +816,123 @@ public class JGraphDrawer extends JPanel {
         }
     }
 
+    private class VertexNamePopup {
+        static final int VERTEX_NAME_TEXT_FIELD_PADDING = 2;
+        static final int VERTEX_NAME_FONT_SIZE = 20;
+        Vertex vertex;
+        Popup popup;
+        JTextField vertexNameText;
 
+        VertexNamePopup(Vertex vertex) {
+            this.vertex = vertex;
+        }
+
+        void show() {
+            JPanel infoPanel = createInputTextPanel();
+            Point point = new Point((int) vertex.getX(), (int) vertex.getY());
+            SwingUtilities.convertPointToScreen(point, JGraphDrawer.this);
+            double radius = (double) vertexSize / 2;
+            int fieldSize = (int) (radius * Math.sqrt(2));
+            int popupX = (int) point.getX() + fieldSize / 4;
+            int popupY = (int) point.getY() + fieldSize / 4;
+            this.popup = popupFactory.getPopup(JGraphDrawer.this, infoPanel, popupX, popupY);
+            popup.show();
+            vertexNameText.requestFocusInWindow();
+        }
+
+        void hide() {
+            if (updatedDisplayName()) {
+                Optional.ofNullable(popup).ifPresent(Popup::hide);
+            }
+        }
+
+        JPanel createInputTextPanel() {
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            infoPanel.setBackground(Color.WHITE);
+            vertexNameText = new JTextField();
+            double radius = (double) vertexSize / 2;
+            int fieldSize = (int) (radius * Math.sqrt(2)) - VERTEX_NAME_TEXT_FIELD_PADDING;
+            Dimension dimension = new Dimension(fieldSize, fieldSize);
+            vertexNameText.setMinimumSize(dimension);
+            vertexNameText.setPreferredSize(dimension);
+            vertexNameText.setMaximumSize(dimension);
+            vertexNameText.setBorder(BorderFactory.createEmptyBorder());
+            vertexNameText.setHorizontalAlignment(JTextField.CENTER);
+            vertexNameText.setFont(new Font("Arial", Font.BOLD, VERTEX_NAME_FONT_SIZE));
+            vertexNameText.setBackground(Color.WHITE);
+            vertexNameText.setText(vertex.getDisplayName());
+            vertexNameText.addActionListener(e -> {
+                hide();
+            });
+            infoPanel.add(vertexNameText, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
+            return infoPanel;
+        }
+
+        boolean updatedDisplayName() {
+            if (vertexNameText.getText() != null && !vertexNameText.getText().isEmpty()) {
+                if (!Objects.equals(vertex.getDisplayName(), vertexNameText.getText())
+                        && vertexDisplayNameMap.containsKey(vertexNameText.getText())) {
+                    vertexNameText.setForeground(Color.RED);
+                    vertexNameText.setToolTipText(String.format("Вершина %s существует!", vertexNameText.getText()));
+                    showToolTipProgrammatically(vertexNameText);
+                    hasVertexError.set(true);
+                    Optional.ofNullable(vertexErrorListener).ifPresent(actionListener ->
+                            actionListener.actionPerformed(
+                                    new ActionEvent(this, 0, hasVertexError.toString())));
+                    return false;
+                } else {
+                    vertexDisplayNameMap.remove(vertex.getDisplayName());
+                    vertex.setDisplayName(vertexNameText.getText());
+                    vertexDisplayNameMap.put(vertexNameText.getText(), vertex);
+                    hasVertexError.set(false);
+                    hideErrorPopup();
+                    Optional.ofNullable(vertexErrorListener)
+                            .ifPresent(actionListener -> actionListener.actionPerformed(
+                                    new ActionEvent(this, 0, hasVertexError.toString())));
+                    return true;
+                }
+            }
+            return true;
+        }
+    }
+
+    private void createErrorMessagePopup(String message, int x, int y) {
+        hideErrorPopup();
+        JPanel infoPanel = new JPanel(new GridBagLayout());
+        infoPanel.setBackground(Color.WHITE);
+        infoPanel.setBorder(PanelBorderUtils.createEtchedBorder());
+        JLabel messageLabel = new JLabel(message);
+        messageLabel.setForeground(Color.RED);
+        JButton closeButton = ButtonUtils.createCloseButton();
+        infoPanel.add(messageLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.CENTER,
+                new Insets(0, 5, 0, 5), 0, 0));
+        infoPanel.add(closeButton, new GridBagConstraints(0, 1, 1, 1, 0, 0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                new Insets(4, 0, 4, 0), 0, 0));
+        Point point = new Point(x, y);
+        SwingUtilities.convertPointToScreen(point, JGraphDrawer.this);
+        Popup popup = popupFactory.getPopup(JGraphDrawer.this, infoPanel, (int) point.getX(), (int) point.getY());
+        closeButton.addActionListener(evt -> {
+            popup.hide();
+        });
+        popup.show();
+        errorPopup = popup;
+    }
+
+    private void hideErrorPopup() {
+        Optional.ofNullable(errorPopup).ifPresent(Popup::hide);
+    }
+
+    private void hideVertexNamePopup() {
+        Optional.ofNullable(vertexNamePopup).ifPresent(VertexNamePopup::hide);
+        vertexNamePopup = null;
+    }
+
+    private void hideEdgeWeightPopup() {
+        Optional.ofNullable(edgeWeightPopup).ifPresent(EdgeWeightPopup::hide);
+        edgeWeightPopup = null;
+    }
 }

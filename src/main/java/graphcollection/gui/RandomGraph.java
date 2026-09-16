@@ -66,19 +66,19 @@ public class RandomGraph {
     private Graph<Vertex, Edge2D> create(GraphView gView, boolean direction) {
         Graph<Vertex, Edge2D> g = null;
         switch (gView) {
-            case Hash_Set_Graph:
+            case HASH_SET_GRAPH:
                 g = new HashSetGraph<>(direction);
                 break;
-            case Tree_Set_Graph:
+            case TREE_SET_GRAPH:
                 g = new TreeSetGraph<>(direction);
                 break;
-            case Sorted_Set_Graph:
+            case SORTED_SET_GRAPH:
                 g = new SortedSetGraph<>(direction);
                 break;
-            case List_Set_Graph:
+            case LIST_SET_GRAPH:
                 g = new ListSetGraph<>(direction);
                 break;
-            case Matrix_Graph:
+            case MATRIX_GRAPH:
                 g = new AdjacencyMatrixGraph<>(direction);
                 break;
         }

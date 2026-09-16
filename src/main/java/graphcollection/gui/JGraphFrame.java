@@ -36,6 +36,7 @@ import jiconfont.swing.IconFontSwing;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +61,7 @@ public class JGraphFrame extends JFrame {
     private static final String SEPARATOR = System.getProperty("line.separator");
     private static final Color FRAME_COLOR = new Color(227, 232, 234);
     private static final int ICON_SIZE = 18;
+    private static final int OPERATIONS_ICON_SIZE = 16;
     private int animationSpeed = 2000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -72,95 +74,18 @@ public class JGraphFrame extends JFrame {
     private JTextArea commentTxt;
     private JPanel lowPanel;
     //------------------------------------------------------
-    private JTextField graphViewText;
-    private JTextField graphDirectedText;
-    private JTextField vertexNumText;
-    private JTextField edgeNumText;
-    private InputComponent input;
+    private JLabel graphViewText;
+    private JLabel graphDirectedText;
+    private JLabel vertexNumText;
+    private JLabel edgeNumText;
     //----------------------------------------------------
     private JMenu graphMenu;
     private JMenu algoritmsMenu;
     private JMenu directedGraphAlgorithms;
     private JMenu undirectedGraphAlgorithms;
 
-    //-----------------------------------------------------
-
-    /**
-     *
-     */
-    private class InputComponent {
-
-        public JLabel inputLabel = new JLabel("Имя вершины:");
-        public final JTextField inputText = new JTextField(8);
-        public final JButton okButton = new JButton("OK");
-        public final JButton cancelButton = new JButton("Отмена");
-        public boolean mode;
-
-        public InputComponent() {
-            this.setEnabled(false);
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    inputText.setText("");
-                }
-            });
-            okButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    String text = inputText.getText();
-                    if (mode) {
-                        if (text.isEmpty()) {
-                            graphPanel.setNextVertex(null);
-                        } else if (VertexFormat.isFormat(text)) {
-                            graphPanel.setNextVertex(text);
-                        } else {
-                            JOptionPane.showMessageDialog(JGraphFrame.this,
-                                    "Недопустимое имя вершины!", "Ошибка ввода",
-                                    JOptionPane.WARNING_MESSAGE);
-                        }
-                    } else {
-                        if (text.isEmpty()) {
-                            graphPanel.setNextWeight(null);
-                        } else {
-                            Number w = NumberParser.parse(inputText.getText());
-                            if (w == null) {
-                                JOptionPane.showMessageDialog(JGraphFrame.this,
-                                        "Вес ребра должен быть числовой!", "Ошибка ввода",
-                                        JOptionPane.WARNING_MESSAGE);
-                            } else {
-                                graphPanel.setNextWeight(w);
-                            }
-                        }
-                    }
-                    inputText.setText("");
-                    inputText.requestFocusInWindow();
-                }
-            });
-        }
-
-        public final void setLabelText(String text) {
-            inputLabel.setText(text);
-        }
-
-        public final void setEnabled(boolean aFlag) {
-            inputLabel.setEnabled(aFlag);
-            inputText.setEnabled(aFlag);
-            okButton.setEnabled(aFlag);
-            cancelButton.setEnabled(aFlag);
-        }
-
-        public final void setMode(boolean mode) {
-            this.mode = mode;
-            this.setEnabled(true);
-            inputText.requestFocusInWindow();
-            this.setLabelText(mode ? "Имя вершины:" : "Вес ребра:");
-        }
-
-        public final boolean mode() {
-            return mode;
-        }
-
-    } //End of class InputComponent
+    private JCheckBox setVertexNameCheckBox;
+    private JCheckBox setEdgeWeightCheckBox;
 
     private class PathDrawer extends TimerTask {
 
@@ -200,7 +125,7 @@ public class JGraphFrame extends JFrame {
 
     public JGraphFrame() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        makeGUI();
+        createGUI();
     }
 
     private void setWindowListener() {
@@ -308,7 +233,7 @@ public class JGraphFrame extends JFrame {
         graphDirectedText.setText(graph().direction()
                 ? "Ориентированный" : "Неориентированный");
         setNumbers();
-        CancelAllOperationsWithGraph();
+        cancelAllOperationsWithGraph();
     }
 
     private void setAlgorithmsEnabled() {
@@ -321,39 +246,16 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    private void CancelAllOperationsWithGraph() {
-        graphPanel.end();
+    private void cancelAllOperationsWithGraph() {
+        graphPanel.reset();
         commentTxt.setText("Выберите операцию.");
     }
 
-    private void addInputComponents() {
-        input = new InputComponent();
-        lowPanel.add(input.inputLabel);
-        lowPanel.add(input.inputText);
-        lowPanel.add(input.okButton);
-        lowPanel.add(input.cancelButton);
-    }
-
     private void createGraph(GraphView view, boolean direction) {
-        input.setEnabled(false);
         graphPanel.create(view, direction);
         graphPanel.repaint();
         setInfo();
         setAlgorithmsEnabled();
-    }
-
-    private String graphBDDialog(String title) {
-        String name = (String) JOptionPane.showInputDialog(JGraphFrame.this,
-                "Имя графа:",
-                title, JOptionPane.INFORMATION_MESSAGE, null,
-                null, null);
-        if (name != null && name.equals("")) {
-            JOptionPane.showMessageDialog(JGraphFrame.this,
-                    "Граф не задан!",
-                    null, JOptionPane.WARNING_MESSAGE);
-            return null;
-        }
-        return name;
     }
 
     private void createMenu() {
@@ -390,7 +292,7 @@ public class JGraphFrame extends JFrame {
         open.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 try {
                     GraphFileChooser fileChooser = new GraphFileChooser();
                     File file = fileChooser.openFile(JGraphFrame.this);
@@ -409,7 +311,7 @@ public class JGraphFrame extends JFrame {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 try {
                     GraphFileChooser fileChooser = new GraphFileChooser();
                     File file = fileChooser.saveFile(JGraphFrame.this);
@@ -427,7 +329,7 @@ public class JGraphFrame extends JFrame {
         saveImage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 try {
                     GraphFileChooser fileChooser = new GraphFileChooser();
                     File file = fileChooser.saveImageFile(JGraphFrame.this);
@@ -445,7 +347,7 @@ public class JGraphFrame extends JFrame {
         generate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 GraphGeneratorDialog dialog = new GraphGeneratorDialog(JGraphFrame.this);
                 dialog.setVisible(true);
                 if (dialog.dialogResult()) {
@@ -473,98 +375,46 @@ public class JGraphFrame extends JFrame {
         JMenu undirectedGraph = new JMenu("Неориентированный");
         create.add(directedGraph);
         create.add(undirectedGraph);
-        JMenuItem directedMatrixGraph = new JMenuItem(GraphView.Matrix_Graph.getText());
-        JMenuItem directedHashSGraph = new JMenuItem(GraphView.Hash_Set_Graph.getText());
-        JMenuItem directedTreeSGraph = new JMenuItem(GraphView.Tree_Set_Graph.getText());
-        JMenuItem directedListSGraph = new JMenuItem(GraphView.List_Set_Graph.getText());
-        JMenuItem directedSortedSGraph = new JMenuItem(GraphView.Sorted_Set_Graph.getText());
+        JMenuItem directedMatrixGraph = new JMenuItem(GraphView.MATRIX_GRAPH.getText());
+        JMenuItem directedHashSGraph = new JMenuItem(GraphView.HASH_SET_GRAPH.getText());
+        JMenuItem directedTreeSGraph = new JMenuItem(GraphView.TREE_SET_GRAPH.getText());
+        JMenuItem directedListSGraph = new JMenuItem(GraphView.LIST_SET_GRAPH.getText());
+        JMenuItem directedSortedSGraph = new JMenuItem(GraphView.SORTED_SET_GRAPH.getText());
         directedGraph.add(directedMatrixGraph);
         directedGraph.add(directedHashSGraph);
         directedGraph.add(directedTreeSGraph);
         directedGraph.add(directedListSGraph);
         directedGraph.add(directedSortedSGraph);
-        JMenuItem undirectedMatrixGraph = new JMenuItem(GraphView.Matrix_Graph.getText());
-        JMenuItem undirectedHashSGraph = new JMenuItem(GraphView.Hash_Set_Graph.getText());
-        JMenuItem undirectedTreeSGraph = new JMenuItem(GraphView.Tree_Set_Graph.getText());
-        JMenuItem undirectedListSGraph = new JMenuItem(GraphView.List_Set_Graph.getText());
-        JMenuItem undirectedSortedSGraph = new JMenuItem(GraphView.Sorted_Set_Graph.getText());
+        JMenuItem undirectedMatrixGraph = new JMenuItem(GraphView.MATRIX_GRAPH.getText());
+        JMenuItem undirectedHashSGraph = new JMenuItem(GraphView.HASH_SET_GRAPH.getText());
+        JMenuItem undirectedTreeSGraph = new JMenuItem(GraphView.TREE_SET_GRAPH.getText());
+        JMenuItem undirectedListSGraph = new JMenuItem(GraphView.LIST_SET_GRAPH.getText());
+        JMenuItem undirectedSortedSGraph = new JMenuItem(GraphView.SORTED_SET_GRAPH.getText());
         undirectedGraph.add(undirectedMatrixGraph);
         undirectedGraph.add(undirectedHashSGraph);
         undirectedGraph.add(undirectedTreeSGraph);
         undirectedGraph.add(undirectedListSGraph);
         undirectedGraph.add(undirectedSortedSGraph);
-        //-------------------------------------------------
-        //-------------------------------------------------
-        directedMatrixGraph.addActionListener(new ActionListener() {
-                                                  @Override
-                                                  public void actionPerformed(ActionEvent evt) {
-                                                      createGraph(GraphView.Matrix_Graph, true);
-                                                  }
-                                              }
+        directedMatrixGraph.addActionListener(evt -> createGraph(GraphView.MATRIX_GRAPH, true)
         );
-        directedHashSGraph.addActionListener(new ActionListener() {
-                                                 @Override
-                                                 public void actionPerformed(ActionEvent evt) {
-                                                     createGraph(GraphView.Hash_Set_Graph, true);
-                                                 }
-                                             }
+        directedHashSGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, true)
         );
-        directedTreeSGraph.addActionListener(new ActionListener() {
-                                                 @Override
-                                                 public void actionPerformed(ActionEvent evt) {
-                                                     createGraph(GraphView.Tree_Set_Graph, true);
-                                                 }
-                                             }
+        directedTreeSGraph.addActionListener(evt -> createGraph(GraphView.TREE_SET_GRAPH, true)
         );
-        directedListSGraph.addActionListener(new ActionListener() {
-                                                 @Override
-                                                 public void actionPerformed(ActionEvent evt) {
-                                                     createGraph(GraphView.List_Set_Graph, true);
-                                                 }
-                                             }
+        directedListSGraph.addActionListener(evt -> createGraph(GraphView.LIST_SET_GRAPH, true)
         );
-        directedSortedSGraph.addActionListener(new ActionListener() {
-                                                   @Override
-                                                   public void actionPerformed(ActionEvent evt) {
-                                                       createGraph(GraphView.Sorted_Set_Graph, true);
-                                                   }
-                                               }
+        directedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, true)
         );
         //-------------------------------------------------
-        undirectedMatrixGraph.addActionListener(new ActionListener() {
-                                                    @Override
-                                                    public void actionPerformed(ActionEvent evt) {
-                                                        createGraph(GraphView.Matrix_Graph, false);
-                                                    }
-                                                }
+        undirectedMatrixGraph.addActionListener(evt -> createGraph(GraphView.MATRIX_GRAPH, false)
         );
-        undirectedHashSGraph.addActionListener(new ActionListener() {
-                                                   @Override
-                                                   public void actionPerformed(ActionEvent evt) {
-                                                       createGraph(GraphView.Hash_Set_Graph, false);
-                                                   }
-                                               }
+        undirectedHashSGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, false)
         );
-        undirectedTreeSGraph.addActionListener(new ActionListener() {
-                                                   @Override
-                                                   public void actionPerformed(ActionEvent evt) {
-                                                       createGraph(GraphView.Tree_Set_Graph, false);
-                                                   }
-                                               }
+        undirectedTreeSGraph.addActionListener(evt -> createGraph(GraphView.TREE_SET_GRAPH, false)
         );
-        undirectedListSGraph.addActionListener(new ActionListener() {
-                                                   @Override
-                                                   public void actionPerformed(ActionEvent evt) {
-                                                       createGraph(GraphView.List_Set_Graph, false);
-                                                   }
-                                               }
+        undirectedListSGraph.addActionListener(evt -> createGraph(GraphView.LIST_SET_GRAPH, false)
         );
-        undirectedSortedSGraph.addActionListener(new ActionListener() {
-                                                     @Override
-                                                     public void actionPerformed(ActionEvent evt) {
-                                                         createGraph(GraphView.Sorted_Set_Graph, false);
-                                                     }
-                                                 }
+        undirectedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, false)
         );
         //-----------------------------------------------
         directedGraphAlgorithms = new JMenu("Алгоритмы для ориентированных графов");
@@ -577,59 +427,50 @@ public class JGraphFrame extends JFrame {
         referenceMenu.add(reference);
         referenceMenu.add(aboutProgrammMenu);
         //------------------------------------------------
-        aboutProgrammMenu.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent evt) {
-                                                    ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
-                                                    frame.setVisible(true);
-                                                    frame.readInfoFromFile("О программе.txt");
-                                                }
-                                            }
+        aboutProgrammMenu.addActionListener(evt -> {
+                    ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
+                    frame.setVisible(true);
+                    frame.readInfoFromFile("О программе.txt");
+                }
         );
-        reference.addActionListener(new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(ActionEvent evt) {
-                                            ReferenceBase frame = new Reference(aboutProgrammMenu);
-                                            frame.setVisible(true);
-                                        }
-                                    }
+        reference.addActionListener(evt -> {
+                    ReferenceBase frame = new Reference(aboutProgrammMenu);
+                    frame.setVisible(true);
+                }
         );
         //------------------------------------------
         JMenuItem animationMenu = new JMenuItem("Cкорость анимации");
         optionMenu.add(animationMenu);
         //------------------------------------------
-        animationMenu.addActionListener(new ActionListener() {
-                                            @Override
-                                            public void actionPerformed(ActionEvent evt) {
-                                                OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
-                                                option.setVisible(true);
-                                                if (option.dialogResult()) {
-                                                    animationSpeed = option.getAnimationSpeed();
-                                                }
-                                                option.dispose();
-                                            }
-                                        }
+        animationMenu.addActionListener(evt -> {
+                    OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
+                    option.setVisible(true);
+                    if (option.dialogResult()) {
+                        animationSpeed = option.getAnimationSpeed();
+                    }
+                    option.dispose();
+                }
         );
         this.setJMenuBar(menu);
     }
 
     private void addInfoComponents() {
         JLabel vertexNumLabel = new JLabel("Количество вершин:");
+        vertexNumLabel.setFont(vertexNumLabel.getFont().deriveFont(Font.BOLD));
         JLabel edgeNumLabel = new JLabel("Количество ребер:");
-        vertexNumText = new JTextField(5);
-        edgeNumText = new JTextField(5);
-        vertexNumText.setBackground(Color.WHITE);
-        edgeNumText.setBackground(Color.WHITE);
-        vertexNumText.setEditable(false);
-        edgeNumText.setEditable(false);
+        edgeNumLabel.setFont(edgeNumLabel.getFont().deriveFont(Font.BOLD));
+        vertexNumText = new JLabel();
+        vertexNumText.setBorder(new EmptyBorder(0, 5, 0, 15));
+        edgeNumText = new JLabel();
+        edgeNumText.setBorder(new EmptyBorder(0, 5, 0, 15));
         JLabel graphViewLabel = new JLabel("Тип представления:");
+        graphViewLabel.setFont(graphViewLabel.getFont().deriveFont(Font.BOLD));
         JLabel graphDirectedLabel = new JLabel("Тип графа:");
-        graphViewText = new JTextField(16);
-        graphDirectedText = new JTextField(12);
-        graphViewText.setBackground(Color.WHITE);
-        graphDirectedText.setBackground(Color.WHITE);
-        graphViewText.setEditable(false);
-        graphDirectedText.setEditable(false);
+        graphDirectedLabel.setFont(graphDirectedLabel.getFont().deriveFont(Font.BOLD));
+        graphViewText = new JLabel();
+        graphViewText.setBorder(new EmptyBorder(0, 5, 0, 15));
+        graphDirectedText = new JLabel();
+        graphDirectedText.setBorder(new EmptyBorder(0, 5, 0, 15));
         infoPanel.add(vertexNumLabel);
         infoPanel.add(vertexNumText);
         infoPanel.add(edgeNumLabel);
@@ -641,165 +482,164 @@ public class JGraphFrame extends JFrame {
     }
 
     private void addOperationButtons() {
-        JButton addV = new JButton("Вставка вершины");
-        JButton removeV = new JButton("Удаление вершины");
-        JButton addE = new JButton("Вставка ребра");
-        JButton removeE = new JButton("Удаление ребра");
-        JButton updateE = new JButton("Изменение веса ребра");
+        JButton addVertex = new JButton("Вставка вершины");
+        addVertex.setIcon(IconFontSwing.buildIcon(FontAwesome.CIRCLE_O, OPERATIONS_ICON_SIZE));
+        JButton removeVertex = new JButton("Удаление вершины");
+        removeVertex.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS_CIRCLE, OPERATIONS_ICON_SIZE));
+        JButton addEdge = new JButton("Вставка ребра");
+        addEdge.setIcon(IconFontSwing.buildIcon(FontAwesome.LONG_ARROW_RIGHT, OPERATIONS_ICON_SIZE));
+        JButton removeEdge = new JButton("Удаление ребра");
+        removeEdge.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, OPERATIONS_ICON_SIZE));
+        JButton updateEdge = new JButton("Изменение веса ребра");
+        updateEdge.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, OPERATIONS_ICON_SIZE));
         JButton clearEdges = new JButton("Удаление всех ребер");
-        JButton clear = new JButton("Очистка графа");
-        JButton move = new JButton("Видоизменять граф");
-        JButton removeOutE = new JButton("Удаление исходящих ребер");
-        JButton removeInE = new JButton("Удаление входящих ребер");
-        JButton transform = new JButton("Преобразование графа");
-        buttonsPanel.add(addV, new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(removeV, new GridBagConstraints(0, 1, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(addE, new GridBagConstraints(0, 2, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(removeE, new GridBagConstraints(0, 3, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(updateE, new GridBagConstraints(0, 4, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(clearEdges, new GridBagConstraints(0, 5, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(clear, new GridBagConstraints(0, 6, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(move, new GridBagConstraints(0, 7, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(removeOutE, new GridBagConstraints(0, 8, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(removeInE, new GridBagConstraints(0, 9, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        buttonsPanel.add(transform, new GridBagConstraints(0, 10, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        //-------------------------------------------------------
-        addV.addActionListener(new ActionListener() {
-                                   @Override
-                                   public void actionPerformed(ActionEvent evt) {
-                                       graphPanel.startAddVertex(vertexNumText);
-                                       commentTxt.setText("Щелкните по полю правой кнопкой мыши для того, "
-                                               + "чтобы добавить вершину.");
-                                       input.setMode(true);
-                                   }
-                               }
+        clearEdges.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS_SQUARE, OPERATIONS_ICON_SIZE));
+        JButton clearGraph = new JButton("Очистка графа");
+        clearGraph.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, OPERATIONS_ICON_SIZE));
+        JButton moveGraph = new JButton("Видоизменение граф");
+        moveGraph.setIcon(IconFontSwing.buildIcon(FontAwesome.ARROWS, OPERATIONS_ICON_SIZE));
+        JButton removeOutEdges = new JButton("Удаление исходящих ребер");
+        JButton removeInEdges = new JButton("Удаление входящих ребер");
+        JButton transformGraph = new JButton("Преобразование графа");
+
+        setVertexNameCheckBox = new JCheckBox("Задавать имена вершин");
+        setEdgeWeightCheckBox = new JCheckBox("Задавать веса ребер");
+
+        JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
+        verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+
+        JLabel edgesActionsLabel = new JLabel("Действия с ребрами:");
+        edgesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+
+        JLabel otherActionsLabel = new JLabel("Другие действия:");
+        otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+
+        buttonsPanel.add(verticesActionsLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 2), 0, 0));
+        buttonsPanel.add(addVertex, new GridBagConstraints(0, 1, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+        buttonsPanel.add(removeVertex, new GridBagConstraints(0, 2, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
+
+        buttonsPanel.add(edgesActionsLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
+        buttonsPanel.add(addEdge, new GridBagConstraints(0, 4, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(removeEdge, new GridBagConstraints(0, 5, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(updateEdge, new GridBagConstraints(0, 6, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
+
+        buttonsPanel.add(otherActionsLabel, new GridBagConstraints(0, 7, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 2), 0, 0));
+        buttonsPanel.add(clearEdges, new GridBagConstraints(0, 8, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(clearGraph, new GridBagConstraints(0, 9, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(moveGraph, new GridBagConstraints(0, 10, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(removeOutEdges, new GridBagConstraints(0, 11, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(removeInEdges, new GridBagConstraints(0, 12, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        buttonsPanel.add(transformGraph, new GridBagConstraints(0, 13, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
+
+        buttonsPanel.add(setEdgeWeightCheckBox, new GridBagConstraints(0, 14, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 2), 0, 0));
+        buttonsPanel.add(setVertexNameCheckBox, new GridBagConstraints(0, 16, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 0), 0, 0));
+
+        addVertex.addActionListener(evt -> {
+                    graphPanel.startAddVertex(setVertexNameCheckBox.isSelected());
+                    commentTxt.setText("Щелкните по полю левой кнопкой мыши для того, "
+                            + "чтобы добавить вершину.");
+                }
         );
-        removeV.addActionListener(new ActionListener() {
-                                      @Override
-                                      public void actionPerformed(ActionEvent evt) {
-                                          graphPanel.startRemoveVertex(vertexNumText, edgeNumText);
-                                          commentTxt.setText("Щелкните правой кнопкой мыши по вершине, которую хотите удалить.");
-                                          input.setEnabled(false);
-                                      }
-                                  }
+        removeVertex.addActionListener(evt -> {
+                    graphPanel.startRemoveVertex();
+                    commentTxt.setText("Щелкните левой кнопкой мыши по вершине, которую хотите удалить.");
+
+                }
         );
-        addE.addActionListener(new ActionListener() {
-                                   @Override
-                                   public void actionPerformed(ActionEvent evt) {
-                                       graphPanel.startAddEdge(edgeNumText);
-                                       commentTxt.setText("Соедините две вершины на поле, для того чтобы добавить ребро.");
-                                       input.setMode(false);
-                                   }
-                               }
+        addEdge.addActionListener(evt -> {
+                    graphPanel.startAddEdge(setEdgeWeightCheckBox.isSelected());
+                    commentTxt.setText("Соедините две вершины на поле, для того чтобы добавить ребро.");
+                }
         );
-        removeE.addActionListener(new ActionListener() {
-                                      @Override
-                                      public void actionPerformed(ActionEvent evt) {
-                                          graphPanel.startRemoveEdge(edgeNumText);
-                                          commentTxt.setText("Выберите правой кнопкой мыши вершины, "
-                                                  + "для того, чтобы удалить ребро между ними.");
-                                          input.setEnabled(false);
-                                      }
-                                  }
+        removeEdge.addActionListener(evt -> {
+                    graphPanel.startRemoveEdge();
+                    commentTxt.setText("Выберите левой кнопкой мыши вершины, "
+                            + "для того, чтобы удалить ребро между ними.");
+
+                }
         );
-        updateE.addActionListener(new ActionListener() {
-                                      @Override
-                                      public void actionPerformed(ActionEvent evt) {
-                                          graphPanel.startUpdateEdge();
-                                          commentTxt.setText("Выберите правой кнопкой мыши вершины, "
-                                                  + "для того, чтобы изменить вес ребра между ними.");
-                                          input.setEnabled(false);
-                                      }
-                                  }
+        updateEdge.addActionListener(evt -> {
+                    graphPanel.startUpdateEdge();
+                    commentTxt.setText("Выберите левой кнопкой мыши вершины, "
+                            + "для того, чтобы изменить вес ребра между ними.");
+
+                }
         );
-        clearEdges.addActionListener(new ActionListener() {
-                                         @Override
-                                         public void actionPerformed(ActionEvent evt) {
-                                             graphPanel.clearEdges();
-                                             setNumbers();
-                                             CancelAllOperationsWithGraph();
-                                             input.setEnabled(false);
-                                         }
-                                     }
+        clearEdges.addActionListener(evt -> {
+                    graphPanel.clearEdges();
+                    setNumbers();
+                    cancelAllOperationsWithGraph();
+
+                }
         );
-        clear.addActionListener(new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent evt) {
-                                        graphPanel.clearGraph();
-                                        setNumbers();
-                                        CancelAllOperationsWithGraph();
-                                        input.setEnabled(false);
-                                    }
-                                }
+        clearGraph.addActionListener(evt -> {
+                    graphPanel.clearGraph();
+                    setNumbers();
+                    cancelAllOperationsWithGraph();
+
+                }
         );
-        move.addActionListener(new ActionListener() {
-                                   @Override
-                                   public void actionPerformed(ActionEvent evt) {
-                                       graphPanel.startMoveGraph();
-                                       commentTxt.setText("Начните передвигать правой кнопкой мыши любую вершину на поле.");
-                                       input.setEnabled(false);
-                                   }
-                               }
+        moveGraph.addActionListener(evt -> {
+                    graphPanel.startMoveGraph();
+                    commentTxt.setText("Начните передвигать левой кнопкой мыши любую вершину на поле.");
+
+                }
         );
-        removeOutE.addActionListener(new ActionListener() {
-                                         @Override
-                                         public void actionPerformed(ActionEvent evt) {
-                                             graphPanel.startRemoveOutEdges(edgeNumText);
-                                             commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
-                                                     + " для того, чтобы удалить исходяшие ребра.");
-                                             input.setEnabled(false);
-                                         }
-                                     }
+        removeOutEdges.addActionListener(evt -> {
+                    graphPanel.startRemoveOutEdges();
+                    commentTxt.setText("Щелкните левой кнопкой мыши по вершине,"
+                            + " для того, чтобы удалить исходяшие ребра.");
+
+                }
         );
-        removeInE.addActionListener(new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(ActionEvent evt) {
-                                            graphPanel.startRemoveInEdges(edgeNumText);
-                                            commentTxt.setText("Щелкните правой кнопкой мыши по вершине,"
-                                                    + " для того, чтобы удалить входящие ребра.");
-                                            input.setEnabled(false);
-                                        }
-                                    }
+        removeInEdges.addActionListener(evt -> {
+                    graphPanel.startRemoveInEdges();
+                    commentTxt.setText("Щелкните левой кнопкой мыши по вершине,"
+                            + " для того, чтобы удалить входящие ребра.");
+
+                }
         );
-        //---------------------------------------------------
-        transform.addActionListener(new ActionListener() {
-                                        @Override
-                                        public void actionPerformed(ActionEvent evt) {
-                                            String[] items = {GraphView.Matrix_Graph.getText(),
-                                                    GraphView.Hash_Set_Graph.getText(),
-                                                    GraphView.Tree_Set_Graph.getText(),
-                                                    GraphView.List_Set_Graph.getText(),
-                                                    GraphView.Sorted_Set_Graph.getText()};
-                                            String result = (String) JOptionPane.showInputDialog(JGraphFrame.this,
-                                                    "Типа представления:", "Преобразование графа",
-                                                    JOptionPane.INFORMATION_MESSAGE, null, items,
-                                                    graphPanel.graphView().getText());
-                                            //--------------------------------------------
-                                            for (GraphView newView : GraphView.values()) {
-                                                if (newView.getText().equals(result)) {
-                                                    graphPanel.transform(newView);
-                                                    graphPanel.repaint();
-                                                    setInfo();
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
+
+        transformGraph.addActionListener(evt -> {
+                    String[] items = {GraphView.MATRIX_GRAPH.getText(),
+                            GraphView.HASH_SET_GRAPH.getText(),
+                            GraphView.TREE_SET_GRAPH.getText(),
+                            GraphView.LIST_SET_GRAPH.getText(),
+                            GraphView.SORTED_SET_GRAPH.getText()};
+                    String result = (String) JOptionPane.showInputDialog(JGraphFrame.this,
+                            "Типа представления:", "Преобразование графа",
+                            JOptionPane.INFORMATION_MESSAGE, null, items,
+                            graphPanel.graphView().getText());
+                    //--------------------------------------------
+                    for (GraphView newView : GraphView.values()) {
+                        if (newView.getText().equals(result)) {
+                            graphPanel.transform(newView);
+                            graphPanel.repaint();
+                            setInfo();
+                            return;
+                        }
+                    }
+                }
         );
     }
 
-    private void makeGUI() {
+    private void createGUI() {
         this.setSize(1000, 700);
         this.setTitle(TITLE);
         this.createMenu();
@@ -808,38 +648,36 @@ public class JGraphFrame extends JFrame {
         mainPanel.setBackground(Color.DARK_GRAY);
         this.add(mainPanel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        //----------------------------------------------------
+
         infoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         infoPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
         workPanel = new JPanel(new GridBagLayout());
-        workPanel.setBorder(BorderFactory.
-                createEtchedBorder(new Color(0, 0, 0), null));
-        //---------------------------------------------
+
         commentTxt = new JTextArea(1, 80);
         commentTxt.setEditable(false);
         commentTxt.setFont(new Font("Arial", Font.BOLD, 12));
-        commentTxt.setForeground(Color.RED);
+        commentTxt.setForeground(Color.BLUE);
         commentTxt.setWrapStyleWord(true);
         commentTxt.setLineWrap(true);
         //-------------------------------------
         commentScrollPanel = new JScrollPane(commentTxt);
         commentScrollPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
-        //---------------------------------------------
+
         lowPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         lowPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
-        //----------------------------------------------
+
         mainPanel.add(infoPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 2, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
         mainPanel.add(workPanel, new GridBagConstraints(0, 1, 1, 1, 1, 0.8,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 2, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
         mainPanel.add(commentScrollPanel, new GridBagConstraints(0, 2, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 2, 0), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
         mainPanel.add(lowPanel, new GridBagConstraints(0, 3, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        //----------------------------------------------
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
+
         operationPanel = new JPanel(new GridBagLayout());
         operationPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
@@ -850,29 +688,24 @@ public class JGraphFrame extends JFrame {
         workPanel.add(operationPanel, new GridBagConstraints(0, 0, 1, 1, 0, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         workPanel.add(graphPanel, new GridBagConstraints(1, 0, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        //-----------------------------------------------
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 0, 0), 0, 0));
+
         buttonsPanel = new JPanel(new GridBagLayout());
-        buttonsPanel.setBorder(BorderFactory.
-                createEtchedBorder(new Color(0, 0, 0), null));
         accessuryPanel = new JPanel(new GridBagLayout());
-        accessuryPanel.setBorder(BorderFactory.
-                createEtchedBorder(new Color(0, 0, 0), null));
-        //-----------------------------------------------
+
         operationPanel.add(buttonsPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         operationPanel.add(accessuryPanel, new GridBagConstraints(0, 1, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        //-----------------------------------------------
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2, 0, 0, 0), 0, 0));
+
         setColor();
         setComponentListener();
         setWindowListener();
         addInfoComponents();
         addOperationButtons();
-        addInputComponents();
         setInfo();
         setAlgorithmsEnabled();
-        //--------------------------------
+
         topologicalSort();
         connectedComponents();
         mstSearch();
@@ -887,28 +720,32 @@ public class JGraphFrame extends JFrame {
         allPathsSearch();
         mstClustering();
         bridgesSearch();
+        addGraphDrawerListeners();
         this.setLocationRelativeTo(null);
     }
 
-    /**
-     *
-     * @return
-     */
     private Graph<Vertex, Edge2D> createClone() {
         return graph().copy();
     }
 
-    /**
-     *
-     * @param component
-     * @param result
-     */
     private void createResultFrame(Component component, String result) {
         AlgorithmsResultsFrame resultFrame
                 = new AlgorithmsResultsFrame(component, result);
         resultFrame.setVisible(true);
-        CancelAllOperationsWithGraph();
-        input.setEnabled(false);
+        cancelAllOperationsWithGraph();
+    }
+
+    private void addGraphDrawerListeners() {
+        graphPanel.setVertexErrorListener(e -> {
+            setEnabledForOperations(!Boolean.parseBoolean(e.getActionCommand()));
+        });
+        graphPanel.setUpdateGraphListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vertexNumText.setText(String.valueOf(graph().verticesNum()));
+                edgeNumText.setText(String.valueOf(graph().edgesNum()));
+            }
+        });
     }
 
     private void showEdges(final Collection<Edge2D> tree, String title) {
@@ -927,7 +764,7 @@ public class JGraphFrame extends JFrame {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 new Insets(0, 0, 0, 0), 0, 0));
         accessuryPanel.revalidate();
-        //--------------------------------------------
+
         showTree.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -959,31 +796,25 @@ public class JGraphFrame extends JFrame {
     private void bridgesSearch() {
         JMenuItem bridgesSearchMenu = new JMenuItem("Поиск всех мостов");
         undirectedGraphAlgorithms.add(bridgesSearchMenu);
-        bridgesSearchMenu.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent evt) {
-                                                    BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
-                                                    if (bs.connected()) {
-                                                        StringBuilder result
-                                                                = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
-                                                                + SEPARATOR + "Ребра мосты: " + SEPARATOR);
-                                                        for (Edge2D e : bs.bridges()) {
-                                                            result.append(e.print()).append(SEPARATOR);
-                                                        }
-                                                        createResultFrame(bridgesSearchMenu, result.toString());
-                                                        showEdges(bs.bridges(), "Отобразить мосты");
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
-                                                                null, JOptionPane.WARNING_MESSAGE);
-                                                    }
-                                                }
-                                            }
+        bridgesSearchMenu.addActionListener(evt -> {
+            BridgesSearch<Vertex, Edge2D> bs = new BridgesSearch<>(graph());
+            if (bs.connected()) {
+                StringBuilder result
+                        = new StringBuilder("Количество ребер-мостов: " + bs.bridges().size()
+                        + SEPARATOR + "Ребра мосты: " + SEPARATOR);
+                for (Edge2D e : bs.bridges()) {
+                    result.append(e.print()).append(SEPARATOR);
+                }
+                createResultFrame(bridgesSearchMenu, result.toString());
+                showEdges(bs.bridges(), "Отобразить мосты");
+            } else {
+                JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
+                        null, JOptionPane.WARNING_MESSAGE);
+            }
+        }
         );
     }
 
-    /**
-     *
-     */
     private void topologicalSort() {
         JMenuItem topoSortMenu = new JMenuItem("Топологическая сортировка");
         directedGraphAlgorithms.add(topoSortMenu);
@@ -1026,30 +857,14 @@ public class JGraphFrame extends JFrame {
                 = new JMenuItem("Сильно связные компоненты");
         undirectedGraphAlgorithms.add(connectedComponentsMenu);
         directedGraphAlgorithms.add(stronglyConnectedComponentsMenu);
-        connectedComponentsMenu.addActionListener(new ActionListener() {
-                                                      @Override
-                                                      public void actionPerformed(ActionEvent evt) {
-                                                          showConnectedComponents(new ConnectedComponents<>(graph()),
-                                                                  connectedComponentsMenu);
-
-                                                      }
-                                                  }
+        connectedComponentsMenu.addActionListener(evt -> showConnectedComponents(new ConnectedComponents<>(graph()),
+                connectedComponentsMenu)
         );
-        stronglyConnectedComponentsMenu.addActionListener(new ActionListener() {
-                                                              @Override
-                                                              public void actionPerformed(ActionEvent evt) {
-                                                                  showConnectedComponents(new StronglyConnectedComponents<>(graph()),
-                                                                          stronglyConnectedComponentsMenu);
-
-                                                              }
-                                                          }
+        stronglyConnectedComponentsMenu.addActionListener(evt -> showConnectedComponents(new StronglyConnectedComponents<>(graph()),
+                stronglyConnectedComponentsMenu)
         );
     }
 
-    /**
-     *
-     * @return
-     */
     private Vertex firstVertex() {
         Iterator<Vertex> v = graph().iterator();
         if (v.hasNext()) {
@@ -1058,10 +873,6 @@ public class JGraphFrame extends JFrame {
         return null;
     }
 
-    /**
-     *
-     * @param component
-     */
     private void createMst(MstType type, Component component, String title) {
         ConnectedComponents<Vertex> connComp
                 = new ConnectedComponents<>(graph());
@@ -1107,9 +918,6 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    /**
-     *
-     */
     private void mstSearch() {
         JMenu mstMenu = new JMenu("Построение минимального остовного дерева");
         JMenuItem primMstMenu = new JMenuItem("Алгоритм Прима");
@@ -1143,7 +951,6 @@ public class JGraphFrame extends JFrame {
         allSptMenuJohnson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
                 if (!NumberParser.isNullWeights(graph())) {
                     Graph<Vertex, Edge2D> clone = createClone();
                     showAllSpt(new JohnsonAllPairsShortestPaths<>(clone, new Vertex("")),
@@ -1160,7 +967,7 @@ public class JGraphFrame extends JFrame {
         allSptMenuFloydWarshall.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 if (!NumberParser.isNullWeights(graph())) {
                     showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда",
                             allSptMenuFloydWarshall);
@@ -1175,11 +982,6 @@ public class JGraphFrame extends JFrame {
 
     }
 
-    /**
-     *
-     * @param allSpt
-     * @return
-     */
     private Pair<String, String> createAllSptDecision(AllPairsShortestPaths<Vertex, Edge2D> allSpt) {
         StringBuilder dist
                 = new StringBuilder("Кратчайшие расстояния между вершинами:" + SEPARATOR);
@@ -1233,10 +1035,7 @@ public class JGraphFrame extends JFrame {
                 }
             }
         });
-        //----------------------------------------------
         addSptComponents(source, target, showPath);
-        //--------------------------------------------------------------
-
     }
 
     /**
@@ -1251,7 +1050,7 @@ public class JGraphFrame extends JFrame {
                     result.getKey(), result.getValue());
             resultFrame.setVisible(true);
             showAllPaths(allSpt);
-            CancelAllOperationsWithGraph();
+            cancelAllOperationsWithGraph();
         } else {
             JOptionPane.showMessageDialog(this,
                     "Граф содержит цикл с отрицательным весом!",
@@ -1268,7 +1067,6 @@ public class JGraphFrame extends JFrame {
         transitiveClosureMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
                 TransitiveClosure<Vertex, Edge2D> tc
                         = new TransitiveClosure<>(graph());
                 StringBuilder result
@@ -1291,15 +1089,15 @@ public class JGraphFrame extends JFrame {
         JMenu graphPropertiesMenu = new JMenu("Метрические характеристики графа");
         directedGraphAlgorithms.add(graphPropertiesMenu);
         JMenuItem graphRadiusMenu = new JMenuItem("Радиус графа");
-        JMenuItem graphDiametrMenu = new JMenuItem("Диаметр графа");
+        JMenuItem graphDiameterMenu = new JMenuItem("Диаметр графа");
         JMenuItem eccentricityMenu = new JMenuItem("Эксцентриситет вершины");
         graphPropertiesMenu.add(graphRadiusMenu);
-        graphPropertiesMenu.add(graphDiametrMenu);
+        graphPropertiesMenu.add(graphDiameterMenu);
         graphPropertiesMenu.add(eccentricityMenu);
         graphRadiusMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 if (!NumberParser.isNullWeights(graph())) {
                     FloydWarshallAllPairsShortestPaths<Vertex, Edge2D> allSpt
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
@@ -1321,17 +1119,17 @@ public class JGraphFrame extends JFrame {
             }
         });
         //----------------------------------------------------
-        graphDiametrMenu.addActionListener(new ActionListener() {
+        graphDiameterMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 if (!NumberParser.isNullWeights(graph())) {
                     FloydWarshallAllPairsShortestPaths<Vertex, Edge2D> allSpt
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
                     if (allSpt.decision()) {
                         String result = "Диаметр графа:" + SEPARATOR + "d(G) = "
                                 + GraphMetricProperties.diametr(allSpt);
-                        createResultFrame(graphDiametrMenu, result);
+                        createResultFrame(graphDiameterMenu, result);
                     } else {
                         JOptionPane.showMessageDialog(JGraphFrame.this,
                                 "Граф содержит цикл с отрицательным весом!",
@@ -1349,7 +1147,7 @@ public class JGraphFrame extends JFrame {
         eccentricityMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
                         "Вершина:",
                         "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
@@ -1367,7 +1165,7 @@ public class JGraphFrame extends JFrame {
                                 + "e(" + s + ") = "
                                 + GraphMetricProperties.eccentricity(
                                 new DijkstraShortestPaths<>(graph(), s));
-                        createResultFrame(graphDiametrMenu, result);
+                        createResultFrame(graphDiameterMenu, result);
                     } else {
                         JOptionPane.showMessageDialog(JGraphFrame.this,
                                 "Весовая функция должна быть положительной!",
@@ -1633,7 +1431,7 @@ public class JGraphFrame extends JFrame {
      * @param algorithm
      */
     private void sptDialog(SptAlgorithm algorithm, Component component) {
-        input.setEnabled(false);
+
         if (!NumberParser.isNullWeights(graph())) {
             String v = (String) JOptionPane.showInputDialog(this,
                     "Вершина:",
@@ -1688,7 +1486,7 @@ public class JGraphFrame extends JFrame {
                     result.getKey(), result.getValue());
             resultFrame.setVisible(true);
             showPaths(spt);
-            CancelAllOperationsWithGraph();
+            cancelAllOperationsWithGraph();
         } else {
             JOptionPane.showMessageDialog(JGraphFrame.this,
                     error, null, JOptionPane.WARNING_MESSAGE);
@@ -1736,7 +1534,7 @@ public class JGraphFrame extends JFrame {
         bfsMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                input.setEnabled(false);
+
                 String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
                         "Вершина:",
                         "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
@@ -1758,7 +1556,7 @@ public class JGraphFrame extends JFrame {
                             result.getKey(), result.getValue());
                     resultFrame.setVisible(true);
                     showPaths(bfs);
-                    CancelAllOperationsWithGraph();
+                    cancelAllOperationsWithGraph();
                 }
                 //--------------------------------------------------               
             }
@@ -1772,7 +1570,7 @@ public class JGraphFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 //---------------------------------
-                input.setEnabled(false);
+
                 DepthFirstSearch<Vertex> dfs
                         = new DepthFirstSearch<>(graph());
 
@@ -1792,7 +1590,7 @@ public class JGraphFrame extends JFrame {
                         = new DFSResultsFrame(dfsMenu, paths.toString(), discovery.toString(),
                         finishing.toString());
                 resultFrame.setVisible(true);
-                CancelAllOperationsWithGraph();
+                cancelAllOperationsWithGraph();
                 //--------------------------------------------------               
             }
         });

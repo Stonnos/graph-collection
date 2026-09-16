@@ -5,6 +5,9 @@
  */
 package graphcollection.gui;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
@@ -13,7 +16,12 @@ import java.awt.geom.Ellipse2D;
  * @author Рома
  */
 public class Vertex implements Comparable<Vertex>, java.io.Serializable {
-    public String name;
+    @Getter
+    private final String name;
+    @Getter
+    @Setter
+    private String displayName;
+
     public static final Color default_color = Color.WHITE;
     public static final Color default_border_color = Color.BLACK;
     public static final Color default_name_color = Color.BLUE;
@@ -22,11 +30,9 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
     public Color nameColor = default_name_color;
     public Ellipse2D.Double ellipse;
 
-    public Vertex() {
-    }
-
     public Vertex(String name) {
         this.name = name;
+        this.displayName = name;
     }
 
     public Vertex(String name, Color color) {
@@ -63,15 +69,15 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
         return name.compareTo(v.name);
     }
     
-   /* @Override 
+    @Override
     public boolean equals(Object obj) {
          if (this == obj)
              return true;
-         if (obj != null && obj instanceof Vertex) {
+         if (obj instanceof Vertex) {
              return ((Vertex)obj).name.equals(name);
          }
          else return false;
-    }*/
+    }
 
     public double getX() {
         return ellipse.getX();
@@ -100,8 +106,8 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
     public void drawVertexName(Graphics2D g) {
         FontMetrics fm = g.getFontMetrics();
         g.setPaint(nameColor);
-        g.drawString(name, (float) getX() +
-                        ((float) getWidth() - fm.stringWidth(name)) / 2,
+        g.drawString(displayName, (float) getX() +
+                        ((float) getWidth() - fm.stringWidth(displayName)) / 2,
                 (float) getY() + fm.getAscent() +
                         ((float) getWidth() - (fm.getAscent() + fm.getDescent())) / 2);
     }
@@ -121,8 +127,4 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
         drawVertexBorder(g);
         drawVertexName(g);
     }
-
 }
-/**
- *
- */

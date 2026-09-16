@@ -10,11 +10,11 @@ package graphcollection.gui;
  * @author Рома
  */
 public enum GraphView {
-    Hash_Set_Graph("Cписки смежности(HashSet)"),
-    Tree_Set_Graph("Cписки смежности(TreeSet)"),
-    Sorted_Set_Graph("Cписки смежности(ListSet)"),
-    List_Set_Graph("Cписки смежности(SortedSet)"),
-    Matrix_Graph("Матрица смежности");
+    HASH_SET_GRAPH("Cписки смежности (HashSet)"),
+    TREE_SET_GRAPH("Cписки смежности (TreeSet)"),
+    SORTED_SET_GRAPH("Cписки смежности (ListSet)"),
+    LIST_SET_GRAPH("Cписки смежности (SortedSet)"),
+    MATRIX_GRAPH("Матрица смежности");
 
     GraphView(String text) {
         this.text = text;
@@ -23,7 +23,6 @@ public enum GraphView {
     String getText() {
         return text;
     }
-
 
     private final String text;
 }

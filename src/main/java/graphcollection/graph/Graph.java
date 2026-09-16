@@ -10,49 +10,49 @@ import java.util.Iterator;
 public interface Graph<V, E extends Edge<V>>
         extends Iterable<V>, Copyable<Graph<V, E>> {
 
-    public int verticesNum();
+    int verticesNum();
 
-    public int edgesNum();
+    int edgesNum();
 
-    public boolean addVertex(V v);
+    boolean addVertex(V v);
 
-    public boolean removeVertex(V v);
+    boolean removeVertex(V v);
 
-    public boolean addEdge(E e);
+    boolean addEdge(E e);
 
-    public int removeEdge(E e);
+    int removeEdge(E e);
 
-    public E edge(V v1, V v2);
+    E edge(V v1, V v2);
 
-    public boolean containsEdge(E e);
+    boolean containsEdge(E e);
 
-    public boolean containsVertex(V v);
+    boolean containsVertex(V v);
 
-    public boolean removeOutEdges(V v);
+    boolean removeOutEdges(V v);
 
-    public boolean removeInEdges(V v);
+    boolean removeInEdges(V v);
 
-    public int outEdgesNum(V v);
+    int outEdgesNum(V v);
 
-    public int inEdgesNum(V v);
+    int inEdgesNum(V v);
 
-    public int adjacentVerticesNum(V v);
+    int adjacentVerticesNum(V v);
 
-    public void clearEdges();
+    void clearEdges();
 
-    public void clear();
+    void clear();
 
-    public boolean direction();
+    boolean direction();
 
-    public boolean isEmpty();
+    boolean isEmpty();
 
-    public boolean getUseLoops();
+    boolean getUseLoops();
 
-    public Iterator<E> edgeIterator();
+    Iterator<E> edgeIterator();
 
-    public Iterator<E> outEdgeIterator(V v);
+    Iterator<E> outEdgeIterator(V v);
 
-    public Iterator<E> inEdgeIterator(V v);
+    Iterator<E> inEdgeIterator(V v);
 
-    public Iterator<V> adjacencyIterator(V v);
+    Iterator<V> adjacencyIterator(V v);
 }
