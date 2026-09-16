@@ -134,7 +134,7 @@ public class JGraphDrawer extends JPanel {
     }
 
     public Vertex vertex(String v) {
-        return vertexMap.get(v);
+        return vertexDisplayNameMap.get(v);
     }
 
     public void clear() {

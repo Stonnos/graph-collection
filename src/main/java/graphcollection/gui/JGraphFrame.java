@@ -48,10 +48,12 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.TimerTask;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -979,8 +981,8 @@ public class JGraphFrame extends JFrame {
         JComboBox<String> source = new JComboBox<>();
         JComboBox<String> target = new JComboBox<>();
         for (Vertex u : graph()) {
-            source.addItem(u.toString());
-            target.addItem(u.toString());
+            source.addItem(u.getDisplayName());
+            target.addItem(u.getDisplayName());
         }
         JButton showPath = new JButton("Показать");
         JButton exit = new JButton("Выход");
@@ -1117,7 +1119,7 @@ public class JGraphFrame extends JFrame {
                 String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
                         "Вершина:",
                         "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
-                        null, null);
+                        getVertices(), null);
                 if (v != null) {
                     Vertex s = graphPanel.vertex(v);
                     if (s == null) {
@@ -1140,6 +1142,14 @@ public class JGraphFrame extends JFrame {
                 }
             }
         });
+    }
+
+    private String[] getVertices() {
+        List<String> vertices = new ArrayList<>();
+        for (Vertex vertex : graph()) {
+            vertices.add(vertex.getDisplayName());
+        }
+        return vertices.toArray(new String[0]);
     }
 
     private void setDefaultColorForEdges() {
@@ -1290,11 +1300,11 @@ public class JGraphFrame extends JFrame {
     }
 
     private void showPaths(final GraphPaths<Vertex> spt) {
-        JComboBox<String> source = new JComboBox<String>();
+        JComboBox<String> source = new JComboBox<>();
         source.addItem(spt.getSource().toString());
-        JComboBox<String> target = new JComboBox<String>();
+        JComboBox<String> target = new JComboBox<>();
         for (Vertex u : graph()) {
-            target.addItem(u.toString());
+            target.addItem(u.getDisplayName());
         }
         JButton showPath = new JButton("Показать");
         JButton exit = new JButton("Выход");
@@ -1354,7 +1364,7 @@ public class JGraphFrame extends JFrame {
             String v = (String) JOptionPane.showInputDialog(this,
                     "Вершина:",
                     "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
-                    null, null);
+                    getVertices(), null);
             if (v != null) {
                 Vertex s = graphPanel.vertex(v);
                 if (s == null) {
@@ -1428,7 +1438,7 @@ public class JGraphFrame extends JFrame {
             String v = (String) JOptionPane.showInputDialog(JGraphFrame.this,
                     "Вершина:",
                     "Выбор вершины", JOptionPane.INFORMATION_MESSAGE, null,
-                    null, null);
+                    getVertices(), null);
             if (v != null) {
                 Vertex s = graphPanel.vertex(v);
                 if (s == null) {
