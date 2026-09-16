@@ -62,6 +62,7 @@ public class JGraphFrame extends JFrame {
     private static final Color FRAME_COLOR = new Color(227, 232, 234);
     private static final int ICON_SIZE = 18;
     private static final int OPERATIONS_ICON_SIZE = 16;
+    private static final int ALGORITHMS_STEP_PANEL_SIZE = 35;
     private int animationSpeed = 2000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -72,7 +73,7 @@ public class JGraphFrame extends JFrame {
     private JGraphDrawer graphPanel;
     private JScrollPane commentScrollPanel;
     private JTextArea commentTxt;
-    private JPanel lowPanel;
+    private JPanel algorithmsStepPanel;
     //------------------------------------------------------
     private JLabel graphViewText;
     private JLabel graphDirectedText;
@@ -206,7 +207,7 @@ public class JGraphFrame extends JFrame {
         this.infoPanel.setBackground(FRAME_COLOR);
         this.buttonsPanel.setBackground(FRAME_COLOR);
         this.operationPanel.setBackground(FRAME_COLOR);
-        this.lowPanel.setBackground(FRAME_COLOR);
+        this.algorithmsStepPanel.setBackground(FRAME_COLOR);
         this.workPanel.setBackground(FRAME_COLOR);
         this.accessuryPanel.setBackground(FRAME_COLOR);
     }
@@ -665,9 +666,11 @@ public class JGraphFrame extends JFrame {
         commentScrollPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
 
-        lowPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        lowPanel.setBorder(BorderFactory.
+        algorithmsStepPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        algorithmsStepPanel.setBorder(BorderFactory.
                 createEtchedBorder(new Color(0, 0, 0), null));
+        algorithmsStepPanel.setMinimumSize(new Dimension(ALGORITHMS_STEP_PANEL_SIZE, ALGORITHMS_STEP_PANEL_SIZE));
+        algorithmsStepPanel.setPreferredSize(new Dimension(ALGORITHMS_STEP_PANEL_SIZE, ALGORITHMS_STEP_PANEL_SIZE));
 
         mainPanel.add(infoPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
@@ -675,7 +678,7 @@ public class JGraphFrame extends JFrame {
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
         mainPanel.add(commentScrollPanel, new GridBagConstraints(0, 2, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
-        mainPanel.add(lowPanel, new GridBagConstraints(0, 3, 1, 1, 1, 0,
+        mainPanel.add(algorithmsStepPanel, new GridBagConstraints(0, 3, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
 
         operationPanel = new JPanel(new GridBagLayout());
@@ -750,20 +753,16 @@ public class JGraphFrame extends JFrame {
 
     private void showEdges(final Collection<Edge2D> tree, String title) {
         setEnabledForOperations(false);
-        JLabel txt = new JLabel("Результаты:");
         JButton showTree = new JButton(title);
         JButton exit = new JButton("Выход");
-        accessuryPanel.removeAll();
-        accessuryPanel.add(txt, new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        accessuryPanel.add(showTree, new GridBagConstraints(0, 1, 1, 1, 1, 0,
+        algorithmsStepPanel.removeAll();
+        algorithmsStepPanel.add(showTree, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.add(exit, new GridBagConstraints(0, 2, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(exit, new GridBagConstraints(0, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.revalidate();
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.revalidate();
 
         showTree.addActionListener(new ActionListener() {
             @Override
@@ -783,16 +782,13 @@ public class JGraphFrame extends JFrame {
                     e.dimension = Edge2D.default_dimension;
                 }
                 graphPanel.repaint();
-                accessuryPanel.removeAll();
-                accessuryPanel.repaint();
+                algorithmsStepPanel.removeAll();
+                algorithmsStepPanel.repaint();
                 setEnabledForOperations(true);
             }
         });
     }
 
-    /**
-     *
-     */
     private void bridgesSearch() {
         JMenuItem bridgesSearchMenu = new JMenuItem("Поиск всех мостов");
         undirectedGraphAlgorithms.add(bridgesSearchMenu);
@@ -1038,10 +1034,6 @@ public class JGraphFrame extends JFrame {
         addSptComponents(source, target, showPath);
     }
 
-    /**
-     *
-     * @param allSpt
-     */
     private void showAllSpt(final AllPairsShortestPaths<Vertex, Edge2D> allSpt, String title, JMenuItem item) {
         if (allSpt.decision()) {
             Pair<String, String> result = createAllSptDecision(allSpt);
@@ -1196,18 +1188,11 @@ public class JGraphFrame extends JFrame {
         setDefaultColorForEdges();
         setDefaultColorForVerticesBorders();
         graphPanel.repaint();
-        accessuryPanel.removeAll();
-        accessuryPanel.repaint();
+        algorithmsStepPanel.removeAll();
+        algorithmsStepPanel.repaint();
         setEnabledForOperations(true);
     }
 
-    /**
-     *
-     * @param type
-     * @param component
-     * @param title
-     * @param error
-     */
     private void searchTour(TourType type, Component component,
                             String title, String error) {
         ConnectedComponents<Vertex> connComp
@@ -1242,28 +1227,19 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    /**
-     *
-     * @param tour
-     */
     private void showTour(final Collection<Vertex> tour) {
-        //--------------------------------------------------
         setEnabledForOperations(false);
-        JLabel txt = new JLabel("Результаты:");
         JButton showTour = new JButton("Отобразить цикл");
         JButton exit = new JButton("Выход");
-        accessuryPanel.removeAll();
-        accessuryPanel.add(txt, new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        accessuryPanel.add(showTour, new GridBagConstraints(0, 1, 1, 1, 1, 0,
+        algorithmsStepPanel.removeAll();
+        algorithmsStepPanel.add(showTour, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.add(exit, new GridBagConstraints(0, 2, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(exit, new GridBagConstraints(0, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.revalidate();
-        //--------------------------------------------
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.revalidate();
+
         showTour.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -1280,12 +1256,8 @@ public class JGraphFrame extends JFrame {
                 clearGraphPanel();
             }
         });
-        //-------------------------------------------        
     }
 
-    /**
-     *
-     */
     private void eulerTour() {
         JMenuItem eulerTourMenu = new JMenuItem("Поиск Эйлерова цикла");
         undirectedGraphAlgorithms.add(eulerTourMenu);
@@ -1298,9 +1270,6 @@ public class JGraphFrame extends JFrame {
         });
     }
 
-    /**
-     *
-     */
     private void gamiltonTour() {
         JMenuItem gamiltonTourMenu = new JMenuItem("Поиск Гамильтонова цикла");
         undirectedGraphAlgorithms.add(gamiltonTourMenu);
@@ -1313,45 +1282,38 @@ public class JGraphFrame extends JFrame {
         });
     }
 
-    /**
-     *
-     * @param source
-     * @param target
-     * @param showPath
-     */
     private void addSptComponents(JComboBox<String> source, JComboBox<String> target,
                                   JButton showPath) {
         setEnabledForOperations(false);
         JLabel txt = new JLabel("Кратчайший путь:");
         JButton exit = new JButton("Выход");
-        //------------------------------------------
-        //-------------------------------------------
-        accessuryPanel.removeAll();
-        accessuryPanel.add(txt, new GridBagConstraints(0, 0, 4, 1, 1, 0,
+
+        algorithmsStepPanel.removeAll();
+        algorithmsStepPanel.add(txt, new GridBagConstraints(0, 0, 4, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        //-----------------------------------------------------------
-        accessuryPanel.add(new JLabel("Из"), new GridBagConstraints(0, 1, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+
+        algorithmsStepPanel.add(new JLabel("из"), new GridBagConstraints(0, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        accessuryPanel.add(source, new GridBagConstraints(1, 1, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(source, new GridBagConstraints(1, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        accessuryPanel.add(new JLabel("в"), new GridBagConstraints(2, 1, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(new JLabel("в"), new GridBagConstraints(2, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        accessuryPanel.add(target, new GridBagConstraints(3, 1, 1, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(target, new GridBagConstraints(3, 1, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
-                new Insets(0, 0, 10, 0), 0, 0));
-        //-----------------------------------------------------------
-        accessuryPanel.add(showPath, new GridBagConstraints(0, 2, 4, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+
+        algorithmsStepPanel.add(showPath, new GridBagConstraints(0, 2, 4, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.add(exit, new GridBagConstraints(0, 3, 4, 1, 1, 0,
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.add(exit, new GridBagConstraints(0, 3, 4, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 0, 0, 0), 0, 0));
-        accessuryPanel.revalidate();
-        //-------------------------------------------------
+                new Insets(2, 0, 2, 0), 0, 0));
+        algorithmsStepPanel.revalidate();
+
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
