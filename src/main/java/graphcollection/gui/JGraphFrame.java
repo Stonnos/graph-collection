@@ -247,13 +247,18 @@ public class JGraphFrame extends JFrame {
         cancelAllOperationsWithGraph();
     }
 
-    private void setAlgorithmsEnabled() {
-        if (graph().direction()) {
-            undirectedGraphAlgorithms.setEnabled(false);
-            directedGraphAlgorithms.setEnabled(true);
+    private void setAlgorithmsEnabledFlag() {
+        if (graph().isEmpty()) {
+            algoritmsMenu.setEnabled(false);
         } else {
-            directedGraphAlgorithms.setEnabled(false);
-            undirectedGraphAlgorithms.setEnabled(true);
+            algoritmsMenu.setEnabled(true);
+            if (graph().direction()) {
+                undirectedGraphAlgorithms.setEnabled(false);
+                directedGraphAlgorithms.setEnabled(true);
+            } else {
+                directedGraphAlgorithms.setEnabled(false);
+                undirectedGraphAlgorithms.setEnabled(true);
+            }
         }
     }
 
@@ -266,7 +271,7 @@ public class JGraphFrame extends JFrame {
         graphPanel.create(view, direction);
         graphPanel.repaint();
         setInfo();
-        setAlgorithmsEnabled();
+        setAlgorithmsEnabledFlag();
     }
 
     private void createMenu() {
@@ -310,7 +315,7 @@ public class JGraphFrame extends JFrame {
                     if (file != null) {
                         graphPanel.read(file.getPath());
                         setInfo();
-                        setAlgorithmsEnabled();
+                        setAlgorithmsEnabledFlag();
                     }
                 } catch (InternalError | NumberFormatException e) {
                     JOptionPane.showMessageDialog(JGraphFrame.this, e,
@@ -371,7 +376,7 @@ public class JGraphFrame extends JFrame {
                                     dialog.lowerBound(), dialog.upperBound());
                         }
                         setInfo();
-                        setAlgorithmsEnabled();
+                        setAlgorithmsEnabledFlag();
                         graphPanel.repaint();
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(JGraphFrame.this, e,
@@ -602,6 +607,7 @@ public class JGraphFrame extends JFrame {
         clearGraph.addActionListener(evt -> {
                     graphPanel.clearGraph();
                     setNumbers();
+                    setAlgorithmsEnabledFlag();
                     cancelAllOperationsWithGraph();
 
                 }
@@ -717,7 +723,7 @@ public class JGraphFrame extends JFrame {
         addInfoComponents();
         addOperationButtons();
         setInfo();
-        setAlgorithmsEnabled();
+        setAlgorithmsEnabledFlag();
 
         topologicalSort();
         connectedComponents();
@@ -755,6 +761,7 @@ public class JGraphFrame extends JFrame {
         graphPanel.setUpdateGraphListener(e -> {
             vertexNumText.setText(String.valueOf(graph().verticesNum()));
             edgeNumText.setText(String.valueOf(graph().edgesNum()));
+            setAlgorithmsEnabledFlag();
         });
     }
 
