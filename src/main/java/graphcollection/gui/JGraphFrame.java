@@ -94,6 +94,8 @@ public class JGraphFrame extends JFrame {
     private JCheckBox setVertexNameCheckBox;
     private JCheckBox setEdgeWeightCheckBox;
 
+    private final PopupService popupService = new PopupService();
+
     private class PathDrawer extends TimerTask {
 
         private final java.util.Timer timer = new java.util.Timer();
@@ -118,12 +120,18 @@ public class JGraphFrame extends JFrame {
                 s = v;
                 graphPanel.repaint();
                 if (!vertex.hasNext()) {
-                    timer.cancel();
-                    Optional.ofNullable(finishListener).ifPresent(
-                            actionListener ->
-                                    actionListener.actionPerformed(new ActionEvent(this, 0, EMPTY)));
+                    finish();
                 }
+            } else {
+                finish();
             }
+        }
+
+        void finish() {
+            timer.cancel();
+            Optional.ofNullable(finishListener).ifPresent(
+                    actionListener ->
+                            actionListener.actionPerformed(new ActionEvent(this, 0, EMPTY)));
         }
 
         public void start() {
@@ -689,7 +697,7 @@ public class JGraphFrame extends JFrame {
         algorithmsStepPanel.setPreferredSize(new Dimension(ALGORITHMS_STEP_PANEL_SIZE, ALGORITHMS_STEP_PANEL_SIZE));
 
         mainPanel.add(infoPanel, new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 2, 2, 2), 0, 0));
         mainPanel.add(workPanel, new GridBagConstraints(0, 1, 1, 1, 1, 0.8,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 2, 2, 2), 0, 0));
         mainPanel.add(commentScrollPanel, new GridBagConstraints(0, 2, 1, 1, 1, 0,
@@ -812,8 +820,7 @@ public class JGraphFrame extends JFrame {
                         createResultFrame(bridgesSearchMenu, result.toString());
                         showEdges(bs.bridges(), "Отобразить мосты");
                     } else {
-                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть связным!",
-                                null, JOptionPane.WARNING_MESSAGE);
+                        popupService.showErrorPopup("Граф должен быть связным!", JGraphFrame.this);
                     }
                 }
         );
@@ -831,8 +838,8 @@ public class JGraphFrame extends JFrame {
                         result.append(topoSort.sequence());
                         createResultFrame(topoSortMenu, result.toString());
                     } else {
-                        JOptionPane.showMessageDialog(JGraphFrame.this, "Граф должен быть ациклическим!",
-                                null, JOptionPane.WARNING_MESSAGE);
+                        popupService.showErrorPopup("Граф должен быть ациклическим!",
+                                JGraphFrame.this);
                     }
                 }
         );
@@ -896,14 +903,11 @@ public class JGraphFrame extends JFrame {
                     showEdges(tree, "Отобразить дерево");
                 }
             } else {
-                JOptionPane.showMessageDialog(JGraphFrame.this,
-                        "Весовая функция должна быть положительной!",
-                        null, JOptionPane.WARNING_MESSAGE);
+                popupService.showErrorPopup("Весовая функция должна быть положительной!",
+                        JGraphFrame.this);
             }
         } else {
-            JOptionPane.showMessageDialog(JGraphFrame.this,
-                    "Граф должен быть связным!",
-                    null, JOptionPane.WARNING_MESSAGE);
+            popupService.showErrorPopup("Граф должен быть связным!", JGraphFrame.this);
         }
     }
 
@@ -937,9 +941,7 @@ public class JGraphFrame extends JFrame {
                     showAllSpt(new JohnsonAllPairsShortestPaths<>(clone, new Vertex("")),
                             "Результаты алгоритма Джонсона", allSptMenuJohnson);
                 } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Не все веса ребер заданы!",
-                            null, JOptionPane.WARNING_MESSAGE);
+                    popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
             }
         });
@@ -951,9 +953,7 @@ public class JGraphFrame extends JFrame {
                     showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда",
                             allSptMenuFloydWarshall);
                 } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Не все веса ребер заданы!",
-                            null, JOptionPane.WARNING_MESSAGE);
+                    popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
             }
         });
@@ -1013,10 +1013,8 @@ public class JGraphFrame extends JFrame {
                 });
                 drawer.start();
             } else {
-                JOptionPane.showMessageDialog(JGraphFrame.this,
-                        "Пути из '" + u + "' в '"
-                                + v + "' не существует!",
-                        null, JOptionPane.WARNING_MESSAGE);
+                popupService.showErrorPopup("Пути из '%s' в '%s' не существует!".formatted(u, v),
+                        JGraphFrame.this);
             }
         });
         addSptComponents(source, target, showPath, exit);
@@ -1032,9 +1030,8 @@ public class JGraphFrame extends JFrame {
             showAllPaths(allSpt);
             cancelAllOperationsWithGraph();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Граф содержит цикл с отрицательным весом!",
-                    null, JOptionPane.WARNING_MESSAGE);
+            popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!",
+                    JGraphFrame.this);
         }
     }
 
@@ -1085,14 +1082,11 @@ public class JGraphFrame extends JFrame {
                                 + GraphMetricProperties.radius(allSpt);
                         createResultFrame(graphRadiusMenu, result);
                     } else {
-                        JOptionPane.showMessageDialog(JGraphFrame.this,
-                                "Граф содержит цикл с отрицательным весом!",
-                                null, JOptionPane.WARNING_MESSAGE);
+                        popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!",
+                                JGraphFrame.this);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Не все веса ребер заданы!",
-                            null, JOptionPane.WARNING_MESSAGE);
+                    popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
             }
         });
@@ -1108,14 +1102,10 @@ public class JGraphFrame extends JFrame {
                                 + GraphMetricProperties.diametr(allSpt);
                         createResultFrame(graphDiameterMenu, result);
                     } else {
-                        JOptionPane.showMessageDialog(JGraphFrame.this,
-                                "Граф содержит цикл с отрицательным весом!",
-                                null, JOptionPane.WARNING_MESSAGE);
+                        popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!", JGraphFrame.this);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(JGraphFrame.this,
-                            "Не все веса ребер заданы!",
-                            null, JOptionPane.WARNING_MESSAGE);
+                    popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
             }
         });
@@ -1142,9 +1132,8 @@ public class JGraphFrame extends JFrame {
                                 new DijkstraShortestPaths<>(graph(), s));
                         createResultFrame(graphDiameterMenu, result);
                     } else {
-                        JOptionPane.showMessageDialog(JGraphFrame.this,
-                                "Весовая функция должна быть положительной!",
-                                null, JOptionPane.WARNING_MESSAGE);
+                        popupService.showErrorPopup("Весовая функция должна быть положительной!",
+                                JGraphFrame.this);
                     }
                 }
             }
@@ -1207,13 +1196,11 @@ public class JGraphFrame extends JFrame {
                 createResultFrame(component, result.toString());
                 showTour(tour);
             } else {
-                JOptionPane.showMessageDialog(JGraphFrame.this,
-                        error, null, JOptionPane.WARNING_MESSAGE);
+                popupService.showErrorPopup(error,JGraphFrame.this);
             }
         } else {
-            JOptionPane.showMessageDialog(JGraphFrame.this,
-                    "Граф должен быть связным!",
-                    null, JOptionPane.WARNING_MESSAGE);
+            popupService.showErrorPopup("Граф должен быть связным!",
+                    JGraphFrame.this);
         }
     }
 
@@ -1334,10 +1321,8 @@ public class JGraphFrame extends JFrame {
                 });
                 drawer.start();
             } else {
-                JOptionPane.showMessageDialog(JGraphFrame.this,
-                        "Пути из '" + spt.getSource() + "' в '"
-                                + u + "' не существует!",
-                        null, JOptionPane.WARNING_MESSAGE);
+                popupService.showErrorPopup("Пути из '%s' в '%s' не существует!".formatted(spt.getSource(), u),
+                        JGraphFrame.this);
             }
         });
         addSptComponents(source, target, showPath, exit);
@@ -1398,9 +1383,8 @@ public class JGraphFrame extends JFrame {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(JGraphFrame.this,
-                    "Не все веса ребер заданы!",
-                    null, JOptionPane.WARNING_MESSAGE);
+            popupService.showErrorPopup("Не все веса ребер заданы!",
+                    JGraphFrame.this);
         }
     }
 
@@ -1415,8 +1399,7 @@ public class JGraphFrame extends JFrame {
             showPaths(spt);
             cancelAllOperationsWithGraph();
         } else {
-            JOptionPane.showMessageDialog(JGraphFrame.this,
-                    error, null, JOptionPane.WARNING_MESSAGE);
+            popupService.showErrorPopup(error, JGraphFrame.this);
         }
     }
 
