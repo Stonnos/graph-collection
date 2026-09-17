@@ -120,7 +120,7 @@ public class Edge<V>
         try {
             clone = (Edge<V>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         return clone;
     }

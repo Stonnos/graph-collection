@@ -241,7 +241,7 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
         try {
             g = (AbstractGraph<V, E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         //----------------------------------------------
         g.edgeList = new HashMap<V, AbstractSet<E>>();

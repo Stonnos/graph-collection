@@ -85,7 +85,7 @@ public class DisjointSets<E> implements Cloneable,
         try {
             set = (DisjointSets<E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         set.p = (HashMap<E, E>) p.clone();
         set.rank = (HashMap<E, Integer>) rank.clone();

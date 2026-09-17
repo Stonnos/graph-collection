@@ -100,7 +100,7 @@ public abstract class AdjacencyMatrix<E> implements Iterable<E>, Cloneable,
         try {
             clone = (AdjacencyMatrix<E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         //----------------------------------------------
         clone.matrix = (ArrayList<ArrayList<E>>) matrix.clone();

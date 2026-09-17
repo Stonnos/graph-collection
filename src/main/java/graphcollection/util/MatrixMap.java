@@ -110,7 +110,7 @@ public class MatrixMap<K1, K2, V>
         try {
             map = (MatrixMap<K1, K2, V>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         map.matrix = (HashMap<K1, HashMap<K2, V>>) matrix.clone();
         map.size = size;

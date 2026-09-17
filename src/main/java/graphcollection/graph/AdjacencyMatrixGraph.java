@@ -363,7 +363,7 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
         try {
             g = (AdjacencyMatrixGraph<V, E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         //----------------------------------------------
         g.vertexMap = (HashMap<V, Integer>) vertexMap.clone();

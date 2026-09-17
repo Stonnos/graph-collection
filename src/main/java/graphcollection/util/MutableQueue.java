@@ -219,7 +219,7 @@ public class MutableQueue<E>
         try {
             clone = (MutableQueue<E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         clone.freeHead = freeHead;
         clone.capacity = capacity;

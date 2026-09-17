@@ -39,7 +39,7 @@ public class MatrixParser {
             }
             //---------------------------------------------
         } catch (IOException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         } catch (Exception e) {
             throw new NumberFormatException("Ошибка в задании матрицы!");
         }

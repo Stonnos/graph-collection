@@ -65,7 +65,7 @@ public class ListSet<E> extends AbstractSet<E>
         try {
             anotherSet = (ListSet<E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+            throw new IllegalStateException(e);
         }
         anotherSet.set = (LinkedList<E>) set.clone();
         return anotherSet;

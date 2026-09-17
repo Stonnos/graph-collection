@@ -80,8 +80,8 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
                     if (file != null) {
                         matrix.setText(file.getPath());
                     }
-                } catch (InternalError | NumberFormatException e) {
-                    JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this, e,
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this, ex,
                             null, JOptionPane.ERROR_MESSAGE);
                 }
             }

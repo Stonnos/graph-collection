@@ -6,6 +6,7 @@
 package graphcollection.gui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -32,14 +33,20 @@ public class GraphFileChooser {
         chooser.setFileFilter(new FileNameExtensionFilter("PNG files", "png"));
     }
 
+    public void setSelectedFile(File file) {
+        chooser.setSelectedFile(file);
+    }
+
     private File getFile(Component parent) {
         if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-            File file = new File(chooser.getSelectedFile().getPath());
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new InternalError(e);
+            File file = chooser.getSelectedFile();
+            for (FileFilter filter : chooser.getChoosableFileFilters()) {
+                if (filter.accept(file)) {
+                    return file;
+                }
             }
+            FileNameExtensionFilter ext = (FileNameExtensionFilter) chooser.getFileFilter();
+            file = new File(String.format("%s.%s", file.getAbsolutePath(), ext.getExtensions()[0]));
             return file;
         } else {
             return null;

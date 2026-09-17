@@ -33,7 +33,7 @@ public class VertexDistance<V, D extends Number>
         try {
             clone = (VertexDistance<V, Number>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         clone.vertex = vertex;
         clone.distance = distance;

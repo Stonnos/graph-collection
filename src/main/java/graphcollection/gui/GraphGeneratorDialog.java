@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import static graphcollection.gui.ButtonUtils.createButton;
+
 public class GraphGeneratorDialog extends JDialog {
 
     private static final String[] GRAPH_VIEWS = new String[] {
@@ -73,8 +75,8 @@ public class GraphGeneratorDialog extends JDialog {
         this.add(graphView, new GridBagConstraints(0, 6, 2, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 5, 10, 5), 0, 0));
 
-        JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton("Cancel");
+        JButton okButton = createButton("OK");
+        JButton cancelButton = createButton("Отмена");
 
         okButton.addActionListener(new ActionListener() {
             @Override

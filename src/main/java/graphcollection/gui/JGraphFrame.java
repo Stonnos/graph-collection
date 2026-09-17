@@ -41,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
@@ -51,10 +52,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.TimerTask;
-import java.util.List;
 
+import static graphcollection.gui.ButtonUtils.createButton;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
@@ -94,7 +96,9 @@ public class JGraphFrame extends JFrame {
     private JCheckBox setVertexNameCheckBox;
     private JCheckBox setEdgeWeightCheckBox;
 
-    private final PopupService popupService = new PopupService();
+    public final PopupService popupService = new PopupService();
+
+    private AlgorithmsResultsPanel algorithmsResultsPanel;
 
     private class PathDrawer extends TimerTask {
 
@@ -325,8 +329,8 @@ public class JGraphFrame extends JFrame {
                         setInfo();
                         setAlgorithmsEnabledFlag();
                     }
-                } catch (InternalError | NumberFormatException e) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, e,
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
                             null, JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -343,8 +347,8 @@ public class JGraphFrame extends JFrame {
                         GraphParser writer = new GraphParser();
                         writer.write(graph(), file.getPath());
                     }
-                } catch (InternalError e) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, e,
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
                             null, JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -748,6 +752,7 @@ public class JGraphFrame extends JFrame {
         mstClustering();
         bridgesSearch();
         addGraphDrawerListeners();
+        addResizeListener();
         this.setLocationRelativeTo(null);
     }
 
@@ -755,10 +760,9 @@ public class JGraphFrame extends JFrame {
         return graph().copy();
     }
 
-    private void createResultFrame(Component component, String result) {
-        AlgorithmsResultsFrame resultFrame
-                = new AlgorithmsResultsFrame(component, result);
-        resultFrame.setVisible(true);
+    private void createResultFrame(String result) {
+        SimpleResultsPanel resultsPanel = new SimpleResultsPanel(JGraphFrame.this, result);
+        createAndShowResultsPanel(resultsPanel);
         cancelAllOperationsWithGraph();
     }
 
@@ -775,8 +779,8 @@ public class JGraphFrame extends JFrame {
 
     private void showEdges(final Collection<Edge2D> tree, String title) {
         setEnabledForOperations(false);
-        JButton showTree = new JButton(title);
-        JButton exit = new JButton("Выход");
+        JButton showTree = createButton(title);
+        JButton exit = createButton("Выход");
         algorithmsStepPanel.removeAll();
         algorithmsStepPanel.add(showTree, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
@@ -817,7 +821,7 @@ public class JGraphFrame extends JFrame {
                         for (Edge2D e : bs.bridges()) {
                             result.append(e.print()).append(SEPARATOR);
                         }
-                        createResultFrame(bridgesSearchMenu, result.toString());
+                        createResultFrame(result.toString());
                         showEdges(bs.bridges(), "Отобразить мосты");
                     } else {
                         popupService.showErrorPopup("Граф должен быть связным!", JGraphFrame.this);
@@ -836,7 +840,7 @@ public class JGraphFrame extends JFrame {
                                 = new StringBuilder("Последовательность вершин топологической сортировки:"
                                 + SEPARATOR);
                         result.append(topoSort.sequence());
-                        createResultFrame(topoSortMenu, result.toString());
+                        createResultFrame(result.toString());
                     } else {
                         popupService.showErrorPopup("Граф должен быть ациклическим!",
                                 JGraphFrame.this);
@@ -852,7 +856,7 @@ public class JGraphFrame extends JFrame {
                 + connComp.componentsNum() + SEPARATOR
                 + "Связные компонеты графа:" + SEPARATOR);
         result.append(connComp);
-        createResultFrame(component, result.toString());
+        createResultFrame(result.toString());
     }
 
     private void connectedComponents() {
@@ -899,7 +903,7 @@ public class JGraphFrame extends JFrame {
                     for (Edge2D e : tree) {
                         result.append(e.print()).append(SEPARATOR);
                     }
-                    createResultFrame(component, result.toString());
+                    createResultFrame(result.toString());
                     showEdges(tree, "Отобразить дерево");
                 }
             } else {
@@ -939,7 +943,7 @@ public class JGraphFrame extends JFrame {
                 if (!NumberParser.isNullWeights(graph())) {
                     Graph<Vertex, Edge2D> clone = createClone();
                     showAllSpt(new JohnsonAllPairsShortestPaths<>(clone, new Vertex("")),
-                            "Результаты алгоритма Джонсона", allSptMenuJohnson);
+                            "Результаты алгоритма Джонсона");
                 } else {
                     popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
@@ -950,8 +954,7 @@ public class JGraphFrame extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 if (!NumberParser.isNullWeights(graph())) {
-                    showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда",
-                            allSptMenuFloydWarshall);
+                    showAllSpt(new FloydWarshallAllPairsShortestPaths<>(graph()), "Результаты алгоритма Флойда");
                 } else {
                     popupService.showErrorPopup("Не все веса ребер заданы!", JGraphFrame.this);
                 }
@@ -1020,13 +1023,13 @@ public class JGraphFrame extends JFrame {
         addSptComponents(source, target, showPath, exit);
     }
 
-    private void showAllSpt(final AllPairsShortestPaths<Vertex, Edge2D> allSpt, String title, JMenuItem item) {
+    private void showAllSpt(final AllPairsShortestPaths<Vertex, Edge2D> allSpt, String title) {
         if (allSpt.decision()) {
             Pair<String, String> result = createAllSptDecision(allSpt);
-            SptResultsFrame resultFrame
-                    = new SptResultsFrame(item, title,
+            SptResultsPanel resultFrame
+                    = new SptResultsPanel(JGraphFrame.this, title,
                     result.getKey(), result.getValue());
-            resultFrame.setVisible(true);
+            createAndShowResultsPanel(resultFrame);
             showAllPaths(allSpt);
             cancelAllOperationsWithGraph();
         } else {
@@ -1056,7 +1059,7 @@ public class JGraphFrame extends JFrame {
                                 .append(v).append(isPath).append(SEPARATOR);
                     }
                 }
-                createResultFrame(transitiveClosureMenu, result.toString());
+                createResultFrame(result.toString());
             }
         });
     }
@@ -1080,7 +1083,7 @@ public class JGraphFrame extends JFrame {
                     if (allSpt.decision()) {
                         String result = "Радиус графа:" + SEPARATOR + "r(G) = "
                                 + GraphMetricProperties.radius(allSpt);
-                        createResultFrame(graphRadiusMenu, result);
+                        createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!",
                                 JGraphFrame.this);
@@ -1100,7 +1103,7 @@ public class JGraphFrame extends JFrame {
                     if (allSpt.decision()) {
                         String result = "Диаметр графа:" + SEPARATOR + "d(G) = "
                                 + GraphMetricProperties.diametr(allSpt);
-                        createResultFrame(graphDiameterMenu, result);
+                        createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!", JGraphFrame.this);
                     }
@@ -1130,7 +1133,7 @@ public class JGraphFrame extends JFrame {
                                 + "e(" + s + ") = "
                                 + GraphMetricProperties.eccentricity(
                                 new DijkstraShortestPaths<>(graph(), s));
-                        createResultFrame(graphDiameterMenu, result);
+                        createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Весовая функция должна быть положительной!",
                                 JGraphFrame.this);
@@ -1172,6 +1175,30 @@ public class JGraphFrame extends JFrame {
         setEnabledForOperations(true);
     }
 
+    private void createAndShowResultsPanel(AlgorithmsResultsPanel algorithmsResultsPanel) {
+        hideCurrentResultsPanel();
+        this.algorithmsResultsPanel = algorithmsResultsPanel;
+        this.algorithmsResultsPanel.initialize();
+        this.algorithmsResultsPanel.showPanel();
+    }
+
+    private void hideCurrentResultsPanel() {
+        Optional.ofNullable(this.algorithmsResultsPanel).ifPresent(AlgorithmsResultsPanel::hidePanel);
+        this.algorithmsResultsPanel = null;
+    }
+
+    private void addResizeListener() {
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Optional.ofNullable(algorithmsResultsPanel).ifPresent(panel -> {
+                    panel.hidePanel();
+                    panel.showPanel();
+                });
+            }
+        });
+    }
+
     private void searchTour(TourType type, Component component,
                             String title, String error) {
         ConnectedComponents<Vertex> connComp
@@ -1193,10 +1220,10 @@ public class JGraphFrame extends JFrame {
                 Collection<Vertex> tour = tourSearch.tour();
                 StringBuilder result = new StringBuilder(title);
                 result.append(tour);
-                createResultFrame(component, result.toString());
+                createResultFrame(result.toString());
                 showTour(tour);
             } else {
-                popupService.showErrorPopup(error,JGraphFrame.this);
+                popupService.showErrorPopup(error, JGraphFrame.this);
             }
         } else {
             popupService.showErrorPopup("Граф должен быть связным!",
@@ -1206,8 +1233,8 @@ public class JGraphFrame extends JFrame {
 
     private void showTour(final Collection<Vertex> tour) {
         setEnabledForOperations(false);
-        JButton showTour = new JButton("Отобразить цикл");
-        JButton exit = new JButton("Выход");
+        JButton showTour = createButton("Отобразить цикл");
+        JButton exit = createButton("Выход");
         algorithmsStepPanel.removeAll();
         algorithmsStepPanel.add(showTour, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
@@ -1262,10 +1289,10 @@ public class JGraphFrame extends JFrame {
                                   JButton showPath,
                                   JButton exit) {
         setEnabledForOperations(false);
-        JLabel txt = new JLabel("Кратчайший путь:");
-
+        JLabel sptLabel = new JLabel("Кратчайший путь:");
+        sptLabel.setFont(sptLabel.getFont().deriveFont(Font.BOLD));
         algorithmsStepPanel.removeAll();
-        algorithmsStepPanel.add(txt, new GridBagConstraints(0, 0, 4, 1, 1, 0,
+        algorithmsStepPanel.add(sptLabel, new GridBagConstraints(0, 0, 4, 1, 1, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER,
                 new Insets(2, 0, 2, 0), 0, 0));
 
@@ -1300,8 +1327,8 @@ public class JGraphFrame extends JFrame {
         for (Vertex u : graph()) {
             target.addItem(u.getDisplayName());
         }
-        JButton showPath = new JButton("Показать");
-        JButton exit = new JButton("Выход");
+        JButton showPath = createButton("Показать");
+        JButton exit = createButton("Выход");
         showPath.addActionListener(evt -> {
             Vertex u = graphPanel.vertex((String) target.getSelectedItem());
             if (spt.isPath(u)) {
@@ -1350,7 +1377,7 @@ public class JGraphFrame extends JFrame {
         return new Pair<>(dist.toString(), paths.toString());
     }
 
-    private void sptDialog(SptAlgorithm algorithm, Component component) {
+    private void sptDialog(SptAlgorithm algorithm) {
 
         if (!NumberParser.isNullWeights(graph())) {
             String v = (String) JOptionPane.showInputDialog(this,
@@ -1368,16 +1395,16 @@ public class JGraphFrame extends JFrame {
                 switch (algorithm) {
                     case dijkstra:
                         sptSearch(new DijkstraShortestPaths<>(graph(), s),
-                                component, "Результаты алгоритма Дейкстры", null);
+                                "Результаты алгоритма Дейкстры", null);
                         break;
                     case bellman_ford:
                         sptSearch(new BellmanFordShortestPaths<>(graph(), s),
-                                component, "Результаты алгоритма Беллмана-Форда",
+                                "Результаты алгоритма Беллмана-Форда",
                                 "Граф содержит цикл с отрицательным весом!");
                         break;
                     case dag:
                         sptSearch(new DAGShortestPaths<>(graph(), s),
-                                component, "Кратчайшие пути в DAG",
+                                "Кратчайшие пути в DAG",
                                 "Граф должен быть ациклическим!");
                         break;
                 }
@@ -1388,14 +1415,13 @@ public class JGraphFrame extends JFrame {
         }
     }
 
-    private void sptSearch(ShortestPaths<Vertex, Edge2D> spt, Component component,
-                           String title, String error) {
+    private void sptSearch(ShortestPaths<Vertex, Edge2D> spt, String title, String error) {
         if (spt.decision()) {
             Pair<String, String> result = createSptDecision(spt);
-            SptResultsFrame resultFrame
-                    = new SptResultsFrame(component, title,
+            SptResultsPanel resultFrame
+                    = new SptResultsPanel(JGraphFrame.this, title,
                     result.getKey(), result.getValue());
-            resultFrame.setVisible(true);
+            createAndShowResultsPanel(resultFrame);
             showPaths(spt);
             cancelAllOperationsWithGraph();
         } else {
@@ -1413,11 +1439,11 @@ public class JGraphFrame extends JFrame {
         sptMenu.add(bellmanFordSptMenu);
         sptMenu.add(dagSptMenu);
 
-        dijkstraSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dijkstra, dijkstraSptMenu));
+        dijkstraSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dijkstra));
 
-        bellmanFordSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.bellman_ford, bellmanFordSptMenu));
+        bellmanFordSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.bellman_ford));
 
-        dagSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dag, dagSptMenu));
+        dagSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dag));
     }
 
     private void bfsVisit() {
@@ -1440,10 +1466,10 @@ public class JGraphFrame extends JFrame {
                 BreadFirstSearch<Vertex> bfs
                         = new BreadFirstSearch<>(graph(), s);
                 Pair<String, String> result = createSptDecision(bfs);
-                SptResultsFrame resultFrame
-                        = new SptResultsFrame(bfsMenu, "Кратчайшик пути (BFS)",
+                SptResultsPanel sptResultsPanel
+                        = new SptResultsPanel(JGraphFrame.this, "Кратчайшик пути (BFS)",
                         result.getKey(), result.getValue());
-                resultFrame.setVisible(true);
+                createAndShowResultsPanel(sptResultsPanel);
                 showPaths(bfs);
                 cancelAllOperationsWithGraph();
             }
@@ -1466,10 +1492,12 @@ public class JGraphFrame extends JFrame {
                 finishing.append("f[").append(v).append("] = ")
                         .append(dfs.finishingTime(v)).append(SEPARATOR);
             }
-            DFSResultsFrame resultFrame
-                    = new DFSResultsFrame(dfsMenu, paths.toString(), discovery.toString(),
-                    finishing.toString());
-            resultFrame.setVisible(true);
+            DfsResultsPanel dfsResultsPanel = new DfsResultsPanel(JGraphFrame.this,
+                    paths.toString(),
+                    discovery.toString(),
+                    finishing.toString()
+            );
+            createAndShowResultsPanel(dfsResultsPanel);
             cancelAllOperationsWithGraph();
 
         });
@@ -1495,7 +1523,7 @@ public class JGraphFrame extends JFrame {
                         = new StringBuilder("Количество путей: " + allPaths.size() + SEPARATOR
                         + "Структуры путей:" + SEPARATOR);
                 result.append(allPaths);
-                createResultFrame(allPathsMenu, result.toString());
+                createResultFrame(result.toString());
             }
             dialog.dispose();
         });
@@ -1521,9 +1549,9 @@ public class JGraphFrame extends JFrame {
                             + SEPARATOR
                             + "Структуры кластеров:" + SEPARATOR);
                     result.append(clustering);
-                    createResultFrame(mstClusteringMenu, result.toString());
-                } catch (InternalError | IllegalArgumentException e) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, e,
+                    createResultFrame(result.toString());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
                             null, JOptionPane.ERROR_MESSAGE);
                 }
             }

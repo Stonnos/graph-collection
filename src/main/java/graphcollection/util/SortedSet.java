@@ -97,7 +97,7 @@ public class SortedSet<E> extends AbstractSet<E>
         try {
             anotherSet = (SortedSet<E>) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InternalError(e);
+             throw new IllegalStateException(e);
         }
         anotherSet.set = (ArrayList<E>) set.clone();
         return anotherSet;

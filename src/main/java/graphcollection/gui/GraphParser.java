@@ -55,7 +55,7 @@ public class GraphParser {
             }
 
         } catch (IOException e) {
-            throw new InternalError(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -127,7 +127,7 @@ public class GraphParser {
                 }
             }
         } catch (IOException e) {
-            throw new InternalError(e);
+            throw new IllegalStateException(e);
         }
         return g;
     }
