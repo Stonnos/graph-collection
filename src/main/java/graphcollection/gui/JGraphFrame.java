@@ -71,6 +71,8 @@ public class JGraphFrame extends JFrame {
     private static final int ICON_SIZE = 18;
     private static final int OPERATIONS_ICON_SIZE = 16;
     private static final int ALGORITHMS_STEP_PANEL_SIZE = 35;
+    private static final int FRAME_WIDTH = 1280;
+    private static final int FRAME_HEIGHT = 800;
     private int animationSpeed = 2000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -661,7 +663,7 @@ public class JGraphFrame extends JFrame {
     }
 
     private void createGUI() {
-        this.setSize(1000, 700);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         this.setTitle(TITLE);
         this.createMenu();
         this.setLayout(new GridBagLayout());
