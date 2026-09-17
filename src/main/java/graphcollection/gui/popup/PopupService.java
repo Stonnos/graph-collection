@@ -21,10 +21,10 @@ public class PopupService {
 
     private static final long POPUP_VISIBILITY_TIME_MILLIS = 4000L;
 
-    private static final int POPUP_MARGIN_RIGNT = 225;
+    private static final int POPUP_MARGIN_RIGHT = 235;
     private static final int POPUP_MARGIN_TOP = 80;
     private static final int POPUP_MARGIN_BOTTOM = 45;
-    private static final Dimension PANEL_DIMENSION = new Dimension(225, 70);
+    private static final Dimension PANEL_DIMENSION = new Dimension(275, 70);
 
     private final PopupFactory popupFactory = PopupFactory.getSharedInstance();
 
@@ -107,7 +107,7 @@ public class PopupService {
         infoPanel.add(closeButton, new GridBagConstraints(0, 1, 1, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(4, 0, 4, 0), 0, 0));
-        int x = component.getX() + POPUP_MARGIN_RIGNT;
+        int x = component.getX() + POPUP_MARGIN_RIGHT;
         int y = calculatePopupY(component);
         Popup popup = popupFactory.getPopup(component, infoPanel, x, y);
         PopupDescriptor popupDescriptor = new PopupDescriptor(popup, x, y);

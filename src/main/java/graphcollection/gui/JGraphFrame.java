@@ -943,7 +943,7 @@ public class JGraphFrame extends JFrame {
                     showEdges(tree, "Отобразить дерево");
                 }
             } else {
-                popupService.showErrorPopup("Весовая функция должна быть положительной!",
+                popupService.showErrorPopup("Веса должны быть положительными!",
                         JGraphFrame.this);
             }
         } else {
@@ -1171,7 +1171,7 @@ public class JGraphFrame extends JFrame {
                                 new DijkstraShortestPaths<>(graph(), s));
                         createResultFrame(result);
                     } else {
-                        popupService.showErrorPopup("Весовая функция должна быть положительной!",
+                        popupService.showErrorPopup("Веса должны быть положительными!",
                                 JGraphFrame.this);
                     }
                 }
