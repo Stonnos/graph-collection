@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: sans-serif; font-size: 12px; margin: 10px; }
+        h1 { font-size: 16px; color: #1a5276; text-align: center; }
+        p { text-align: justify; line-height: 1.4; }
+        pre { font-family: monospace; font-size: 12px; background-color: #f4f6f7; padding: 8px; border-left: 4px solid #34495e; }
+    </style>
+</head>
+<body>
+<h1>ТОПОЛОГИЧЕСКАЯ СОРТИРОВКА</h1>
+<p><b>Топологическая сортировка</b> — это такое линейное упорядочивание вершин ациклического орграфа, при котором для каждого ребра (u,v) вершина u располагается раньше v. Если граф не является ациклическим, то топологическая сортировка невозможна.</p>
+
+<p>Ниже приведен псевдокод основной процедуры Topo_Sort_Main, которая выполняет топологическую сортировку вершин графа и возвращает стек вершин в порядке топологической сортировки.</p>
+
+<pre>
+Topo_Sort_Main(G)
+1. for для всех v E V[G]
+2.     do color[v] &lt;- WHITE
+3. Stack &lt;- Пустое множество
+4. for для всех v E V[G]
+5.     if color[v] = WHITE
+6.        then Topological_Sort(G,v,Stack)
+7. return Stack
+</pre>
+
+<p>Ниже приведен псевдокод вспомогательной процедуры Topological_Sort, которая выполняет топологическую сортировку вершин графа.</p>
+
+<pre>
+Topological_Sort(G,u,Stack)
+1. color[u] &lt;- GRAY
+2. for для всех v E Adj[u]
+3.     do if color[v] = GRAY
+4.          then print "Граф не является ациклическим!"
+5.          else if color[v] = WHITE
+6.                  then Topological_Sort(G,v,Stack)
+7. Push(Stack,u)
+8. color[u] &lt;- BLACK
+</pre>
+
+<p>Время работы алгоритма составляет <b>O(V+E)</b>.</p>
+</body>
+</html>

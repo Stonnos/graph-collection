@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: sans-serif; font-size: 12px; margin: 10px; }
+        h1 { font-size: 16px; color: #1a5276; text-align: center; }
+        p { text-align: justify; line-height: 1.4; }
+        pre { font-family: monospace; font-size: 12px; background-color: #f4f6f7; padding: 8px; border-left: 4px solid #34495e; }
+    </style>
+</head>
+<body>
+<h1>ПОИСК ГАМИЛЬТОНОВА ЦИКЛА</h1>
+<p><b>Гамильтонов цикл</b> — это цикл, проходящий через все вершины графа ровно один раз.</p>
+<p>В данном алгоритме используется поиск с возвратом. Ниже приведен псевдокод процедуры Gamilton_Tour, которая выполняет поиск Гамильтонова цикла в неорграфе G из вершины s и возвращает TRUE, если цикл найден, и FALSE в противном случае.</p>
+
+<pre>
+Gamilton_Tour(G,s)
+1. for для всех v E V[G]
+2.    do color[v] &lt;- WHITE
+3. List &lt;- Пустое множество
+4. for для всех v E Adj[s]
+5.    do if Gamilton_Visit(G,s,v,V[G]-1,List) = TRUE
+6.       then addLast(List,s)
+7.            return TRUE
+8. return FALSE
+</pre>
+
+<p>Ниже приведен псевдокод вспомогательной процедуры Gamilton_Visit, которая выполняет поиск Гамильтонова цикла в неорграфе G из вершины s и возвращает TRUE, если цикл найден, FALSE в противном случае. Параметр d предназначен для подсчета количества вершин, которые еще не пройдены.</p>
+
+<pre>
+Gamilton_Visit(G,s,u,d,List)
+1. if u = s и d = 0
+2.    then addFirst(List,u)
+3.         return TRUE
+4. color[u] &lt;- GRAY
+5. addFirst(List,u)
+6. for для всех v E Adj[s]
+7.    do if color[v] = WHITE
+8.       then if Gamilton_Visit(G,s,v,d-1,List) = TRUE
+9.               then return TRUE
+10. removeFirst(List)
+11. color[u] &lt;- WHITE
+12. return FALSE
+</pre>
+
+<p>Время работы алгоритма составляет <b>O(V!)</b>.</p>
+</body>
+</html>

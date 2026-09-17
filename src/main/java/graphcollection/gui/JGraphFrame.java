@@ -456,13 +456,14 @@ public class JGraphFrame extends JFrame {
         referenceMenu.add(aboutProgrammMenu);
 
         aboutProgrammMenu.addActionListener(evt -> {
-                    ReferenceBase frame = new ReferenceBase(aboutProgrammMenu);
+                    BaseReference frame = new BaseReference(aboutProgrammMenu);
+                    frame.readInfoFromFile("О программе.html");
                     frame.setVisible(true);
-                    frame.readInfoFromFile("О программе.txt");
                 }
         );
         reference.addActionListener(evt -> {
-                    ReferenceBase frame = new Reference(aboutProgrammMenu);
+                    BaseReference frame = new Reference(aboutProgrammMenu);
+                    frame.readInfoFromFile("Руководство пользователя.html");
                     frame.setVisible(true);
                 }
         );
