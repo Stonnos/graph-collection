@@ -1,5 +1,6 @@
-package graphcollection.gui;
+package graphcollection.gui.algorithms;
 
+import graphcollection.gui.SingletonRegistry;
 import graphcollection.gui.choosers.GraphFileChooser;
 import graphcollection.gui.util.PanelBorderUtils;
 import lombok.Getter;
@@ -76,7 +77,7 @@ public abstract class AlgorithmsResultsPanel extends JPanel {
         add(createResults(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.8,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 15, 2, 15), 0, 0));
         add(menuPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 15, 3, 15), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 15, 3, 15), 0, 0));
     }
 
     private void saveToFile(String name) {

@@ -31,6 +31,7 @@ import graphcollection.algorithms.trees.MinimumSpanningTree;
 import graphcollection.algorithms.trees.MinimumSpanningTreeClustering;
 import graphcollection.algorithms.trees.PrimMinimumSpanningTree;
 import graphcollection.graph.Graph;
+import graphcollection.gui.algorithms.AlgorithmsResultsPanel;
 import graphcollection.gui.algorithms.DfsResultsPanel;
 import graphcollection.gui.algorithms.SimpleResultsPanel;
 import graphcollection.gui.algorithms.SptResultsPanel;
@@ -49,6 +50,7 @@ import graphcollection.gui.model.Vertex;
 import graphcollection.gui.parse.MatrixParser;
 import graphcollection.gui.parse.NumberParser;
 import graphcollection.gui.popup.PopupService;
+import graphcollection.gui.util.PanelBorderUtils;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import lombok.Setter;
@@ -549,50 +551,63 @@ public class JGraphFrame extends JFrame {
         setEdgeWeightCheckBox.addActionListener(
                 e -> graphPanel.setManuallySetEdgeWeight(setEdgeWeightCheckBox.isSelected()));
 
-        JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
-        verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+       // JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
+       // verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
-        JLabel edgesActionsLabel = new JLabel("Действия с ребрами:");
-        edgesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+        //JLabel edgesActionsLabel = new JLabel("Действия с ребрами:");
+        //edgesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
-        JLabel otherActionsLabel = new JLabel("Другие действия:");
-        otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+      //  JLabel otherActionsLabel = new JLabel("Другие действия:");
+       // otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
-        buttonsPanel.add(verticesActionsLabel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 2), 0, 0));
-        buttonsPanel.add(addVertex, new GridBagConstraints(0, 1, 1, 1, 1, 1,
+        JPanel verticesOperationsPanel = new JPanel(new GridBagLayout());
+        verticesOperationsPanel.setFont(verticesOperationsPanel.getFont().deriveFont(Font.BOLD));
+        verticesOperationsPanel.setBorder(PanelBorderUtils.createTitledBorder("Действия с вершинами"));
+
+        verticesOperationsPanel.add(addVertex, new GridBagConstraints(0, 0, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-        buttonsPanel.add(removeVertex, new GridBagConstraints(0, 2, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
+        verticesOperationsPanel.add(removeVertex, new GridBagConstraints(0, 1, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
 
-        buttonsPanel.add(edgesActionsLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 0, 0));
-        buttonsPanel.add(addEdge, new GridBagConstraints(0, 4, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(removeEdge, new GridBagConstraints(0, 5, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(updateEdge, new GridBagConstraints(0, 6, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
+        JPanel edgesOperationsPanel = new JPanel(new GridBagLayout());
+        edgesOperationsPanel.setFont(edgesOperationsPanel.getFont().deriveFont(Font.BOLD));
+        edgesOperationsPanel.setBorder(PanelBorderUtils.createTitledBorder("Действия с ребрами"));
 
-        buttonsPanel.add(otherActionsLabel, new GridBagConstraints(0, 7, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 2), 0, 0));
-        buttonsPanel.add(clearEdges, new GridBagConstraints(0, 8, 1, 1, 1, 1,
+        edgesOperationsPanel.add(addEdge, new GridBagConstraints(0, 0, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(clearGraph, new GridBagConstraints(0, 9, 1, 1, 1, 1,
+        edgesOperationsPanel.add(removeEdge, new GridBagConstraints(0, 1, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(moveGraph, new GridBagConstraints(0, 10, 1, 1, 1, 1,
+        edgesOperationsPanel.add(updateEdge, new GridBagConstraints(0, 2, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(removeOutEdges, new GridBagConstraints(0, 11, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(removeInEdges, new GridBagConstraints(0, 12, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
-        buttonsPanel.add(transformGraph, new GridBagConstraints(0, 13, 1, 1, 1, 1,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 15, 5), 0, 0));
 
-        buttonsPanel.add(setEdgeWeightCheckBox, new GridBagConstraints(0, 14, 1, 1, 1, 1,
+        JPanel otherOperationsPanel = new JPanel(new GridBagLayout());
+        otherOperationsPanel.setFont(otherOperationsPanel.getFont().deriveFont(Font.BOLD));
+        otherOperationsPanel.setBorder(PanelBorderUtils.createTitledBorder("Другие действия"));
+
+        otherOperationsPanel.add(clearEdges, new GridBagConstraints(0, 8, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        otherOperationsPanel.add(clearGraph, new GridBagConstraints(0, 9, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        otherOperationsPanel.add(moveGraph, new GridBagConstraints(0, 10, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        otherOperationsPanel.add(removeOutEdges, new GridBagConstraints(0, 11, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        otherOperationsPanel.add(removeInEdges, new GridBagConstraints(0, 12, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+        otherOperationsPanel.add(transformGraph, new GridBagConstraints(0, 13, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 0, 0));
+
+        otherOperationsPanel.add(setEdgeWeightCheckBox, new GridBagConstraints(0, 14, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 2), 0, 0));
-        buttonsPanel.add(setVertexNameCheckBox, new GridBagConstraints(0, 16, 1, 1, 1, 1,
+        otherOperationsPanel.add(setVertexNameCheckBox, new GridBagConstraints(0, 16, 1, 1, 1, 1,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 0), 0, 0));
+
+        buttonsPanel.add(verticesOperationsPanel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5, 2, 5, 2), 0, 0));
+        buttonsPanel.add(edgesOperationsPanel, new GridBagConstraints(0, 1, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 5, 2), 0, 0));
+        buttonsPanel.add(otherOperationsPanel, new GridBagConstraints(0, 2, 1, 1, 1, 1,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 5, 2), 0, 0));
 
         addVertex.addActionListener(evt -> {
                     graphPanel.startAddVertex();
