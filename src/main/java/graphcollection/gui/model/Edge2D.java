@@ -100,17 +100,51 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
 
     public void drawWeight(Graphics2D g) {
         if (getWeight() != null) {
-            double r = Math.sqrt(Math.pow(target().getCenterX() - source().getCenterX(), 2)
-                    + Math.pow(target().getCenterY() - source().getCenterY(), 2));
-            double vx = (target().getCenterX() - source().getCenterX()) / r; //нормировка вектора
-            double vy = (target().getCenterY() - source().getCenterY()) / r; //нормировка вектора
-            double x = target().getCenterX() - r * vx / 3;  //вычисление коорд. x точки, лежащей на дуге
-            double y = target().getCenterY() - r * vy / 3;  //вычисление коорд. y точки, лежащей на дуге
+            double targetX = target().getCenterX();
+            double targetY = target().getCenterY();
+            double sourceX = source().getCenterX();
+            double sourceY = source().getCenterY();
+
+            double dx = targetX - sourceX;
+            double dy = targetY - sourceY;
+            double r = Math.sqrt(dx * dx + dy * dy);
+            if (r == 0) r = 1; // Защита от деления на ноль
+            double vx = dx / r;
+            double vy = dy / r;
+         // Вычисляем вектор перпендикуляра (нормаль), смотрящий в одну из сторон от ребра
+            double nx = -vy;
+            double ny = vx;
+            // 2. Параметры смещения текста
+            double distanceFromTarget;
+            double sideOffset;
+
+            if (!direction()) {
+                // Для неориентированных: строго по центру ребра (r / 2)
+                distanceFromTarget = r / 2;
+                // Сдвиг вбок на 12 пикселей, чтобы текст был РЯДОМ с ребром, а не НА нем
+                sideOffset = 12;
+            } else {
+                // Для ориентированных/двунаправленных: ближе к целевой вершине
+                distanceFromTarget = r / 2.5; // Чуть дальше от вершины, чем r/3, чтобы не прижималось близко
+                sideOffset = 15;              // Сдвиг вбок, чтобы веса «туда» и «обратно» разъехались
+            }
+            // 3. Расчет итоговых координат точки для текста
+            double x = targetX - distanceFromTarget * vx + nx * sideOffset;
+            double y = targetY - distanceFromTarget * vy + ny * sideOffset;
+            // 4. Отрисовка текста с центрированием
             Font oldFont = g.getFont();
             Font weightFont = new Font(WEIGHT_FONT, Font.BOLD, WEIGHT_FONT_SIZE);
             g.setFont(weightFont);
             g.setPaint(weightColor);
-            g.drawString(getWeight().toString(), (float) x, (float) y);
+
+            FontMetrics fm = g.getFontMetrics(weightFont);
+            String weightStr = getWeight().toString();
+            float textWidth = fm.stringWidth(weightStr);
+            float textHeight = fm.getAscent();
+            // Точное центрирование bounding box текста относительно рассчитанной точки (x, y)
+            float drawX = (float) (x - textWidth / 2);
+            float drawY = (float) (y + textHeight / 3);
+            g.drawString(weightStr, drawX, drawY);
             g.setFont(oldFont);
         }
     }

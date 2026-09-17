@@ -788,12 +788,38 @@ public class JGraphDrawer extends JPanel {
 
         void show() {
             JPanel infoPanel = createInputTextPanel();
-            double r = Math.sqrt(Math.pow(edge2D.target().getCenterX() - edge2D.source().getCenterX(), 2)
-                    + Math.pow(edge2D.target().getCenterY() - edge2D.source().getCenterY(), 2));
-            double vx = (edge2D.target().getCenterX() - edge2D.source().getCenterX()) / r; //нормировка вектора
-            double vy = (edge2D.target().getCenterY() - edge2D.source().getCenterY()) / r; //нормировка вектора
-            double x = edge2D.target().getCenterX() - r * vx / 3;  //вычисление коорд. x точки, лежащей на дуге
-            double y = edge2D.target().getCenterY() - r * vy / 3 - 15;
+            double targetX = edge2D.target().getCenterX();
+            double targetY = edge2D.target().getCenterY();
+            double sourceX = edge2D.source().getCenterX();
+            double sourceY = edge2D.source().getCenterY();
+
+            double dx = targetX - sourceX;
+            double dy = targetY - sourceY;
+            double r = Math.sqrt(dx * dx + dy * dy);
+            if (r == 0) r = 1; // Защита от деления на ноль
+            double vx = dx / r;
+            double vy = dy / r;
+            // Вычисляем вектор перпендикуляра (нормаль), смотрящий в одну из сторон от ребра
+            double nx = -vy;
+            double ny = vx;
+            // 2. Параметры смещения текста
+            double distanceFromTarget;
+            double sideOffset;
+
+            if (!edge2D.direction()) {
+                // Для неориентированных: строго по центру ребра (r / 2)
+                distanceFromTarget = r / 2;
+                // Сдвиг вбок на 12 пикселей, чтобы текст был РЯДОМ с ребром, а не НА нем
+                sideOffset = 12;
+            } else {
+                // Для ориентированных/двунаправленных: ближе к целевой вершине
+                distanceFromTarget = r / 2.5; // Чуть дальше от вершины, чем r/3, чтобы не прижималось близко
+                sideOffset = 15;              // Сдвиг вбок, чтобы веса «туда» и «обратно» разъехались
+            }
+            // 3. Расчет итоговых координат точки для текста
+            double x = targetX - distanceFromTarget * vx + nx * sideOffset - 10;
+            double y = targetY - distanceFromTarget * vy + ny * sideOffset - 10;
+
             Point point = new Point((int) x, (int) y);
             SwingUtilities.convertPointToScreen(point, JGraphDrawer.this);
             this.popup = popupFactory.getPopup(JGraphDrawer.this, infoPanel,
