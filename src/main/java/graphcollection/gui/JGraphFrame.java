@@ -991,8 +991,8 @@ public class JGraphFrame extends JFrame {
         JComboBox<String> source = new JComboBox<>();
         JComboBox<String> target = new JComboBox<>();
         for (Vertex u : graph()) {
-            source.addItem(u.getDisplayName());
-            target.addItem(u.getDisplayName());
+            source.addItem(u.getName());
+            target.addItem(u.getName());
         }
         JButton showPath = new JButton("Показать");
         JButton exit = new JButton("Выход");
@@ -1146,7 +1146,7 @@ public class JGraphFrame extends JFrame {
     private String[] getVertices() {
         List<String> vertices = new ArrayList<>();
         for (Vertex vertex : graph()) {
-            vertices.add(vertex.getDisplayName());
+            vertices.add(vertex.getName());
         }
         return vertices.toArray(new String[0]);
     }
@@ -1325,7 +1325,7 @@ public class JGraphFrame extends JFrame {
         source.addItem(spt.getSource().toString());
         JComboBox<String> target = new JComboBox<>();
         for (Vertex u : graph()) {
-            target.addItem(u.getDisplayName());
+            target.addItem(u.getName());
         }
         JButton showPath = createButton("Показать");
         JButton exit = createButton("Выход");

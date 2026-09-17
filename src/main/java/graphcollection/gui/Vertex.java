@@ -17,10 +17,10 @@ import java.awt.geom.Ellipse2D;
  */
 public class Vertex implements Comparable<Vertex>, java.io.Serializable {
     @Getter
-    private final String name;
+    private final String id;
     @Getter
     @Setter
-    private String displayName;
+    private String name;
 
     public static final Color default_color = Color.WHITE;
     public static final Color default_border_color = Color.BLACK;
@@ -30,23 +30,23 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
     public Color nameColor = default_name_color;
     public Ellipse2D.Double ellipse;
 
-    public Vertex(String name) {
-        this.name = name;
-        this.displayName = name;
+    public Vertex(String id) {
+        this.id = id;
+        this.name = id;
     }
 
-    public Vertex(String name, Color color) {
-        this(name);
+    public Vertex(String id, Color color) {
+        this(id);
         this.color = color;
     }
 
-    public Vertex(String name, Ellipse2D.Double ellipse) {
-        this(name);
+    public Vertex(String id, Ellipse2D.Double ellipse) {
+        this(id);
         this.ellipse = ellipse;
     }
 
-    public Vertex(String name, Color color, Ellipse2D.Double ellipse) {
-        this(name, color);
+    public Vertex(String id, Color color, Ellipse2D.Double ellipse) {
+        this(id, color);
         this.ellipse = ellipse;
     }
 
@@ -56,17 +56,17 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
-        return name;
+        return id;
     }
 
     @Override
     public int compareTo(Vertex v) {
-        return name.compareTo(v.name);
+        return id.compareTo(v.id);
     }
     
     @Override
@@ -74,7 +74,7 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
          if (this == obj)
              return true;
          if (obj instanceof Vertex) {
-             return ((Vertex)obj).name.equals(name);
+             return ((Vertex)obj).id.equals(id);
          }
          else return false;
     }
@@ -106,8 +106,8 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
     public void drawVertexName(Graphics2D g) {
         FontMetrics fm = g.getFontMetrics();
         g.setPaint(nameColor);
-        g.drawString(displayName, (float) getX() +
-                        ((float) getWidth() - fm.stringWidth(displayName)) / 2,
+        g.drawString(name, (float) getX() +
+                        ((float) getWidth() - fm.stringWidth(name)) / 2,
                 (float) getY() + fm.getAscent() +
                         ((float) getWidth() - (fm.getAscent() + fm.getDescent())) / 2);
     }

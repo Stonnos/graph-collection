@@ -28,12 +28,13 @@ public class JGraphDrawer extends JPanel {
 
     public static final int MAX_VERTEX_COUNT = 40;
     private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
-    public static final int POPUP_MARGIN = 50;
+    private static final int POPUP_MARGIN = 50;
+    private static final int MAX_VERTEX_COUNT_EXCEEDED_ERROR_MESSAGE_MARGIN_TOP = 25;
     private int vertexSize = 40;
     private Graph<Vertex, Edge2D> graph; //граф
     private GraphView graphView;
-    private final Map<String, Vertex> vertexMap = new HashMap<>(); //словарь имен вершин
-    private final Map<String, Vertex> vertexDisplayNameMap = new HashMap<>();
+    private final Map<String, Vertex> vertexIdMap = new HashMap<>(); //словарь имен вершин
+    private final Map<String, Vertex> vertexNameMap = new HashMap<>();
     private Vertex u; //вспомогательная вершина;
     private int x; //координаты мыши;
     private int y; //координаты мыши;
@@ -42,6 +43,7 @@ public class JGraphDrawer extends JPanel {
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private int dwidth, dheight; //вспомогательные поля для хранения предыдущего размера окна
     private final PopupFactory popupFactory = new PopupFactory();
+    private final Random random = new Random();
     private EdgeWeightPopup edgeWeightPopup;
     private VertexNamePopup vertexNamePopup;
     private Popup errorPopup;
@@ -134,13 +136,13 @@ public class JGraphDrawer extends JPanel {
     }
 
     public Vertex vertex(String v) {
-        return vertexDisplayNameMap.get(v);
+        return vertexNameMap.get(v);
     }
 
     public void clear() {
         graph.clear();
-        vertexMap.clear();
-        vertexDisplayNameMap.clear();
+        vertexIdMap.clear();
+        vertexNameMap.clear();
     }
 
     public void clearGraph() {
@@ -198,8 +200,8 @@ public class JGraphDrawer extends JPanel {
 
     private void fillVerticesMap() {
         for (Vertex v : graph) {
-            vertexMap.put(v.getName(), v);
-            vertexDisplayNameMap.put(v.getDisplayName(), v);
+            vertexIdMap.put(v.getId(), v);
+            vertexNameMap.put(v.getName(), v);
         }
     }
 
@@ -306,12 +308,7 @@ public class JGraphDrawer extends JPanel {
         this.addMouseListener(new MouseListener() {
 
             private Vertex generateVertex(int x, int y) {
-                Random r = new Random();
-                String nextVertexName;
-                do {
-                    nextVertexName = String.valueOf(r.nextInt(99));
-                }
-                while (vertexMap.containsKey(nextVertexName));
+                String nextVertexName = generateVertexName();
                 return new Vertex(nextVertexName, new Ellipse2D.Double(x, y, getVertexSize(), getVertexSize()));
             }
 
@@ -321,16 +318,15 @@ public class JGraphDrawer extends JPanel {
                 if (me.getButton() == MouseEvent.BUTTON1 && !hasVertexError.get()) {
                     hideVertexNamePopup();
                     if (graph.verticesNum() == MAX_VERTEX_COUNT) {
-                        JOptionPane.showMessageDialog(JGraphDrawer.this,
-                                "Добавлять вершины больше нельзя!",
-                                "Добавление вершины", JOptionPane.WARNING_MESSAGE);
+                        createErrorMessagePopup("Превышено максимальное число вершин: %s!".formatted(MAX_VERTEX_COUNT),
+                                me.getX(), me.getY() + MAX_VERTEX_COUNT_EXCEEDED_ERROR_MESSAGE_MARGIN_TOP);
                     } else {
                         Vertex v = searchVertex(me.getX(), me.getY());
                         if (v == null) {
                             v = generateVertex(me.getX(), me.getY());
                             graph.addVertex(v);
-                            vertexMap.put(v.getName(), v);
-                            vertexDisplayNameMap.put(v.getDisplayName(), v);
+                            vertexIdMap.put(v.getId(), v);
+                            vertexNameMap.put(v.getName(), v);
                             VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetName);
                             vertexDrawer.execute();
                             notifyUpdateGraphEvent();
@@ -369,8 +365,8 @@ public class JGraphDrawer extends JPanel {
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
-                        vertexMap.remove(u.getName());
-                        vertexDisplayNameMap.remove(u.getDisplayName());
+                        vertexIdMap.remove(u.getId());
+                        vertexNameMap.remove(u.getName());
                         graph.removeVertex(u);
                         notifyUpdateGraphEvent();
                         u = null;
@@ -516,13 +512,13 @@ public class JGraphDrawer extends JPanel {
                     Vertex v = searchVertex(me.getX(), me.getY());
                     if (v != null) {
                         Edge2D edge2D = new Edge2D(graph.direction(), u, v);
-                        if (u.getName().equals(v.getName())) {
+                        if (u.getId().equals(v.getId())) {
                             createErrorMessagePopup("Не допускается создание петель!",
                                     (int) (v.getX() + POPUP_MARGIN), (int) (v.getY() + POPUP_MARGIN));
                         } else if (!graph.addEdge(edge2D)) {
                             createErrorMessagePopup(
-                                    String.format("Ребро между вершинами %s и %s уже существует!", u.getDisplayName(),
-                                            v.getDisplayName()),
+                                    String.format("Ребро между вершинами %s и %s уже существует!", u.getName(),
+                                            v.getName()),
                                     (int) (v.getX() + POPUP_MARGIN), (int) (v.getY() + POPUP_MARGIN));
                         } else if (setWeight) {
                             edgeWeightPopup = new EdgeWeightPopup(edge2D);
@@ -571,7 +567,7 @@ public class JGraphDrawer extends JPanel {
                         } else {
                             if (graph.removeEdge(new Edge2D(graph.direction(), u, z)) == 0) {
                                 createErrorMessagePopup(String.format("Ребра между вершинами %s и %s не существует!",
-                                                u.getDisplayName(), z.getDisplayName()),
+                                                u.getName(), z.getName()),
                                         (int) (z.getX() + POPUP_MARGIN), (int) (z.getY() + POPUP_MARGIN));
                             }
                             notifyUpdateGraphEvent();
@@ -859,7 +855,7 @@ public class JGraphDrawer extends JPanel {
             vertexNameText.setHorizontalAlignment(JTextField.CENTER);
             vertexNameText.setFont(new Font("Arial", Font.BOLD, VERTEX_NAME_FONT_SIZE));
             vertexNameText.setBackground(Color.WHITE);
-            vertexNameText.setText(vertex.getDisplayName());
+            vertexNameText.setText(vertex.getName());
             vertexNameText.addActionListener(e -> {
                 hide();
             });
@@ -871,8 +867,8 @@ public class JGraphDrawer extends JPanel {
 
         boolean updatedDisplayName() {
             if (!GuiUtils.isEmpty(vertexNameText)) {
-                if (!Objects.equals(vertex.getDisplayName(), vertexNameText.getText())
-                        && vertexDisplayNameMap.containsKey(vertexNameText.getText())) {
+                if (!Objects.equals(vertex.getName(), vertexNameText.getText())
+                        && vertexNameMap.containsKey(vertexNameText.getText())) {
                     vertexNameText.setForeground(Color.RED);
                     vertexNameText.setToolTipText(String.format("Вершина %s существует!", vertexNameText.getText()));
                     showToolTipProgrammatically(vertexNameText);
@@ -882,9 +878,9 @@ public class JGraphDrawer extends JPanel {
                                     new ActionEvent(this, 0, hasVertexError.toString())));
                     return false;
                 } else {
-                    vertexDisplayNameMap.remove(vertex.getDisplayName());
-                    vertex.setDisplayName(vertexNameText.getText());
-                    vertexDisplayNameMap.put(vertexNameText.getText(), vertex);
+                    vertexNameMap.remove(vertex.getName());
+                    vertex.setName(vertexNameText.getText());
+                    vertexNameMap.put(vertexNameText.getText(), vertex);
                     hasVertexError.set(false);
                     hideErrorPopup();
                     Optional.ofNullable(vertexErrorListener)
@@ -933,5 +929,14 @@ public class JGraphDrawer extends JPanel {
     private void hideEdgeWeightPopup() {
         Optional.ofNullable(edgeWeightPopup).ifPresent(EdgeWeightPopup::hide);
         edgeWeightPopup = null;
+    }
+
+    private String generateVertexName() {
+        String nextVertexName;
+        do {
+            nextVertexName = String.valueOf(random.nextInt(99));
+        }
+        while (vertexIdMap.containsKey(nextVertexName));
+        return nextVertexName;
     }
 }
