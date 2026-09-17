@@ -45,7 +45,7 @@ public class HashSetMultiGraph<V, E extends Edge<V>>
     @Override
     public Iterator<V> adjacencyIterator(V v) {
         if (edgeList.containsKey(v)) {
-            return new AdjacencyIterator(new OutEdgeIterator(v,
+            return new AdjacencyIterator(v, new OutEdgeIterator(
                     ((HashMultiSet<E>) edgeList.get(v)).keysIterator()));
         } else {
             return null;

@@ -246,7 +246,7 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
     public Iterator<E> outEdgeIterator(V v) {
         Integer i = vertexMap.get(v);
         if (checkVertexIndex(i)) {
-            return new OutEdgeIterator(v, matrix.rowIterator(i));
+            return new OutEdgeIterator(matrix.rowIterator(i));
         } else {
             return null;
         }
@@ -256,7 +256,7 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
     public Iterator<E> inEdgeIterator(V v) {
         Integer i = vertexMap.get(v);
         if (checkVertexIndex(i)) {
-            return new InEdgeIterator(v, matrix.columnIterator(i));
+            return new InEdgeIterator(matrix.columnIterator(i));
         } else {
             return null;
         }
@@ -266,7 +266,7 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
     public Iterator<V> adjacencyIterator(V v) {
         Integer i = vertexMap.get(v);
         if (checkVertexIndex(i)) {
-            return new AdjacencyIterator(new OutEdgeIterator(v, matrix.rowIterator(i)));
+            return new AdjacencyIterator(v, new OutEdgeIterator(matrix.rowIterator(i)));
         } else {
             return null;
         }
@@ -285,11 +285,9 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
      */
     private class OutEdgeIterator implements Iterator<E> {
 
-        private final V u;
         private final Iterator<E> adj;
 
-        public OutEdgeIterator(V u, Iterator<E> adj) {
-            this.u = u;
+        public OutEdgeIterator(Iterator<E> adj) {
             this.adj = adj;
         }
 
@@ -300,21 +298,15 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
 
         @Override
         public E next() {
-            E e = adj.next();
-            if (!e.source().equals(u)) {
-                e.exchange();
-            }
-            return e;
+            return adj.next();
         }
     }  //End of class OutEdgeIterator
 
     private class InEdgeIterator implements Iterator<E> {
 
-        private final V u;
         private final Iterator<E> edges;
 
-        public InEdgeIterator(V u, Iterator<E> edges) {
-            this.u = u;
+        public InEdgeIterator(Iterator<E> edges) {
             this.edges = edges;
         }
 
@@ -325,19 +317,17 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
 
         @Override
         public E next() {
-            E e = edges.next();
-            if (!e.target().equals(u)) {
-                e.exchange();
-            }
-            return e;
+            return edges.next();
         }
     }  //End of class InEdgeIterator
 
     private class AdjacencyIterator implements Iterator<V> {
 
+        private final V v;
         private final Iterator<E> adj;
 
-        public AdjacencyIterator(Iterator<E> adj) {
+        public AdjacencyIterator(V v, Iterator<E> adj) {
+            this.v = v;
             this.adj = adj;
         }
 
@@ -348,7 +338,8 @@ public class AdjacencyMatrixGraph<V, E extends Edge<V>>
 
         @Override
         public V next() {
-            return adj.next().target();
+            E nextEdge = adj.next();
+            return nextEdge.getOpposite(v);
         }
     } //End of class AdjacencyIterator
 

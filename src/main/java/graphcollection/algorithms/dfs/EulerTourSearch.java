@@ -29,7 +29,7 @@ public class EulerTourSearch<V, E extends Edge<V>>
             Iterator<E> adjV = g.outEdgeIterator(u);
             if (adjV.hasNext()) {
                 E e = adjV.next();
-                V v = e.target();
+                V v = e.getOpposite(u);
                 g.removeEdge(e);
                 eulerVisit(g, v);
                 tour.addFirst(v);

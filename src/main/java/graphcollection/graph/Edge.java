@@ -1,21 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.graph;
 
-/**
- *
- * @param <V>
- * @author Рома
- */
-public class Edge<V>
-        implements Cloneable, java.io.Serializable {
+public class Edge<V> implements Cloneable, java.io.Serializable {
 
     private final boolean direction;
-    private V source;
-    private V target;
+    private final V source;
+    private final V target;
 
     /**
      * Constructs edge
@@ -44,15 +33,11 @@ public class Edge<V>
     }
 
     /**
-     * Exchange initial and end vertices if the edge's direction
-     * is undirected
+     * Возвращает противоположную вершину для заданного источника.
+     * Не изменяет состояние самого ребра и не создает новых объектов.
      */
-    public final void exchange() {
-        if (!direction()) {
-            V u = source;
-            source = target;
-            target = u;
-        }
+    public V getOpposite(V vertex) {
+        return vertex.equals(source) ? target : source;
     }
 
     /**

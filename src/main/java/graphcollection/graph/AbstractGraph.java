@@ -116,7 +116,7 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
             Iterator<E> outEdges = outEdgeIterator(v1);
             while (outEdges.hasNext()) {
                 E e = outEdges.next();
-                if (e.target().equals(v2)) {
+                if (e.getOpposite(v1).equals(v2)) {
                     return e;
                 }
             }
@@ -300,11 +300,9 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
      */
     protected class OutEdgeIterator implements Iterator<E> {
 
-        private final V v;
         private final Iterator<E> outEdges;
 
-        public OutEdgeIterator(V v, Iterator<E> outEdges) {
-            this.v = v;
+        public OutEdgeIterator(Iterator<E> outEdges) {
             this.outEdges = outEdges;
         }
 
@@ -315,11 +313,7 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
 
         @Override
         public E next() {
-            E e = outEdges.next();
-            if (!e.source().equals(v)) {
-                e.exchange();
-            }
-            return e;
+            return outEdges.next();
         }
 
     } //End of class OutEdgeIterator
@@ -381,9 +375,11 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
      */
     protected class AdjacencyIterator implements Iterator<V> {
 
-        protected final Iterator<E> adjV;
+        private final V v;
+        private final Iterator<E> adjV;
 
-        public AdjacencyIterator(Iterator<E> adjV) {
+        public AdjacencyIterator(V v, Iterator<E> adjV) {
+            this.v = v;
             this.adjV = adjV;
         }
 
@@ -394,7 +390,8 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
 
         @Override
         public V next() {
-            return adjV.next().target();
+            E nextEdge = adjV.next();
+            return nextEdge.getOpposite(v);
         }
 
     } //End of class AdjacencyIterator
@@ -437,9 +434,6 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            if (!currentEdge.target().equals(v)) {
-                currentEdge.exchange();
-            }
             E e = currentEdge;
             currentEdge = null;
             return e;
@@ -459,7 +453,7 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
     @Override
     public Iterator<E> outEdgeIterator(V v) {
         if (edgeList.containsKey(v)) {
-            return new OutEdgeIterator(v, edgeList.get(v).iterator());
+            return new OutEdgeIterator(edgeList.get(v).iterator());
         } else {
             return null;
         }
@@ -468,7 +462,7 @@ public abstract class AbstractGraph<V, E extends Edge<V>>
     @Override
     public Iterator<V> adjacencyIterator(V v) {
         if (edgeList.containsKey(v)) {
-            return new AdjacencyIterator(new OutEdgeIterator(v, edgeList.get(v).iterator()));
+            return new AdjacencyIterator(v, new OutEdgeIterator(edgeList.get(v).iterator()));
         } else {
             return null;
         }

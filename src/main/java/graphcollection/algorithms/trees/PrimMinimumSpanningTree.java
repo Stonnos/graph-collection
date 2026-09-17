@@ -75,7 +75,7 @@ public class PrimMinimumSpanningTree<V, E extends WeightedEdge<V, ? extends Numb
             while (outEdges.hasNext()) {
                 E e = outEdges.next();
                 Number w = e.getWeight();
-                V v = e.target();
+                V v = e.getOpposite(u);
                 if (finished.get(v) != -1 && w.doubleValue() < h.get(v).doubleValue()) {
                     h.put(v, w.doubleValue());
                     p.put(v, u);

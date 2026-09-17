@@ -65,7 +65,7 @@ public class BridgesSearch<V, E extends Edge<V>> implements GraphAlgorithm {
         //-------------------------
         while (edges.hasNext()) {
             E e = edges.next();
-            V v = e.target();
+            V v = e.getOpposite(u);
             if (!color.get(v)) {
                 visit(graph, v, u);
                 low.put(u, Math.min(low.get(u), low.get(v)));
