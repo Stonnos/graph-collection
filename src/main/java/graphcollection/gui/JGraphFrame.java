@@ -994,8 +994,8 @@ public class JGraphFrame extends JFrame {
             source.addItem(u.getName());
             target.addItem(u.getName());
         }
-        JButton showPath = new JButton("Показать");
-        JButton exit = new JButton("Выход");
+        JButton showPath = createButton("Показать");
+        JButton exit = createButton("Выход");
         showPath.addActionListener(evt -> {
             Vertex u = graphPanel.vertex((String) source.getSelectedItem());
             Vertex v = graphPanel.vertex((String) target.getSelectedItem());
