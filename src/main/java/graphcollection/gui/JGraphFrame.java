@@ -544,6 +544,10 @@ public class JGraphFrame extends JFrame {
 
         setVertexNameCheckBox = new JCheckBox("Задавать имена вершин");
         setEdgeWeightCheckBox = new JCheckBox("Задавать веса ребер");
+        setVertexNameCheckBox.addActionListener(
+                e -> graphPanel.setManuallySetVertexName(setVertexNameCheckBox.isSelected()));
+        setEdgeWeightCheckBox.addActionListener(
+                e -> graphPanel.setManuallySetEdgeWeight(setEdgeWeightCheckBox.isSelected()));
 
         JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
         verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
@@ -591,7 +595,7 @@ public class JGraphFrame extends JFrame {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 0), 0, 0));
 
         addVertex.addActionListener(evt -> {
-                    graphPanel.startAddVertex(setVertexNameCheckBox.isSelected());
+                    graphPanel.startAddVertex();
                     commentTxt.setText("Щелкните по полю левой кнопкой мыши для того, "
                             + "чтобы добавить вершину.");
                 }
@@ -603,7 +607,7 @@ public class JGraphFrame extends JFrame {
                 }
         );
         addEdge.addActionListener(evt -> {
-                    graphPanel.startAddEdge(setEdgeWeightCheckBox.isSelected());
+                    graphPanel.startAddEdge();
                     commentTxt.setText("Соедините две вершины на поле, для того чтобы добавить ребро.");
                 }
         );

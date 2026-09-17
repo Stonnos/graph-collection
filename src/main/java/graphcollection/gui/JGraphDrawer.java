@@ -65,6 +65,12 @@ public class JGraphDrawer extends JPanel {
     @Getter
     @Setter
     private ActionListener updateGraphListener;
+    @Getter
+    @Setter
+    private boolean manuallySetVertexName;
+    @Getter
+    @Setter
+    private boolean manuallySetEdgeWeight;
 
     public JGraphDrawer() {
         this(GraphView.HASH_SET_GRAPH, false, 0, 0);
@@ -312,7 +318,7 @@ public class JGraphDrawer extends JPanel {
         hideEdgeWeightPopup();
     }
 
-    public void startAddVertex(boolean manuallySetName) {
+    public void startAddVertex() {
         reset();
         this.addMouseListener(new MouseListener() {
 
@@ -336,7 +342,7 @@ public class JGraphDrawer extends JPanel {
                             graph.addVertex(v);
                             vertexIdMap.put(v.getId(), v);
                             vertexNameMap.put(v.getName(), v);
-                            VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetName);
+                            VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetVertexName);
                             vertexDrawer.execute();
                             notifyUpdateGraphEvent();
                         }
@@ -485,7 +491,7 @@ public class JGraphDrawer extends JPanel {
         });
     }
 
-    public void startAddEdge(boolean setWeight) {
+    public void startAddEdge() {
         reset();
         isAddEdgeMode = true;
         this.addMouseListener(new MouseListener() {
@@ -532,7 +538,7 @@ public class JGraphDrawer extends JPanel {
                                     String.format("Ребро между вершинами %s и %s уже существует!", u.getName(),
                                             v.getName()),
                                     (int) (v.getX() + POPUP_MARGIN), (int) (v.getY() + POPUP_MARGIN));
-                        } else if (setWeight) {
+                        } else if (manuallySetEdgeWeight) {
                             edgeWeightPopup = new EdgeWeightPopup(edge2D);
                             edgeWeightPopup.show();
                         }
