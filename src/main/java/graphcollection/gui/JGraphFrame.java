@@ -259,6 +259,11 @@ public class JGraphFrame extends JFrame {
     private void setEnabledForOperations(boolean aFlag) {
         for (Component comp : buttonsPanel.getComponents()) {
             comp.setEnabled(aFlag);
+            if (comp instanceof JPanel panel) {
+                for (Component child : panel.getComponents()) {
+                    child.setEnabled(aFlag);
+                }
+            }
         }
         graphMenu.setEnabled(aFlag);
         algoritmsMenu.setEnabled(aFlag);
