@@ -536,7 +536,7 @@ public class JGraphFrame extends JFrame {
         clearEdges.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS_SQUARE, OPERATIONS_ICON_SIZE));
         JButton clearGraph = new JButton("Очистка графа");
         clearGraph.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, OPERATIONS_ICON_SIZE));
-        JButton moveGraph = new JButton("Видоизменение граф");
+        JButton moveGraph = new JButton("Видоизменение графа");
         moveGraph.setIcon(IconFontSwing.buildIcon(FontAwesome.ARROWS, OPERATIONS_ICON_SIZE));
         JButton removeOutEdges = new JButton("Удаление исходящих ребер");
         JButton removeInEdges = new JButton("Удаление входящих ребер");
