@@ -75,7 +75,7 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    GraphFileChooser fileChooser = new GraphFileChooser();
+                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                     File file = fileChooser.openFile(ClusteringAlgorithmInputDialog.this);
                     if (file != null) {
                         matrix.setText(file.getPath());

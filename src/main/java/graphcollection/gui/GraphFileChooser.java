@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui;
 
 import javax.swing.*;
@@ -12,10 +7,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-/**
- *
- * @author Рома
- */
 public class GraphFileChooser {
     private final JFileChooser chooser = new JFileChooser();
 
@@ -26,10 +17,12 @@ public class GraphFileChooser {
     }
 
     private void setTextFilter() {
+        chooser.resetChoosableFileFilters();
         chooser.setFileFilter(new FileNameExtensionFilter("Txt files", "txt"));
     }
 
     private void setImageFilter() {
+        chooser.resetChoosableFileFilters();
         chooser.setFileFilter(new FileNameExtensionFilter("PNG files", "png"));
     }
 

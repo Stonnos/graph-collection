@@ -322,7 +322,7 @@ public class JGraphFrame extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 try {
-                    GraphFileChooser fileChooser = new GraphFileChooser();
+                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                     File file = fileChooser.openFile(JGraphFrame.this);
                     if (file != null) {
                         graphPanel.read(file.getPath());
@@ -341,7 +341,7 @@ public class JGraphFrame extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 try {
-                    GraphFileChooser fileChooser = new GraphFileChooser();
+                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                     File file = fileChooser.saveFile(JGraphFrame.this);
                     if (file != null) {
                         GraphParser writer = new GraphParser();
@@ -359,7 +359,7 @@ public class JGraphFrame extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 try {
-                    GraphFileChooser fileChooser = new GraphFileChooser();
+                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                     File file = fileChooser.saveImageFile(JGraphFrame.this);
                     if (file != null) {
                         Image img = graphPanel.getImage();

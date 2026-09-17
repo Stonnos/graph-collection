@@ -50,7 +50,7 @@ public abstract class AlgorithmsResultsPanel extends JPanel {
         JButton okButton = createButton("Закрыть");
         saveFileButton.addActionListener(evt -> {
             try {
-                GraphFileChooser fileChooser = new GraphFileChooser();
+                GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                 fileChooser.setSelectedFile(new File("results.txt"));
                 File file = fileChooser.saveFile(component);
                 if (file != null) {
