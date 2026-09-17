@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui;
 
 import graphcollection.graph.Edge;
@@ -16,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,21 +19,16 @@ import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author Рома
- */
 public class GraphParser {
 
-    private static final String vertexFormat = VertexFormat.format;
-    private static final String weightFormat = "(([-]?(([0-9]+)|([0-9]+[.][0-9]+)))|)";
-    private static final String edgeFormat = "^[(]" + vertexFormat + ","
-            + vertexFormat + "[,]?" + weightFormat + "[)]$";
-    private static final String code = "Cp1251";
+    private static final String VERTEX_FORMAT = "[a-zA-Zа-яА-Я0-9]{1,10}";
+    private static final String WEIGHT_FORMAT = "(([-]?(([0-9]+)|([0-9]+[.][0-9]+)))|)";
+    private static final String EDGE_FORMAT = "^[(]" + VERTEX_FORMAT + ","
+            + VERTEX_FORMAT + "[,]?" + WEIGHT_FORMAT + "[)]$";
 
     public <V, E extends Edge<V>> void write(Graph<V, E> g, String fileName) {
         try (FileOutputStream out = new FileOutputStream(fileName);
-             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, code))) {
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             if (g.direction()) {
                 writer.write("directed");
             } else {
@@ -60,13 +51,13 @@ public class GraphParser {
     }
 
     private boolean isVertex(String v) {
-        Pattern p = Pattern.compile("^" + vertexFormat + "$");
+        Pattern p = Pattern.compile("^" + VERTEX_FORMAT + "$");
         Matcher m = p.matcher(v);
         return m.matches();
     }
 
     private boolean isEdge(String e) {
-        Pattern p = Pattern.compile(edgeFormat);
+        Pattern p = Pattern.compile(EDGE_FORMAT);
         Matcher m = p.matcher(e);
         return m.matches();
     }
@@ -74,7 +65,7 @@ public class GraphParser {
     public Graph<Vertex, Edge2D> read(String fileName) {
         Graph<Vertex, Edge2D> g;
         try (FileInputStream in = new FileInputStream(fileName);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in, code))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             //-----------------------------------------------------
             String line = reader.readLine();
             if (line != null && line.equals("directed")) {

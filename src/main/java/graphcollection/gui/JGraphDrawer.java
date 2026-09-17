@@ -863,6 +863,7 @@ public class JGraphDrawer extends JPanel {
             vertexNameText.setHorizontalAlignment(JTextField.CENTER);
             vertexNameText.setFont(new Font("Arial", Font.BOLD, VERTEX_NAME_FONT_SIZE));
             vertexNameText.setBackground(Color.WHITE);
+            vertexNameText.setDocument(new VertexNameDocument(10));
             vertexNameText.setText(vertex.getName());
             vertexNameText.addActionListener(e -> {
                 hide();
