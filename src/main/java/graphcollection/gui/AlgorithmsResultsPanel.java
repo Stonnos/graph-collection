@@ -1,5 +1,7 @@
 package graphcollection.gui;
 
+import graphcollection.gui.choosers.GraphFileChooser;
+import graphcollection.gui.util.PanelBorderUtils;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static graphcollection.gui.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createButton;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public abstract class AlgorithmsResultsPanel extends JPanel {

@@ -1,4 +1,6 @@
-package graphcollection.gui;
+package graphcollection.gui.algorithms;
+
+import graphcollection.gui.AlgorithmsResultsPanel;
 
 import javax.swing.*;
 import java.awt.*;

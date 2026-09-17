@@ -31,6 +31,24 @@ import graphcollection.algorithms.trees.MinimumSpanningTree;
 import graphcollection.algorithms.trees.MinimumSpanningTreeClustering;
 import graphcollection.algorithms.trees.PrimMinimumSpanningTree;
 import graphcollection.graph.Graph;
+import graphcollection.gui.algorithms.DfsResultsPanel;
+import graphcollection.gui.algorithms.SimpleResultsPanel;
+import graphcollection.gui.algorithms.SptResultsPanel;
+import graphcollection.gui.choosers.GraphFileChooser;
+import graphcollection.gui.dialog.ClusteringAlgorithmInputDialog;
+import graphcollection.gui.dialog.VertexInputDialog;
+import graphcollection.gui.frames.OptionFrame;
+import graphcollection.gui.frames.Reference;
+import graphcollection.gui.model.Edge2D;
+import graphcollection.gui.model.GraphView;
+import graphcollection.gui.model.MstType;
+import graphcollection.gui.model.Pair;
+import graphcollection.gui.model.SptAlgorithm;
+import graphcollection.gui.model.TourType;
+import graphcollection.gui.model.Vertex;
+import graphcollection.gui.parse.MatrixParser;
+import graphcollection.gui.parse.NumberParser;
+import graphcollection.gui.popup.PopupService;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import lombok.Setter;
@@ -56,7 +74,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimerTask;
 
-import static graphcollection.gui.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createButton;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
@@ -73,7 +91,7 @@ public class JGraphFrame extends JFrame {
     private static final int ALGORITHMS_STEP_PANEL_SIZE = 35;
     private static final int FRAME_WIDTH = 1280;
     private static final int FRAME_HEIGHT = 800;
-    private int animationSpeed = 2000;
+    private int animationSpeed = 1000;
     private JPanel mainPanel;
     private JPanel infoPanel;
     private JPanel workPanel;
@@ -144,7 +162,7 @@ public class JGraphFrame extends JFrame {
             vertex = path.iterator();
             s = vertex.next();
             s.borderColor = Color.RED;
-            timer.scheduleAtFixedRate(this, animationSpeed, animationSpeed);
+            timer.scheduleAtFixedRate(this, 0, animationSpeed);
         }
     } //End of class PathDrawer
 
@@ -881,11 +899,11 @@ public class JGraphFrame extends JFrame {
             if (!NumberParser.isNegativeWeights(graph())) {
                 MinimumSpanningTree<Edge2D> mst = null;
                 switch (type) {
-                    case Prim:
+                    case PRIM:
                         mst = new PrimMinimumSpanningTree<>(graph(), firstVertex());
                         break;
 
-                    case Kruskal:
+                    case KRUSKAL:
                         mst = new KruskalMinimumSpanningTree<>(graph());
                         break;
                 }
@@ -917,10 +935,10 @@ public class JGraphFrame extends JFrame {
         mstMenu.add(kruskalMstMenu);
         undirectedGraphAlgorithms.add(mstMenu);
         primMstMenu.addActionListener(evt ->
-                createMst(MstType.Prim, primMstMenu, "Результаты алгоритма Прима:")
+                createMst(MstType.PRIM, primMstMenu, "Результаты алгоритма Прима:")
         );
         kruskalMstMenu.addActionListener(
-                evt -> createMst(MstType.Kruskal, kruskalMstMenu, "Результаты алгоритма Крускала:")
+                evt -> createMst(MstType.KRUSKAL, kruskalMstMenu, "Результаты алгоритма Крускала:")
         );
     }
 
@@ -1200,11 +1218,11 @@ public class JGraphFrame extends JFrame {
         if (connComp.connected()) {
             AbstractTourSearch<Vertex, Edge2D> tourSearch = null;
             switch (type) {
-                case euler_tour:
+                case EULER_TOUR:
                     Graph<Vertex, Edge2D> clone = createClone();
                     tourSearch = new EulerTourSearch<>(clone);
                     break;
-                case gamilton_tour:
+                case GAMILTON_TOUR:
                     tourSearch
                             = new GamiltonTourSearch<>(graph());
                     break;
@@ -1260,7 +1278,7 @@ public class JGraphFrame extends JFrame {
         eulerTourMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                searchTour(TourType.euler_tour, eulerTourMenu,
+                searchTour(TourType.EULER_TOUR, eulerTourMenu,
                         "Структура Эйлерова цикла:" + SEPARATOR, "Эйлерова цикла не существует!");
             }
         });
@@ -1272,7 +1290,7 @@ public class JGraphFrame extends JFrame {
         gamiltonTourMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                searchTour(TourType.gamilton_tour, gamiltonTourMenu,
+                searchTour(TourType.GAMILTON_TOUR, gamiltonTourMenu,
                         "Структура Гамильтонова цикла:" + SEPARATOR, "Гамильтонова цикла не существует!");
             }
         });
@@ -1387,16 +1405,16 @@ public class JGraphFrame extends JFrame {
                     return;
                 }
                 switch (algorithm) {
-                    case dijkstra:
+                    case DIJKSTRA:
                         sptSearch(new DijkstraShortestPaths<>(graph(), s),
                                 "Результаты алгоритма Дейкстры", null);
                         break;
-                    case bellman_ford:
+                    case BELLMAN_FORD:
                         sptSearch(new BellmanFordShortestPaths<>(graph(), s),
                                 "Результаты алгоритма Беллмана-Форда",
                                 "Граф содержит цикл с отрицательным весом!");
                         break;
-                    case dag:
+                    case DAG:
                         sptSearch(new DAGShortestPaths<>(graph(), s),
                                 "Кратчайшие пути в DAG",
                                 "Граф должен быть ациклическим!");
@@ -1433,11 +1451,11 @@ public class JGraphFrame extends JFrame {
         sptMenu.add(bellmanFordSptMenu);
         sptMenu.add(dagSptMenu);
 
-        dijkstraSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dijkstra));
+        dijkstraSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.DIJKSTRA));
 
-        bellmanFordSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.bellman_ford));
+        bellmanFordSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.BELLMAN_FORD));
 
-        dagSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.dag));
+        dagSptMenu.addActionListener(evt -> sptDialog(SptAlgorithm.DAG));
     }
 
     private void bfsVisit() {

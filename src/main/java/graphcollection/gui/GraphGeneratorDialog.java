@@ -1,5 +1,10 @@
 package graphcollection.gui;
 
+import graphcollection.gui.model.GraphView;
+import graphcollection.gui.text.IntegerDocument;
+import graphcollection.gui.text.TextFieldInputVerifier;
+import graphcollection.gui.util.GuiUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import static graphcollection.gui.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createButton;
 
 public class GraphGeneratorDialog extends JDialog {
 

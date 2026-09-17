@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.gui.util;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;

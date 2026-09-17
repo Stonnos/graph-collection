@@ -1,5 +1,7 @@
-package graphcollection.gui;
+package graphcollection.gui.popup;
 
+import graphcollection.gui.util.ButtonUtils;
+import graphcollection.gui.util.PanelBorderUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

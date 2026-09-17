@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.gui.choosers;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

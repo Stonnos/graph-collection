@@ -1,16 +1,13 @@
 package graphcollection.gui;
 
+import graphcollection.gui.util.ResourceUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
-import static graphcollection.gui.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createButton;
 
 public class BaseReference extends JFrame {
 

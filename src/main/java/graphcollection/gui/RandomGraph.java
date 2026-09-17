@@ -11,6 +11,9 @@ import graphcollection.graph.HashSetGraph;
 import graphcollection.graph.ListSetGraph;
 import graphcollection.graph.SortedSetGraph;
 import graphcollection.graph.TreeSetGraph;
+import graphcollection.gui.model.Edge2D;
+import graphcollection.gui.model.GraphView;
+import graphcollection.gui.model.Vertex;
 
 import java.util.Iterator;
 import java.util.Random;

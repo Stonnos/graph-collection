@@ -1,4 +1,6 @@
-package graphcollection.gui;
+package graphcollection.gui.frames;
+
+import graphcollection.gui.BaseReference;
 
 import javax.swing.*;
 import java.awt.*;

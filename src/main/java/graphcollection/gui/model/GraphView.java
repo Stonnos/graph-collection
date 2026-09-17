@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package graphcollection.gui;
+package graphcollection.gui.model;
 
-/**
- *
- * @author Рома
- */
+import lombok.Getter;
+
+@Getter
 public enum GraphView {
     HASH_SET_GRAPH("Cписки смежности (HashSet)"),
     TREE_SET_GRAPH("Cписки смежности (TreeSet)"),
@@ -18,10 +12,6 @@ public enum GraphView {
 
     GraphView(String text) {
         this.text = text;
-    }
-
-    String getText() {
-        return text;
     }
 
     private final String text;

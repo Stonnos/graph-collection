@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.gui.util;
 
 import lombok.Cleanup;
 import lombok.SneakyThrows;

@@ -1,6 +1,15 @@
 package graphcollection.gui;
 
 import graphcollection.graph.Graph;
+import graphcollection.gui.model.Edge2D;
+import graphcollection.gui.model.GraphView;
+import graphcollection.gui.model.Vertex;
+import graphcollection.gui.parse.NumberParser;
+import graphcollection.gui.text.DoubleDocument;
+import graphcollection.gui.text.VertexNameDocument;
+import graphcollection.gui.util.ButtonUtils;
+import graphcollection.gui.util.GuiUtils;
+import graphcollection.gui.util.PanelBorderUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +30,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static graphcollection.gui.Edge2D.WEIGHT_FONT_SIZE;
-import static graphcollection.gui.GuiUtils.showToolTipProgrammatically;
+import static graphcollection.gui.model.Edge2D.WEIGHT_FONT_SIZE;
+import static graphcollection.gui.util.GuiUtils.showToolTipProgrammatically;
 
 public class JGraphDrawer extends JPanel {
 

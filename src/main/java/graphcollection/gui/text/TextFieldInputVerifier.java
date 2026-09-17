@@ -1,5 +1,6 @@
-package graphcollection.gui;
+package graphcollection.gui.text;
 
+import graphcollection.gui.util.GuiUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;

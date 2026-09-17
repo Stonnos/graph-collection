@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.gui.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

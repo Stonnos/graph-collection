@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphcollection.gui;
+package graphcollection.gui.util;
 
 
 import lombok.experimental.UtilityClass;

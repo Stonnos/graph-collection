@@ -1,20 +1,20 @@
-package graphcollection.gui;
+package graphcollection.gui.text;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import java.util.regex.Pattern;
 
-public class IntegerDocument extends LengthDocument {
+public class VertexNameDocument extends LengthDocument {
 
-    public static final String INT_FORMAT = "^[0-9]*$";
+    private static final String VERTEX_NAME_FORMAT = "^[a-zA-Zа-яА-Я0-9]{1,10}$";
 
-    public IntegerDocument(int length) {
+    public VertexNameDocument(int length) {
         super(length);
     }
 
     @Override
     public boolean format(String str) {
-        return Pattern.compile(INT_FORMAT).matcher(str).matches();
+        return Pattern.compile(VERTEX_NAME_FORMAT).matcher(str).matches();
     }
 
     @Override

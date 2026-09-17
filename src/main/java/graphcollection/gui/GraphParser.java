@@ -3,6 +3,9 @@ package graphcollection.gui;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
 import graphcollection.graph.HashSetGraph;
+import graphcollection.gui.model.Edge2D;
+import graphcollection.gui.model.Vertex;
+import graphcollection.gui.parse.NumberParser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -3,13 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphcollection.gui;
+package graphcollection.gui.dialog;
+
+import graphcollection.gui.choosers.GraphFileChooser;
+import graphcollection.gui.SingletonRegistry;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
+import static graphcollection.gui.util.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createOkButton;
 
 /**
  *
@@ -44,8 +50,8 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
         this.add(loadButton, new GridBagConstraints(1, 2, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 10, 5), 0, 0));
         //----------------------------------------------------------------------------
-        JButton okButton = new JButton("  OK  ");
-        JButton cancelButton = new JButton("Cancel");
+        JButton okButton = createButton("OK");
+        JButton cancelButton = createButton("Отмена");
         //--------------------------------------------
         okButton.addActionListener(new ActionListener() {
             @Override
