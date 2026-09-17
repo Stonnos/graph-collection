@@ -41,7 +41,7 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
     }
 
     public String print() {
-        return "(" + source() + "," + target() + ")";
+        return "(" + source().getName() + "," + target().getName() + ")";
     }
 
     private void drawArrow(Graphics2D g) {

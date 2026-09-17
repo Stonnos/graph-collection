@@ -61,7 +61,7 @@ public class Vertex implements Comparable<Vertex>, java.io.Serializable {
 
     @Override
     public String toString() {
-        return id;
+        return name;
     }
 
     @Override

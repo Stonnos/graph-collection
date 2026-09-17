@@ -24,7 +24,7 @@ public class PopupService {
     private static final int POPUP_MARGIN_BOTTOM = 45;
     private static final Dimension PANEL_DIMENSION = new Dimension(225, 70);
 
-    private final PopupFactory popupFactory = new PopupFactory();
+    private final PopupFactory popupFactory = PopupFactory.getSharedInstance();
 
     private final ConcurrentLinkedDeque<PopupDescriptor> popups = new ConcurrentLinkedDeque<>();
 

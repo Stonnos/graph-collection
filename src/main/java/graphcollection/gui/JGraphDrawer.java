@@ -42,7 +42,7 @@ public class JGraphDrawer extends JPanel {
     private Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
     private Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private int dwidth, dheight; //вспомогательные поля для хранения предыдущего размера окна
-    private final PopupFactory popupFactory = new PopupFactory();
+    private final PopupFactory popupFactory = PopupFactory.getSharedInstance();
     private final Random random = new Random();
     private EdgeWeightPopup edgeWeightPopup;
     private VertexNamePopup vertexNamePopup;
@@ -362,6 +362,7 @@ public class JGraphDrawer extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
@@ -402,6 +403,7 @@ public class JGraphDrawer extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
@@ -440,6 +442,7 @@ public class JGraphDrawer extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
@@ -607,6 +610,7 @@ public class JGraphDrawer extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     hideEdgeWeightPopup();
                     Vertex z = searchVertex(me.getX(), me.getY());
@@ -620,6 +624,9 @@ public class JGraphDrawer extends JPanel {
                         } else {
                             Edge2D e = graph.edge(u, z);
                             if (e == null) {
+                                createErrorMessagePopup(String.format("Ребра между вершинами %s и %s не существует!",
+                                                u.getName(), z.getName()),
+                                        (int) (z.getX() + POPUP_MARGIN), (int) (z.getY() + POPUP_MARGIN));
                                 return;
                             } else {
                                 edgeWeightPopup = new EdgeWeightPopup(e);
@@ -676,6 +683,7 @@ public class JGraphDrawer extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent me) {
+                hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {

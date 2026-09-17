@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.algorithms;
 
 import graphcollection.util.MatrixMap;
@@ -11,10 +6,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
-/**
- *
- * @author Рома
- */
 public class GraphPathBuilder {
 
     public static <V> Collection<V> path(Map<V, V> p, V v) {
