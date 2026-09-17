@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>graph-collection</groupId>
     <artifactId>graph-collection</artifactId>
-    <version>7.1</version>
+    <version>3.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -28,6 +28,12 @@
         <jifont-swing.version>1.0.1</jifont-swing.version>
         <jifont-swing-fontawesome.version>4.7.0.1</jifont-swing-fontawesome.version>
         <jacoco.minCoverage>0</jacoco.minCoverage>
+        <launch4j-maven-plugin.version>2.4.1</launch4j-maven-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <l4j.maxHeapSize>1024</l4j.maxHeapSize>
+        <exe.file.name>GraphCollection</exe.file.name>
+        <jre.version>1.8.0</jre.version>
+        <main.class>graphcollection.gui.GraphCollection</main.class>
     </properties>
 
     <dependencies>
@@ -111,8 +117,14 @@
     </dependencies>
 
     <build>
-        <plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -214,11 +226,45 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>${main.class}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>${launch4j-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>target/${exe.file.name}.exe</outfile>
+                            <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                            <singleInstance>
+                                <mutexName>${exe.file.name}</mutexName>
+                            </singleInstance>
+                            <classPath>
+                                <mainClass>${main.class}</mainClass>
+                                <addDependencies>true</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <path>%JAVA_HOME%;%PATH%</path>
+                                <minVersion>${jre.version}</minVersion>
+                                <maxHeapSize>${l4j.maxHeapSize}</maxHeapSize>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!--<plugin>
