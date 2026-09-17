@@ -5,7 +5,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 public class GraphFileChooser {
     private final JFileChooser chooser = new JFileChooser();

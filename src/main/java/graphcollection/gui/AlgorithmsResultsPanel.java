@@ -1,5 +1,7 @@
 package graphcollection.gui;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
@@ -23,8 +25,12 @@ public abstract class AlgorithmsResultsPanel extends JPanel {
 
     private Popup popup;
 
+    @Getter
+    private final String title;
+
     public AlgorithmsResultsPanel(Component component, String title) {
         this.component = component;
+        this.title = title;
         this.setLayout(new GridBagLayout());
         this.setBorder(PanelBorderUtils.createTitledBorder(title));
     }
@@ -51,13 +57,13 @@ public abstract class AlgorithmsResultsPanel extends JPanel {
         saveFileButton.addActionListener(evt -> {
             try {
                 GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
-                fileChooser.setSelectedFile(new File("results.txt"));
+                fileChooser.setSelectedFile(new File(getTitle()));
                 File file = fileChooser.saveFile(component);
                 if (file != null) {
                     saveToFile(file.getPath());
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(component, ex,
+                JOptionPane.showMessageDialog(component, ex.getMessage(),
                         null, JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -76,7 +82,7 @@ public abstract class AlgorithmsResultsPanel extends JPanel {
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             writer.write(getSelectedText());
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(component, ex, EMPTY, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(component, ex.getMessage(), EMPTY, JOptionPane.ERROR_MESSAGE);
         }
     }
 

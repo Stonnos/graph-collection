@@ -317,86 +317,77 @@ public class JGraphFrame extends JFrame {
         graphMenu.add(saveImage);
         graphMenu.addSeparator();
 
-        open.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        open.addActionListener(evt -> {
 
-                try {
-                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
-                    File file = fileChooser.openFile(JGraphFrame.this);
-                    if (file != null) {
-                        graphPanel.read(file.getPath());
-                        setInfo();
-                        setAlgorithmsEnabledFlag();
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
-                            null, JOptionPane.ERROR_MESSAGE);
+            try {
+                GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                fileChooser.setSelectedFile(new File(EMPTY));
+                File file = fileChooser.openFile(JGraphFrame.this);
+                if (file != null) {
+                    graphPanel.read(file.getPath());
+                    setInfo();
+                    setAlgorithmsEnabledFlag();
                 }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(JGraphFrame.this, ex.getMessage(),
+                        null, JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        save.addActionListener(evt -> {
 
-                try {
-                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
-                    File file = fileChooser.saveFile(JGraphFrame.this);
-                    if (file != null) {
-                        GraphParser writer = new GraphParser();
-                        writer.write(graph(), file.getPath());
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
-                            null, JOptionPane.ERROR_MESSAGE);
+            try {
+                GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                fileChooser.setSelectedFile(new File("graph"));
+                File file = fileChooser.saveFile(JGraphFrame.this);
+                if (file != null) {
+                    GraphParser writer = new GraphParser();
+                    writer.write(graph(), file.getPath());
                 }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(JGraphFrame.this, ex.getMessage(),
+                        null, JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        saveImage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
+        saveImage.addActionListener(evt -> {
 
+            try {
+                GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                fileChooser.setSelectedFile(new File("graph_image"));
+                File file = fileChooser.saveImageFile(JGraphFrame.this);
+                if (file != null) {
+                    Image img = graphPanel.getImage();
+                    ImageIO.write((BufferedImage) img, "png", file);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(JGraphFrame.this, e.getMessage(),
+                        null, JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        generate.addActionListener(evt -> {
+
+            GraphGeneratorDialog dialog = new GraphGeneratorDialog(JGraphFrame.this);
+            dialog.setVisible(true);
+            if (dialog.dialogResult()) {
                 try {
-                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
-                    File file = fileChooser.saveImageFile(JGraphFrame.this);
-                    if (file != null) {
-                        Image img = graphPanel.getImage();
-                        ImageIO.write((BufferedImage) img, "png", file);
+                    graphPanel.generate(dialog.graphView(),
+                            dialog.direction(), dialog.verticesNum(), dialog.edgesNum());
+                    if (dialog.isWeighted()) {
+                        RandomGraph r = new RandomGraph();
+                        r.generateIntWeights(graph(),
+                                dialog.lowerBound(), dialog.upperBound());
                     }
-                } catch (IOException e) {
+                    setInfo();
+                    setAlgorithmsEnabledFlag();
+                    graphPanel.repaint();
+                } catch (Exception e) {
                     JOptionPane.showMessageDialog(JGraphFrame.this, e,
-                            null, JOptionPane.ERROR_MESSAGE);
+                            "", JOptionPane.WARNING_MESSAGE);
                 }
             }
-        });
-
-        generate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-
-                GraphGeneratorDialog dialog = new GraphGeneratorDialog(JGraphFrame.this);
-                dialog.setVisible(true);
-                if (dialog.dialogResult()) {
-                    try {
-                        graphPanel.generate(dialog.graphView(),
-                                dialog.direction(), dialog.verticesNum(), dialog.edgesNum());
-                        if (dialog.isWeighted()) {
-                            RandomGraph r = new RandomGraph();
-                            r.generateIntWeights(graph(),
-                                    dialog.lowerBound(), dialog.upperBound());
-                        }
-                        setInfo();
-                        setAlgorithmsEnabledFlag();
-                        graphPanel.repaint();
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(JGraphFrame.this, e,
-                                "", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
-                dialog.dispose();
-            }
+            dialog.dispose();
         });
 
         JMenu directedGraph = new JMenu("Ориентированный");
@@ -1552,7 +1543,7 @@ public class JGraphFrame extends JFrame {
                     result.append(clustering);
                     createResultFrame(result.toString());
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(JGraphFrame.this, ex,
+                    JOptionPane.showMessageDialog(JGraphFrame.this, ex.getMessage(),
                             null, JOptionPane.ERROR_MESSAGE);
                 }
             }
