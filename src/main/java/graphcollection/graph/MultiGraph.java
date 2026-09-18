@@ -14,5 +14,5 @@ import java.util.Collection;
  * @author Рома
  */
 public interface MultiGraph<V, E extends Edge<V>> {
-    public Collection<E> edges(V v1, V v2);
+    Collection<E> edges(V v1, V v2);
 }

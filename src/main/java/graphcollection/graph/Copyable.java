@@ -12,5 +12,5 @@ package graphcollection.graph;
  */
 public interface Copyable<T> {
 
-    public T copy();
+    T copy();
 }

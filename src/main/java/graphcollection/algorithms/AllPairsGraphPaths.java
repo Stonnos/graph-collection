@@ -16,15 +16,15 @@ import java.util.Collection;
  */
 public interface AllPairsGraphPaths<V> {
 
-    public MatrixMap<V, V, V> predecessorsMatrix();
+    MatrixMap<V, V, V> predecessorsMatrix();
 
-    public MatrixMap<V, V, Number> distancesMatrix();
+    MatrixMap<V, V, Number> distancesMatrix();
 
-    public Number getDistance(V u, V v);
+    Number getDistance(V u, V v);
 
-    public V getPredecessor(V u, V v);
+    V getPredecessor(V u, V v);
 
-    public boolean isPath(V u, V v);
+    boolean isPath(V u, V v);
 
-    public Collection<V> getPath(V u, V v);
+    Collection<V> getPath(V u, V v);
 }
