@@ -1,12 +1,12 @@
-package graphcollection.gui.frames;
-
+package graphcollection.gui.dialog;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static graphcollection.gui.util.ButtonUtils.createButton;
+import static graphcollection.gui.util.ButtonUtils.createCancelButton;
+import static graphcollection.gui.util.ButtonUtils.createOkButton;
 
-public class OptionFrame extends JDialog {
+public class OptionDialog extends JDialog {
 
     private final JSlider slider;
     private boolean dialogResult = false;
@@ -20,12 +20,12 @@ public class OptionFrame extends JDialog {
         return slider.getValue() * DELIMITER;
     }
 
-    public OptionFrame(JFrame parent, int animationSpeed) {
+    public OptionDialog(JFrame parent, int animationSpeed) {
         super(parent, "Настройки", true);
         this.setResizable(false);
         this.setLocation(350, 200);
         this.setLayout(new GridBagLayout());
-        this.add(new JLabel("Задержка:"), new GridBagConstraints(0, 0, 3, 1, 0, 0,
+        this.add(new JLabel("Скорость анимации"), new GridBagConstraints(0, 0, 3, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(10, 5, 10, 5), 0, 0));
 
         slider = new JSlider();
@@ -36,8 +36,8 @@ public class OptionFrame extends JDialog {
         slider.setToolTipText(animationSpeed + " ms.");
         this.add(slider, new GridBagConstraints(0, 1, 3, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(0, 5, 5, 5), 0, 0));
-        JButton okButton = createButton("OK");
-        JButton cancelButton = createButton("Отмена");
+        JButton okButton = createOkButton();
+        JButton cancelButton = createCancelButton();
 
         slider.addChangeListener(evt -> slider.setToolTipText(getAnimationSpeed() + " ms."));
 

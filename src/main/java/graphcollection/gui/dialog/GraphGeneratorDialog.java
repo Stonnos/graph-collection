@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.gui.dialog;
 
 import graphcollection.gui.model.GraphView;
 import graphcollection.gui.text.IntegerDocument;
@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import static graphcollection.gui.JGraphDrawer.MAX_VERTEX_COUNT;
 import static graphcollection.gui.util.ButtonUtils.createButton;
 
 public class GraphGeneratorDialog extends JDialog {
@@ -23,6 +24,11 @@ public class GraphGeneratorDialog extends JDialog {
             GraphView.LIST_SET_GRAPH.getText(),
             GraphView.SORTED_SET_GRAPH.getText()
     };
+    private static final int DEFAULT_NUM_VERTICES = 6;
+    private static final int DEFAULT_NUM_EDGES = 12;
+    private static final int DEFAULT_EDGE_WEIGHT_LOWER_BOUND = 1;
+    private static final int DEFAULT_EDGE_WEIGHT_UPPER_BOUND = 25;
+
     private final JTextField vertexNumText;
     private final JTextField edgeNumText;
     private final JRadioButton directedGraph;
@@ -47,11 +53,11 @@ public class GraphGeneratorDialog extends JDialog {
         vertexNumText = new JTextField(3);
         vertexNumText.setInputVerifier(new TextFieldInputVerifier());
         vertexNumText.setDocument(new IntegerDocument(3));
-        vertexNumText.setText("0");
+        vertexNumText.setText(String.valueOf(DEFAULT_NUM_VERTICES));
         edgeNumText = new JTextField(3);
         edgeNumText.setInputVerifier(new TextFieldInputVerifier());
         edgeNumText.setDocument(new IntegerDocument(3));
-        edgeNumText.setText("0");
+        edgeNumText.setText(String.valueOf(DEFAULT_NUM_EDGES));
         this.add(vertexNumText, new GridBagConstraints(1, 0, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10, 5, 10, 5), 0, 0));
         this.add(numEdgesLabel, new GridBagConstraints(0, 1, 1, 1, 0, 0,
@@ -89,6 +95,14 @@ public class GraphGeneratorDialog extends JDialog {
                 if (GuiUtils.isEmpty(vertexNumText) || GuiUtils.isEmpty(edgeNumText)) {
                     return;
                 }
+                int vertices = Integer.parseInt(vertexNumText.getText());
+                if (vertices > MAX_VERTEX_COUNT) {
+                    vertexNumText.setToolTipText(
+                            "Превышено максимальное число вершин: %s!".formatted(MAX_VERTEX_COUNT));
+                    GuiUtils.showToolTipProgrammatically(vertexNumText, vertexNumText.getWidth() / 10,
+                            vertexNumText.getHeight() / 3);
+                    return;
+                }
                 if (isWeighted()) {
                     if (GuiUtils.isEmpty(weighLowerBound) || GuiUtils.isEmpty(weighUpperBound)) {
                         return;
@@ -107,12 +121,9 @@ public class GraphGeneratorDialog extends JDialog {
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                dialogResult = false;
-                setVisible(false);
-            }
+        cancelButton.addActionListener(evt -> {
+            dialogResult = false;
+            setVisible(false);
         });
 
         isWeighted = new JCheckBox("Сгенерировать веса");
@@ -145,6 +156,8 @@ public class GraphGeneratorDialog extends JDialog {
         weighUpperBound.setDocument(new IntegerDocument(12));
         weighLowerBound.setEditable(isWeighted.isSelected());
         weighUpperBound.setEditable(isWeighted.isSelected());
+        weighLowerBound.setText(String.valueOf(DEFAULT_EDGE_WEIGHT_LOWER_BOUND));
+        weighUpperBound.setText(String.valueOf(DEFAULT_EDGE_WEIGHT_UPPER_BOUND));
         this.add(weighLowerBound, new GridBagConstraints(0, 8, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.CENTER, new Insets(0, 10, 0, 10), 0, 0));
         this.add(weighUpperBound, new GridBagConstraints(1, 8, 1, 1, 0, 0,
@@ -189,24 +202,13 @@ public class GraphGeneratorDialog extends JDialog {
     }
 
     public GraphView graphView() {
-        GraphView view = null;
-        switch (graphView.getSelectedIndex()) {
-            case 0:
-                view = GraphView.MATRIX_GRAPH;
-                break;
-            case 1:
-                view = GraphView.HASH_SET_GRAPH;
-                break;
-            case 2:
-                view = GraphView.TREE_SET_GRAPH;
-                break;
-            case 3:
-                view = GraphView.LIST_SET_GRAPH;
-                break;
-            case 4:
-                view = GraphView.SORTED_SET_GRAPH;
-                break;
-        }
-        return view;
+        return switch (graphView.getSelectedIndex()) {
+            case 0 -> GraphView.MATRIX_GRAPH;
+            case 1 -> GraphView.HASH_SET_GRAPH;
+            case 2 -> GraphView.TREE_SET_GRAPH;
+            case 3 -> GraphView.LIST_SET_GRAPH;
+            case 4 -> GraphView.SORTED_SET_GRAPH;
+            default -> null;
+        };
     }
 }

@@ -37,8 +37,9 @@ import graphcollection.gui.algorithms.SimpleResultsPanel;
 import graphcollection.gui.algorithms.SptResultsPanel;
 import graphcollection.gui.choosers.GraphFileChooser;
 import graphcollection.gui.dialog.ClusteringAlgorithmInputDialog;
+import graphcollection.gui.dialog.GraphGeneratorDialog;
+import graphcollection.gui.dialog.OptionDialog;
 import graphcollection.gui.dialog.VertexInputDialog;
-import graphcollection.gui.frames.OptionFrame;
 import graphcollection.gui.frames.Reference;
 import graphcollection.gui.model.Edge2D;
 import graphcollection.gui.model.GraphView;
@@ -330,6 +331,7 @@ public class JGraphFrame extends JFrame {
 
         JMenu create = new JMenu("Создать граф");
         JMenuItem generate = new JMenuItem("Создать случайный граф");
+        generate.setIcon(IconFontSwing.buildIcon(FontAwesome.CUBES, ICON_SIZE));
         JMenuItem open = new JMenuItem("Загрузить из файла");
         open.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN, ICON_SIZE, Color.ORANGE));
         JMenuItem save = new JMenuItem("Сохранить в файл");
@@ -402,7 +404,7 @@ public class JGraphFrame extends JFrame {
                     graphPanel.generate(dialog.graphView(),
                             dialog.direction(), dialog.verticesNum(), dialog.edgesNum());
                     if (dialog.isWeighted()) {
-                        RandomGraph r = new RandomGraph();
+                        GraphGenerator r = new GraphGenerator();
                         r.generateIntWeights(graph(),
                                 dialog.lowerBound(), dialog.upperBound());
                     }
@@ -417,50 +419,14 @@ public class JGraphFrame extends JFrame {
             dialog.dispose();
         });
 
-        JMenu directedGraph = new JMenu("Ориентированный");
-        JMenu undirectedGraph = new JMenu("Неориентированный");
+        JMenuItem directedGraph = new JMenuItem("Ориентированный");
+        JMenuItem undirectedGraph = new JMenuItem("Неориентированный");
         create.add(directedGraph);
         create.add(undirectedGraph);
-        JMenuItem directedMatrixGraph = new JMenuItem(GraphView.MATRIX_GRAPH.getText());
-        JMenuItem directedHashSGraph = new JMenuItem(GraphView.HASH_SET_GRAPH.getText());
-        JMenuItem directedTreeSGraph = new JMenuItem(GraphView.TREE_SET_GRAPH.getText());
-        JMenuItem directedListSGraph = new JMenuItem(GraphView.LIST_SET_GRAPH.getText());
-        JMenuItem directedSortedSGraph = new JMenuItem(GraphView.SORTED_SET_GRAPH.getText());
-        directedGraph.add(directedMatrixGraph);
-        directedGraph.add(directedHashSGraph);
-        directedGraph.add(directedTreeSGraph);
-        directedGraph.add(directedListSGraph);
-        directedGraph.add(directedSortedSGraph);
-        JMenuItem undirectedMatrixGraph = new JMenuItem(GraphView.MATRIX_GRAPH.getText());
-        JMenuItem undirectedHashSGraph = new JMenuItem(GraphView.HASH_SET_GRAPH.getText());
-        JMenuItem undirectedTreeSGraph = new JMenuItem(GraphView.TREE_SET_GRAPH.getText());
-        JMenuItem undirectedListSGraph = new JMenuItem(GraphView.LIST_SET_GRAPH.getText());
-        JMenuItem undirectedSortedSGraph = new JMenuItem(GraphView.SORTED_SET_GRAPH.getText());
-        undirectedGraph.add(undirectedMatrixGraph);
-        undirectedGraph.add(undirectedHashSGraph);
-        undirectedGraph.add(undirectedTreeSGraph);
-        undirectedGraph.add(undirectedListSGraph);
-        undirectedGraph.add(undirectedSortedSGraph);
-        directedMatrixGraph.addActionListener(evt -> createGraph(GraphView.MATRIX_GRAPH, true)
-        );
-        directedHashSGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, true)
-        );
-        directedTreeSGraph.addActionListener(evt -> createGraph(GraphView.TREE_SET_GRAPH, true)
-        );
-        directedListSGraph.addActionListener(evt -> createGraph(GraphView.LIST_SET_GRAPH, true)
-        );
-        directedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, true)
-        );
 
-        undirectedMatrixGraph.addActionListener(evt -> createGraph(GraphView.MATRIX_GRAPH, false)
+        directedGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, true)
         );
-        undirectedHashSGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, false)
-        );
-        undirectedTreeSGraph.addActionListener(evt -> createGraph(GraphView.TREE_SET_GRAPH, false)
-        );
-        undirectedListSGraph.addActionListener(evt -> createGraph(GraphView.LIST_SET_GRAPH, false)
-        );
-        undirectedSortedSGraph.addActionListener(evt -> createGraph(GraphView.SORTED_SET_GRAPH, false)
+        undirectedGraph.addActionListener(evt -> createGraph(GraphView.HASH_SET_GRAPH, false)
         );
 
         directedGraphAlgorithms = new JMenu("Алгоритмы для ориентированных графов");
@@ -490,7 +456,7 @@ public class JGraphFrame extends JFrame {
         optionMenu.add(animationMenu);
 
         animationMenu.addActionListener(evt -> {
-                    OptionFrame option = new OptionFrame(JGraphFrame.this, animationSpeed);
+                    OptionDialog option = new OptionDialog(JGraphFrame.this, animationSpeed);
                     option.setVisible(true);
                     if (option.dialogResult()) {
                         animationSpeed = option.getAnimationSpeed();

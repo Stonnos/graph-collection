@@ -91,13 +91,13 @@ public class JGraphDrawer extends JPanel {
 
     public JGraphDrawer(GraphView gView, boolean direction, int V, int E, int a, int b) {
         this(gView, direction, V, E);
-        RandomGraph r = new RandomGraph();
+        GraphGenerator r = new GraphGenerator();
         r.generateIntWeights(graph, a, b);
     }
 
     public JGraphDrawer(GraphView gView, boolean direction, int V, int E, double a, double b) {
         this(gView, direction, V, E);
-        RandomGraph r = new RandomGraph();
+        GraphGenerator r = new GraphGenerator();
         r.generateDoubleWeights(graph, a, b);
     }
 
@@ -109,13 +109,13 @@ public class JGraphDrawer extends JPanel {
 
     public void generate(GraphView gView, boolean direction, int V, int E, int a, int b) {
         this.generate(gView, direction, V, E);
-        RandomGraph r = new RandomGraph();
+        GraphGenerator r = new GraphGenerator();
         r.generateIntWeights(graph, a, b);
     }
 
     public void generate(GraphView gView, boolean direction, int V, int E, double a, double b) {
         this.generate(gView, direction, V, E);
-        RandomGraph r = new RandomGraph();
+        GraphGenerator r = new GraphGenerator();
         r.generateDoubleWeights(graph, a, b);
     }
 
@@ -127,7 +127,7 @@ public class JGraphDrawer extends JPanel {
 
     public void transform(GraphView gView) {
         if (!graphView().equals(gView)) {
-            RandomGraph r = new RandomGraph();
+            GraphGenerator r = new GraphGenerator();
             Graph<Vertex, Edge2D> newG = r.generate(gView, graph.direction(), 0, 0);
             for (Vertex v : graph) {
                 newG.addVertex(v);
@@ -193,7 +193,7 @@ public class JGraphDrawer extends JPanel {
     }
 
     private void createGraph(GraphView gView, boolean direction, int V, int E) {
-        RandomGraph r = new RandomGraph();
+        GraphGenerator r = new GraphGenerator();
         graph = r.generate(gView, direction, V, E);
         fillVerticesMap();
         this.generateCoordinatesForVertices();
