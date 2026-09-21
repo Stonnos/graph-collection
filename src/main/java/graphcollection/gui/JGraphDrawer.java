@@ -35,10 +35,12 @@ import static graphcollection.gui.util.GuiUtils.showToolTipProgrammatically;
 
 public class JGraphDrawer extends JPanel {
 
-    public static final int MAX_VERTEX_COUNT = 40;
+    public static final int MAX_VERTEX_COUNT = 100;
     private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
     private static final int POPUP_MARGIN = 50;
     private static final int MAX_VERTEX_COUNT_EXCEEDED_ERROR_MESSAGE_MARGIN_TOP = 25;
+    private static final int CIRCLE_COORDINATES_VERTICES_THRESHOLD = 25;
+    private static final int FORCE_DIRECTED_ITERATIONS = 150;
     private int vertexSize = 40;
     private Graph<Vertex, Edge2D> graph; //граф
     private GraphView graphView;
@@ -196,7 +198,7 @@ public class JGraphDrawer extends JPanel {
         GraphGenerator r = new GraphGenerator();
         graph = r.generate(gView, direction, V, E);
         fillVerticesMap();
-        this.generateCoordinatesForVertices();
+        this.generateCoordinatesForceDirected();
         graphView = gView;
     }
 
@@ -209,7 +211,7 @@ public class JGraphDrawer extends JPanel {
         graph = g;
         graphView = GraphView.HASH_SET_GRAPH;
         fillVerticesMap();
-        this.generateCoordinatesForVertices();
+        this.generateCoordinatesForceDirected();
         repaint();
     }
 
@@ -222,7 +224,7 @@ public class JGraphDrawer extends JPanel {
 
     private void notifyUpdateGraphEvent() {
         Optional.ofNullable(updateGraphListener).ifPresent(actionListener ->
-                actionListener.actionPerformed(new ActionEvent(this,0, null)));
+                actionListener.actionPerformed(new ActionEvent(this, 0, null)));
     }
 
     private double getVertexSize() {
@@ -752,7 +754,7 @@ public class JGraphDrawer extends JPanel {
         }
     }
 
-    public final void generateCoordinatesForVertices() {
+    public final void generateCoordinatesCircle() {
         if (!graph.isEmpty()) {
             double dl = 360.0 / graph.verticesNum(), a = 0.0,
                     r = getHeight() / 3.0;
@@ -763,6 +765,116 @@ public class JGraphDrawer extends JPanel {
                         getVertexSize(), getVertexSize());
                 a += dl;
             }
+        }
+    }
+
+    public final void generateCoordinatesForceDirected() {
+        if (graph.isEmpty()) {
+            return;
+        }
+        if (graph.verticesNum() <= CIRCLE_COORDINATES_VERTICES_THRESHOLD) {
+            generateCoordinatesCircle();
+            return;
+        }
+        // В качестве начальной точки для силового алгоритма
+        // Идеально использовать ту же круговую расстановку!
+        // Это дает силовому алгоритму хорошую, сбалансированную стартовую позицию.
+        generateCoordinatesCircle();
+        //алгоритмы (Force-Directed Algorithms), в частности,
+        //классический алгоритм Фрухтермана-Рейнгольда (Fruchterman-Reingold).
+        int verticesNum = graph.verticesNum();
+        double width = getWidth();
+        double height = getHeight();
+
+        double area = width * height;
+        double k = Math.sqrt(area / (double) verticesNum) * 0.75;
+
+        Map<Vertex, Double> dispX = new HashMap<>();
+        Map<Vertex, Double> dispY = new HashMap<>();
+
+        int iterations = FORCE_DIRECTED_ITERATIONS;
+        double temp = width / 10.0;
+        double coolingFactor = temp / iterations;
+
+        for (int iter = 0; iter < iterations; iter++) {
+            for (Vertex v : graph) {
+                dispX.put(v, 0.0);
+                dispY.put(v, 0.0);
+            }
+
+            // Сила отталкивания
+            for (Vertex v : graph) {
+                double vX = v.ellipse.getCenterX();
+                double vY = v.ellipse.getCenterY();
+
+                for (Vertex u : graph) {
+                    if (v == u) {
+                        continue;
+                    }
+                    double dx = vX - u.ellipse.getCenterX();
+                    double dy = vY - u.ellipse.getCenterY();
+                    double distance = Math.hypot(dx, dy);
+
+                    if (distance > 0) {
+                        double fr = (k * k) / distance;
+                        dispX.put(v, dispX.get(v) + (dx / distance) * fr);
+                        dispY.put(v, dispY.get(v) + (dy / distance) * fr);
+                    }
+                }
+            }
+
+            // Сила притяжения (ребра)
+            Iterator<Edge2D> edge2DIterator = graph.edgeIterator();
+            while (edge2DIterator.hasNext()) {
+                Edge2D edge = edge2DIterator.next();
+                Vertex v = edge.source();
+                Vertex u = edge.target();
+
+                double dx = v.ellipse.getCenterX() - u.ellipse.getCenterX();
+                double dy = v.ellipse.getCenterY() - u.ellipse.getCenterY();
+                double distance = Math.hypot(dx, dy);
+
+                if (distance > 0) {
+                    double fa = (distance * distance) / k;
+                    double deltaX = (dx / distance) * fa;
+                    double deltaY = (dy / distance) * fa;
+
+                    dispX.put(v, dispX.get(v) - deltaX);
+                    dispY.put(v, dispY.get(v) - deltaY);
+                    dispX.put(u, dispX.get(u) + deltaX);
+                    dispY.put(u, dispY.get(u) + deltaY);
+                }
+            }
+
+            // Применение смещений
+            double vertexSize = getVertexSize();
+            double halfSize = vertexSize / 2.0;
+            double padding = 10.0; // Гарантированный отступ от краев
+
+            for (Vertex v : graph) {
+                double dX = dispX.get(v);
+                double dY = dispY.get(v);
+                double dispDist = Math.hypot(dX, dY);
+
+                if (dispDist > 0) {
+                    double limitedDist = Math.min(dispDist, temp);
+                    double targetX = v.ellipse.getCenterX() + (dX / dispDist) * limitedDist;
+                    double targetY = v.ellipse.getCenterY() + (dY / dispDist) * limitedDist;
+
+                    // 1. Сначала вычисляем левый верхний угол, как требует setFrame
+                    double posX = targetX - halfSize;
+                    double posY = targetY - halfSize;
+
+                    // 2. Ограничиваем именно posX и posY, чтобы они не подходили к 0 ближе чем на padding
+                    // Максимальная координата уменьшается на размер вершины и отступ
+                    posX = Math.max(padding, Math.min(width - vertexSize - padding, posX));
+                    posY = Math.max(padding, Math.min(height - vertexSize - padding, posY));
+
+                    // 3. Устанавливаем скорректированные координаты
+                    v.ellipse.setFrame(posX, posY, vertexSize, vertexSize);
+                }
+            }
+            temp -= coolingFactor;
         }
     }
 
@@ -796,7 +908,9 @@ public class JGraphDrawer extends JPanel {
             double dx = targetX - sourceX;
             double dy = targetY - sourceY;
             double r = Math.sqrt(dx * dx + dy * dy);
-            if (r == 0) r = 1; // Защита от деления на ноль
+            if (r == 0) {
+                r = 1; // Защита от деления на ноль
+            }
             double vx = dx / r;
             double vy = dy / r;
             // Вычисляем вектор перпендикуляра (нормаль), смотрящий в одну из сторон от ребра
