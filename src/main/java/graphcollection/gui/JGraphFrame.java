@@ -71,10 +71,13 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.TimerTask;
 
@@ -95,6 +98,9 @@ public class JGraphFrame extends JFrame {
     private static final int ALGORITHMS_STEP_PANEL_SIZE = 35;
     private static final int FRAME_WIDTH = 1280;
     private static final int FRAME_HEIGHT = 800;
+    private static DecimalFormat DECIMAL_FORMAT =
+            new DecimalFormat("#.####", DecimalFormatSymbols.getInstance(Locale.US));
+
     private int animationSpeed = 1000;
     private JPanel mainPanel;
     private JPanel infoPanel;
@@ -531,15 +537,6 @@ public class JGraphFrame extends JFrame {
         setEdgeWeightCheckBox.addActionListener(
                 e -> graphPanel.setManuallySetEdgeWeight(setEdgeWeightCheckBox.isSelected()));
 
-        // JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
-        // verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
-
-        //JLabel edgesActionsLabel = new JLabel("Действия с ребрами:");
-        //edgesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
-
-        //  JLabel otherActionsLabel = new JLabel("Другие действия:");
-        // otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
-
         JPanel verticesOperationsPanel = new JPanel(new GridBagLayout());
         verticesOperationsPanel.setFont(verticesOperationsPanel.getFont().deriveFont(Font.BOLD));
         verticesOperationsPanel.setBorder(PanelBorderUtils.createTitledBorder("Действия с вершинами"));
@@ -892,7 +889,7 @@ public class JGraphFrame extends JFrame {
         return null;
     }
 
-    private void createMst(MstType type, Component component, String title) {
+    private void createMst(MstType type, String title) {
         ConnectedComponents<Vertex> connComp = new ConnectedComponents<>(graph());
         if (connComp.connected()) {
             if (!NumberParser.isNegativeWeights(graph())) {
@@ -908,7 +905,8 @@ public class JGraphFrame extends JFrame {
                 }
                 if (mst != null) {
                     StringBuilder result = new StringBuilder(title
-                            + SEPARATOR + "Вес остова: " + mst.getMinimumSpanningTreeWeight()
+                            + SEPARATOR + "Вес остова: "
+                            + DECIMAL_FORMAT.format(mst.getMinimumSpanningTreeWeight().doubleValue())
                             + SEPARATOR + "Ребра остова:" + SEPARATOR);
                     final Collection<Edge2D> tree = mst.getMinimumSpanningTreeEdges();
                     for (Edge2D e : tree) {
@@ -934,10 +932,10 @@ public class JGraphFrame extends JFrame {
         mstMenu.add(kruskalMstMenu);
         undirectedGraphAlgorithms.add(mstMenu);
         primMstMenu.addActionListener(evt ->
-                createMst(MstType.PRIM, primMstMenu, "Результаты алгоритма Прима:")
+                createMst(MstType.PRIM, "Результаты алгоритма Прима:")
         );
         kruskalMstMenu.addActionListener(
-                evt -> createMst(MstType.KRUSKAL, kruskalMstMenu, "Результаты алгоритма Крускала:")
+                evt -> createMst(MstType.KRUSKAL, "Результаты алгоритма Крускала:")
         );
     }
 
@@ -983,7 +981,8 @@ public class JGraphFrame extends JFrame {
             for (Vertex v : graph()) {
                 if (allSpt.isPath(u, v)) {
                     dist.append("w[p(").append(u).append(",")
-                            .append(v).append(")] = ").append(allSpt.getDistance(u, v))
+                            .append(v).append(")] = ")
+                            .append(DECIMAL_FORMAT.format(allSpt.getDistance(u, v).doubleValue()))
                             .append(SEPARATOR);
                     paths.append("p(").append(u).append(",").append(v)
                             .append(") = ").append(allSpt.getPath(u, v)).append(SEPARATOR);
@@ -1093,7 +1092,7 @@ public class JGraphFrame extends JFrame {
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
                     if (allSpt.decision()) {
                         String result = "Радиус графа:" + SEPARATOR + "r(G) = "
-                                + GraphMetricProperties.radius(allSpt);
+                                + DECIMAL_FORMAT.format(GraphMetricProperties.radius(allSpt).doubleValue());
                         createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!",
@@ -1113,7 +1112,7 @@ public class JGraphFrame extends JFrame {
                             = new FloydWarshallAllPairsShortestPaths<>(graph());
                     if (allSpt.decision()) {
                         String result = "Диаметр графа:" + SEPARATOR + "d(G) = "
-                                + GraphMetricProperties.diametr(allSpt);
+                                + DECIMAL_FORMAT.format(GraphMetricProperties.diametr(allSpt).doubleValue());
                         createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Граф содержит цикл с отрицательным весом!", JGraphFrame.this);
@@ -1140,10 +1139,11 @@ public class JGraphFrame extends JFrame {
                         return;
                     }
                     if (!NumberParser.isNegativeWeights(graph())) {
+                        Number eccentricity =
+                                GraphMetricProperties.eccentricity(new DijkstraShortestPaths<>(graph(), s));
                         String result = "Эксцентриситет вершины:" + SEPARATOR
                                 + "e(" + s + ") = "
-                                + GraphMetricProperties.eccentricity(
-                                new DijkstraShortestPaths<>(graph(), s));
+                                + DECIMAL_FORMAT.format(eccentricity.doubleValue());
                         createResultFrame(result);
                     } else {
                         popupService.showErrorPopup("Веса должны быть положительными!",
@@ -1374,7 +1374,8 @@ public class JGraphFrame extends JFrame {
         for (Vertex v : graph()) {
             if (spt.isPath(v)) {
                 dist.append("w[p(").append(spt.getSource()).append(",")
-                        .append(v).append(")] = ").append(spt.getDistance(v))
+                        .append(v).append(")] = ")
+                        .append(DECIMAL_FORMAT.format(spt.getDistance(v).doubleValue()))
                         .append(SEPARATOR);
                 paths.append("p(").append(spt.getSource()).append(",")
                         .append(v).append(") = ").append(spt.getPath(v)).append(SEPARATOR);
