@@ -1,29 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui.dialog;
 
 import graphcollection.gui.choosers.GraphFileChooser;
 import graphcollection.gui.SingletonRegistry;
+import graphcollection.gui.text.IntegerDocument;
+import graphcollection.gui.text.TextFieldInputVerifier;
+import graphcollection.gui.util.GuiUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import static graphcollection.gui.util.ButtonUtils.createButton;
-import static graphcollection.gui.util.ButtonUtils.createOkButton;
 
-/**
- *
- * @author Рома
- */
 public class ClusteringAlgorithmInputDialog extends JDialog {
-    private JTextField number;
-    private JTextField matrix;
+    private final JTextField numClustersText;
+    private final JTextField distancesMatrixText;
     private boolean dialogResult = false;
 
     public ClusteringAlgorithmInputDialog(JFrame parent) {
@@ -31,83 +22,88 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
         this.setResizable(false);
         this.setLocation(350, 200);
         this.setLayout(new GridBagLayout());
-        //-----------------------------------------
-        this.add(new JLabel("Число кластеров:"), new GridBagConstraints(0, 0, 1, 1, 0, 0,
+
+        JLabel numClustersLabel = new JLabel("Число кластеров:");
+        numClustersLabel.setFont(numClustersLabel.getFont().deriveFont(Font.BOLD));
+        JLabel distancesMatrixLabel = new JLabel("Матрица расстояний:");
+        distancesMatrixLabel.setFont(distancesMatrixLabel.getFont().deriveFont(Font.BOLD));
+        this.add(numClustersLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0,
                 GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(10, 5, 10, 5), 0, 0));
-        number = new JTextField(10);
-        matrix = new JTextField(10);
-        matrix.setEditable(false);
-        matrix.setBackground(Color.WHITE);
-        this.add(number, new GridBagConstraints(1, 0, 1, 1, 0, 0,
+        numClustersText = new JTextField(10);
+        numClustersText.setDocument(new IntegerDocument(10));
+        numClustersText.setInputVerifier(new TextFieldInputVerifier());
+        distancesMatrixText = new JTextField(10);
+        distancesMatrixText.setEditable(false);
+        distancesMatrixText.setBackground(Color.WHITE);
+        this.add(numClustersText, new GridBagConstraints(1, 0, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 10, 5), 0, 0));
-        this.add(new JLabel("Матрица расстояний:"), new GridBagConstraints(0, 1, 2, 1, 0, 0,
+        this.add(distancesMatrixLabel, new GridBagConstraints(0, 1, 2, 1, 0, 0,
                 GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(5, 5, 5, 5), 0, 0));
-        this.add(matrix, new GridBagConstraints(0, 2, 1, 1, 0, 0,
-                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 10, 5), 0, 0));
-        //-----------------------------------------------------------
-        JButton loadButton = new JButton("Загрузить");
-        //-----------------------------------------------------------
+        this.add(distancesMatrixText, new GridBagConstraints(0, 2, 1, 1, 0, 0,
+                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 10, 10, 5), 0, 0));
+
+        JButton loadButton = createButton("Загрузить");
+
         this.add(loadButton, new GridBagConstraints(1, 2, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 10, 5), 0, 0));
-        //----------------------------------------------------------------------------
+
         JButton okButton = createButton("OK");
         JButton cancelButton = createButton("Отмена");
-        //--------------------------------------------
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    Integer.parseInt(number.getText());
-                    dialogResult = true;
-                    setVisible(false);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this,
-                            "Только целые числа!",
-                            "Ошибка ввода!", JOptionPane.WARNING_MESSAGE);
-                    number.requestFocusInWindow();
+
+        okButton.addActionListener(evt -> {
+            try {
+                if (GuiUtils.isEmpty(numClustersText)) {
+                    return;
                 }
-            }
-        });
-        //-----------------------------------------------
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                dialogResult = false;
+                if (GuiUtils.isEmpty(distancesMatrixText)) {
+                    distancesMatrixText.setToolTipText("Загрузите файл с матрицей расстояний!");
+                    GuiUtils.showToolTipProgrammatically(distancesMatrixText, distancesMatrixText.getWidth() / 10,
+                            distancesMatrixText.getHeight() / 3);
+                    return;
+                }
+                dialogResult = true;
                 setVisible(false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this,
+                        "Только целые числа!",
+                        "Ошибка ввода!", JOptionPane.WARNING_MESSAGE);
+                numClustersText.requestFocusInWindow();
             }
         });
-        //--------------------------------------------
-        loadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
-                    File file = fileChooser.openFile(ClusteringAlgorithmInputDialog.this);
-                    if (file != null) {
-                        matrix.setText(file.getPath());
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this, ex,
-                            null, JOptionPane.ERROR_MESSAGE);
+
+        cancelButton.addActionListener(evt -> {
+            dialogResult = false;
+            setVisible(false);
+        });
+
+        loadButton.addActionListener(evt -> {
+            try {
+                GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                File file = fileChooser.openFile(ClusteringAlgorithmInputDialog.this);
+                if (file != null) {
+                    distancesMatrixText.setText(file.getPath());
                 }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(ClusteringAlgorithmInputDialog.this, ex,
+                        null, JOptionPane.ERROR_MESSAGE);
             }
         });
-        //-----------------------------------------------
+
         this.add(okButton, new GridBagConstraints(0, 3, 1, 1, 1, 1,
-                GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(10, 5, 15, 5), 0, 0));
+                GridBagConstraints.EAST, GridBagConstraints.EAST, new Insets(20, 5, 10, 5), 0, 0));
         this.add(cancelButton, new GridBagConstraints(1, 3, 1, 1, 1, 1,
-                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 15, 5), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(20, 5, 10, 5), 0, 0));
         this.pack();
         this.setLocationRelativeTo(parent);
-        number.requestFocusInWindow();
+        numClustersText.requestFocusInWindow();
     }
 
-    public int number() {
-        return Integer.parseInt(number.getText());
+    public int numClusters() {
+        return Integer.parseInt(numClustersText.getText());
     }
 
     public String matrixFile() {
-        return matrix.getText();
+        return distancesMatrixText.getText();
     }
 
     public boolean dialogResult() {

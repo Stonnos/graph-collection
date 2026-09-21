@@ -1539,7 +1539,7 @@ public class JGraphFrame extends JFrame {
             ClusteringAlgorithmInputDialog dialog = new ClusteringAlgorithmInputDialog(JGraphFrame.this);
             dialog.setVisible(true);
             if (dialog.dialogResult()) {
-                int n = dialog.number();
+                int n = dialog.numClusters();
                 String file = dialog.matrixFile();
                 MatrixParser parser = new MatrixParser();
                 try {
