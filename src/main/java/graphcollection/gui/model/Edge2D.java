@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui.model;
 
 import graphcollection.graph.WeightedEdge;
@@ -10,12 +5,14 @@ import graphcollection.graph.WeightedEdge;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
-/**
- *
- * @author Рома
- */
 public class Edge2D extends WeightedEdge<Vertex, Number> {
+
+    public static DecimalFormat WEIGHT_FORMAT =
+            new DecimalFormat("#.####", DecimalFormatSymbols.getInstance(Locale.US));
 
     public static final Color DARK_GRAY = Color.DARK_GRAY;
     public static final Color DEFAULT_WEIGHT_COLOR = Color.BLUE;
@@ -138,7 +135,7 @@ public class Edge2D extends WeightedEdge<Vertex, Number> {
             g.setPaint(weightColor);
 
             FontMetrics fm = g.getFontMetrics(weightFont);
-            String weightStr = getWeight().toString();
+            String weightStr = WEIGHT_FORMAT.format(getWeight().doubleValue());
             float textWidth = fm.stringWidth(weightStr);
             float textHeight = fm.getAscent();
             // Точное центрирование bounding box текста относительно рассчитанной точки (x, y)

@@ -972,7 +972,7 @@ public class JGraphDrawer extends JPanel {
             edgeWeightText.setFont(new Font("Arial", Font.PLAIN, WEIGHT_FONT_SIZE));
             edgeWeightText.setDocument(new DoubleDocument(EDGE_WEIGHT_TEXT_LENGTH));
             if (edge2D.getWeight() != null) {
-                edgeWeightText.setText(String.valueOf(edge2D.getWeight()));
+                edgeWeightText.setText(Edge2D.WEIGHT_FORMAT.format(edge2D.getWeight().doubleValue()));
             }
             edgeWeightText.addActionListener(e -> {
                 hide();
@@ -987,6 +987,7 @@ public class JGraphDrawer extends JPanel {
             if (edgeWeightText.getText() != null && !edgeWeightText.getText().isEmpty()) {
                 Number newWeight = NumberParser.parse(edgeWeightText.getText());
                 edge2D.setWeight(newWeight);
+                repaint();
             }
         }
     }
@@ -1067,6 +1068,7 @@ public class JGraphDrawer extends JPanel {
                     Optional.ofNullable(vertexErrorListener)
                             .ifPresent(actionListener -> actionListener.actionPerformed(
                                     new ActionEvent(this, 0, hasVertexError.toString())));
+                    repaint();
                     return true;
                 }
             }
