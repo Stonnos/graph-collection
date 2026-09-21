@@ -36,6 +36,7 @@ import static graphcollection.gui.util.GuiUtils.showToolTipProgrammatically;
 public class JGraphDrawer extends JPanel {
 
     public static final int MAX_VERTEX_COUNT = 100;
+    private static final double FORCE_DETECTED_AREA_PADDING = 15.0; // Отступ от краев рамок
     private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
     private static final int POPUP_MARGIN = 50;
     private static final int MAX_VERTEX_COUNT_EXCEEDED_ERROR_MESSAGE_MARGIN_TOP = 25;
@@ -776,12 +777,9 @@ public class JGraphDrawer extends JPanel {
             generateCoordinatesCircle();
             return;
         }
-        // В качестве начальной точки для силового алгоритма
-        // Идеально использовать ту же круговую расстановку!
-        // Это дает силовому алгоритму хорошую, сбалансированную стартовую позицию.
+        // Идеально использовать круговую расстановку в качестве стартовой позиции
         generateCoordinatesCircle();
-        //алгоритмы (Force-Directed Algorithms), в частности,
-        //классический алгоритм Фрухтермана-Рейнгольда (Fruchterman-Reingold).
+
         int verticesNum = graph.verticesNum();
         double width = getWidth();
         double height = getHeight();
@@ -797,84 +795,102 @@ public class JGraphDrawer extends JPanel {
         double coolingFactor = temp / iterations;
 
         for (int iter = 0; iter < iterations; iter++) {
-            for (Vertex v : graph) {
-                dispX.put(v, 0.0);
-                dispY.put(v, 0.0);
-            }
+            initializeDisplacements(dispX, dispY);
+            calculateRepulsionForces(k, dispX, dispY);
+            calculateAttractionForces(k, dispX, dispY);
+            applyDisplacements(temp, width, height, dispX, dispY);
+            temp -= coolingFactor;
+        }
+    }
 
-            // Сила отталкивания
-            for (Vertex v : graph) {
-                double vX = v.ellipse.getCenterX();
-                double vY = v.ellipse.getCenterY();
+    /**
+     * Сбрасывает смещения для всех вершин графа в начале итерации.
+     */
+    private void initializeDisplacements(Map<Vertex, Double> dispX, Map<Vertex, Double> dispY) {
+        for (Vertex v : graph) {
+            dispX.put(v, 0.0);
+            dispY.put(v, 0.0);
+        }
+    }
 
-                for (Vertex u : graph) {
-                    if (v == u) {
-                        continue;
-                    }
-                    double dx = vX - u.ellipse.getCenterX();
-                    double dy = vY - u.ellipse.getCenterY();
-                    double distance = Math.hypot(dx, dy);
+    /**
+     * Вычисляет силы отталкивания между всеми парами вершин.
+     */
+    private void calculateRepulsionForces(double k, Map<Vertex, Double> dispX, Map<Vertex, Double> dispY) {
+        for (Vertex v : graph) {
+            double vX = v.ellipse.getCenterX();
+            double vY = v.ellipse.getCenterY();
 
-                    if (distance > 0) {
-                        double fr = (k * k) / distance;
-                        dispX.put(v, dispX.get(v) + (dx / distance) * fr);
-                        dispY.put(v, dispY.get(v) + (dy / distance) * fr);
-                    }
+            for (Vertex u : graph) {
+                if (v == u) {
+                    continue;
                 }
-            }
-
-            // Сила притяжения (ребра)
-            Iterator<Edge2D> edge2DIterator = graph.edgeIterator();
-            while (edge2DIterator.hasNext()) {
-                Edge2D edge = edge2DIterator.next();
-                Vertex v = edge.source();
-                Vertex u = edge.target();
-
-                double dx = v.ellipse.getCenterX() - u.ellipse.getCenterX();
-                double dy = v.ellipse.getCenterY() - u.ellipse.getCenterY();
+                double dx = vX - u.ellipse.getCenterX();
+                double dy = vY - u.ellipse.getCenterY();
                 double distance = Math.hypot(dx, dy);
 
                 if (distance > 0) {
-                    double fa = (distance * distance) / k;
-                    double deltaX = (dx / distance) * fa;
-                    double deltaY = (dy / distance) * fa;
-
-                    dispX.put(v, dispX.get(v) - deltaX);
-                    dispY.put(v, dispY.get(v) - deltaY);
-                    dispX.put(u, dispX.get(u) + deltaX);
-                    dispY.put(u, dispY.get(u) + deltaY);
+                    double fr = (k * k) / distance;
+                    dispX.put(v, dispX.get(v) + (dx / distance) * fr);
+                    dispY.put(v, dispY.get(v) + (dy / distance) * fr);
                 }
             }
+        }
+    }
 
-            // Применение смещений
-            double vertexSize = getVertexSize();
-            double halfSize = vertexSize / 2.0;
-            double padding = 10.0; // Гарантированный отступ от краев
+    /**
+     * Вычисляет силы притяжения вдоль ребер графа.
+     */
+    private void calculateAttractionForces(double k, Map<Vertex, Double> dispX, Map<Vertex, Double> dispY) {
+        Iterator<Edge2D> edge2DIterator = graph.edgeIterator();
+        while (edge2DIterator.hasNext()) {
+            Edge2D edge = edge2DIterator.next();
+            Vertex v = edge.source();
+            Vertex u = edge.target();
 
-            for (Vertex v : graph) {
-                double dX = dispX.get(v);
-                double dY = dispY.get(v);
-                double dispDist = Math.hypot(dX, dY);
+            double dx = v.ellipse.getCenterX() - u.ellipse.getCenterX();
+            double dy = v.ellipse.getCenterY() - u.ellipse.getCenterY();
+            double distance = Math.hypot(dx, dy);
 
-                if (dispDist > 0) {
-                    double limitedDist = Math.min(dispDist, temp);
-                    double targetX = v.ellipse.getCenterX() + (dX / dispDist) * limitedDist;
-                    double targetY = v.ellipse.getCenterY() + (dY / dispDist) * limitedDist;
+            if (distance > 0) {
+                double fa = (distance * distance) / k;
+                double deltaX = (dx / distance) * fa;
+                double deltaY = (dy / distance) * fa;
 
-                    // 1. Сначала вычисляем левый верхний угол, как требует setFrame
-                    double posX = targetX - halfSize;
-                    double posY = targetY - halfSize;
-
-                    // 2. Ограничиваем именно posX и posY, чтобы они не подходили к 0 ближе чем на padding
-                    // Максимальная координата уменьшается на размер вершины и отступ
-                    posX = Math.max(padding, Math.min(width - vertexSize - padding, posX));
-                    posY = Math.max(padding, Math.min(height - vertexSize - padding, posY));
-
-                    // 3. Устанавливаем скорректированные координаты
-                    v.ellipse.setFrame(posX, posY, vertexSize, vertexSize);
-                }
+                dispX.put(v, dispX.get(v) - deltaX);
+                dispY.put(v, dispY.get(v) - deltaY);
+                dispX.put(u, dispX.get(u) + deltaX);
+                dispY.put(u, dispY.get(u) + deltaY);
             }
-            temp -= coolingFactor;
+        }
+    }
+
+    /**
+     * Применяет накопленные смещения к вершинам с учетом текущей температуры и границ экрана.
+     */
+    private void applyDisplacements(double temp, double width, double height,
+                                    Map<Vertex, Double> dispX, Map<Vertex, Double> dispY) {
+        double vertexSize = getVertexSize();
+        double halfSize = vertexSize / 2.0;
+
+        for (Vertex v : graph) {
+            double dX = dispX.get(v);
+            double dY = dispY.get(v);
+            double dispDist = Math.hypot(dX, dY);
+            if (dispDist > 0) {
+                double limitedDist = Math.min(dispDist, temp);
+                double targetX = v.ellipse.getCenterX() + (dX / dispDist) * limitedDist;
+                double targetY = v.ellipse.getCenterY() + (dY / dispDist) * limitedDist;
+                // Вычисляем левый верхний угол, как требует setFrame
+                double posX = targetX - halfSize;
+                double posY = targetY - halfSize;
+                // Ограничиваем posX и posY, чтобы левый и верхний край жестко соблюдали PADDING
+                posX = Math.max(
+                        FORCE_DETECTED_AREA_PADDING, Math.min(width - vertexSize - FORCE_DETECTED_AREA_PADDING, posX));
+                posY = Math.max(
+                        FORCE_DETECTED_AREA_PADDING, Math.min(height - vertexSize - FORCE_DETECTED_AREA_PADDING, posY));
+                v.ellipse.setFrame(posX, posY, vertexSize, vertexSize);
+            }
         }
     }
 
