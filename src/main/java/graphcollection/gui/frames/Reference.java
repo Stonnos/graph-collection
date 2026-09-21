@@ -1,14 +1,11 @@
 package graphcollection.gui.frames;
 
-import graphcollection.gui.BaseReference;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class Reference extends BaseReference {
 
-    public Reference(Component component) {
-        super(component);
+    public Reference() {
         this.setTitle("Справка");
         JMenuBar menu = new JMenuBar();
         this.setJMenuBar(menu);

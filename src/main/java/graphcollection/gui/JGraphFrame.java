@@ -40,6 +40,7 @@ import graphcollection.gui.dialog.ClusteringAlgorithmInputDialog;
 import graphcollection.gui.dialog.GraphGeneratorDialog;
 import graphcollection.gui.dialog.OptionDialog;
 import graphcollection.gui.dialog.VertexInputDialog;
+import graphcollection.gui.frames.BaseReference;
 import graphcollection.gui.frames.Reference;
 import graphcollection.gui.model.Edge2D;
 import graphcollection.gui.model.GraphView;
@@ -122,6 +123,9 @@ public class JGraphFrame extends JFrame {
     public final PopupService popupService = new PopupService();
 
     private AlgorithmsResultsPanel algorithmsResultsPanel;
+
+    private BaseReference aboutProgramReference;
+    private Reference userReference;
 
     private class PathDrawer extends TimerTask {
 
@@ -435,20 +439,24 @@ public class JGraphFrame extends JFrame {
         algoritmsMenu.add(undirectedGraphAlgorithms);
 
         JMenuItem reference = new JMenuItem("Посмотреть справку");
-        JMenuItem aboutProgrammMenu = new JMenuItem("О программе");
+        JMenuItem aboutProgramMenu = new JMenuItem("О программе");
         referenceMenu.add(reference);
-        referenceMenu.add(aboutProgrammMenu);
+        referenceMenu.add(aboutProgramMenu);
 
-        aboutProgrammMenu.addActionListener(evt -> {
-                    BaseReference frame = new BaseReference(aboutProgrammMenu);
-                    frame.readInfoFromFile("О программе.html");
-                    frame.setVisible(true);
+        aboutProgramMenu.addActionListener(evt -> {
+                    if (aboutProgramReference == null) {
+                        aboutProgramReference = new BaseReference();
+                        aboutProgramReference.readInfoFromFile("О программе.html");
+                    }
+                    aboutProgramReference.setVisible(true);
                 }
         );
         reference.addActionListener(evt -> {
-                    BaseReference frame = new Reference(aboutProgrammMenu);
-                    frame.readInfoFromFile("Руководство пользователя.html");
-                    frame.setVisible(true);
+                    if (userReference == null) {
+                        userReference = new Reference();
+                        userReference.readInfoFromFile("Руководство пользователя.html");
+                    }
+                    userReference.setVisible(true);
                 }
         );
 
@@ -522,14 +530,14 @@ public class JGraphFrame extends JFrame {
         setEdgeWeightCheckBox.addActionListener(
                 e -> graphPanel.setManuallySetEdgeWeight(setEdgeWeightCheckBox.isSelected()));
 
-       // JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
-       // verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+        // JLabel verticesActionsLabel = new JLabel("Действия с вершинами:");
+        // verticesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
         //JLabel edgesActionsLabel = new JLabel("Действия с ребрами:");
         //edgesActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
-      //  JLabel otherActionsLabel = new JLabel("Другие действия:");
-       // otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
+        //  JLabel otherActionsLabel = new JLabel("Другие действия:");
+        // otherActionsLabel.setFont(verticesActionsLabel.getFont().deriveFont(Font.BOLD));
 
         JPanel verticesOperationsPanel = new JPanel(new GridBagLayout());
         verticesOperationsPanel.setFont(verticesOperationsPanel.getFont().deriveFont(Font.BOLD));

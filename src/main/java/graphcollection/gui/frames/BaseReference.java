@@ -1,11 +1,9 @@
-package graphcollection.gui;
+package graphcollection.gui.frames;
 
 import graphcollection.gui.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import static graphcollection.gui.util.ButtonUtils.createButton;
 
@@ -16,21 +14,12 @@ public class BaseReference extends JFrame {
     private static final int PREFERRED_HEIGHT = 500;
 
     private final JTextPane textInfo;
-    private final Component aboutProgrammComponent;
 
-    public BaseReference(Component component) {
+    public BaseReference() {
         this.setResizable(false);
         this.setTitle("О программе");
         this.setLayout(new GridBagLayout());
-        aboutProgrammComponent = component;
-        aboutProgrammComponent.setEnabled(false);
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                aboutProgrammComponent.setEnabled(true);
-            }
-        });
 
         textInfo = new JTextPane();
         textInfo.setContentType(CONTENT_TYPE);
@@ -41,11 +30,7 @@ public class BaseReference extends JFrame {
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         JButton okButton = createButton("OK");
-        okButton.addActionListener(evt -> {
-            aboutProgrammComponent.setEnabled(true);
-            dispose();
-        }
-        );
+        okButton.addActionListener(evt -> dispose());
 
         menuPanel.add(okButton);
         add(scrollPanel);
