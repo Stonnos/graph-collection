@@ -645,7 +645,6 @@ public class JGraphDrawer extends JPanel {
                                 createErrorMessagePopup(String.format("Ребра между вершинами %s и %s не существует!",
                                                 u.getName(), z.getName()),
                                         (int) (z.getX() + POPUP_MARGIN), (int) (z.getY() + POPUP_MARGIN));
-                                return;
                             } else {
                                 edgeWeightPopup = new EdgeWeightPopup(e);
                                 edgeWeightPopup.show();
