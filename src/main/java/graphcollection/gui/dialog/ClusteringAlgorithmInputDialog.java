@@ -79,6 +79,7 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
         loadButton.addActionListener(evt -> {
             try {
                 GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                fileChooser.setTextFilter();
                 File file = fileChooser.openFile(ClusteringAlgorithmInputDialog.this);
                 if (file != null) {
                     distancesMatrixText.setText(file.getPath());

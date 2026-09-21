@@ -1,0 +1,76 @@
+{
+  "directed": true,
+  "vertices": [
+    {
+      "id": "1",
+      "name": "1"
+    },
+    {
+      "id": "2",
+      "name": "2"
+    },
+    {
+      "id": "3",
+      "name": "3"
+    },
+    {
+      "id": "4",
+      "name": "4"
+    },
+    {
+      "id": "5",
+      "name": "5"
+    },
+    {
+      "id": "6",
+      "name": "6"
+    }
+  ],
+  "edges": [
+    {
+      "source": "1",
+      "target": "2",
+      "weight": null
+    },
+    {
+      "source": "1",
+      "target": "6",
+      "weight": null
+    },
+    {
+      "source": "2",
+      "target": "5",
+      "weight": null
+    },
+    {
+      "source": "3",
+      "target": "2",
+      "weight": null
+    },
+    {
+      "source": "3",
+      "target": "4",
+      "weight": null
+    },
+    {
+      "source": "5",
+      "target": "4",
+      "weight": null
+    },
+    {
+      "source": "5",
+      "target": "3",
+      "weight": null
+    },
+    {
+      "source": "6",
+      "target": "2",
+      "weight": null
+    },
+    {
+      "source": "6",
+      "target": "5",
+      "weight": null
+    }
+  ]
+}

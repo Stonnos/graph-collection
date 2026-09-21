@@ -31,6 +31,7 @@
         <jacoco.minCoverage>0</jacoco.minCoverage>
         <launch4j-maven-plugin.version>2.4.1</launch4j-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <jackson.version>2.15.4</jackson.version>
         <l4j.maxHeapSize>1024</l4j.maxHeapSize>
         <exe.file.name>GraphCollection</exe.file.name>
         <jre.version>1.8.0</jre.version>
@@ -137,6 +138,18 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>

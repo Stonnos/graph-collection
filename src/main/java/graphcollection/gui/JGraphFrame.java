@@ -106,12 +106,12 @@ public class JGraphFrame extends JFrame {
     private JScrollPane commentScrollPanel;
     private JTextArea commentTxt;
     private JPanel algorithmsStepPanel;
-    //------------------------------------------------------
+
     private JLabel graphViewText;
     private JLabel graphDirectedText;
     private JLabel vertexNumText;
     private JLabel edgeNumText;
-    //----------------------------------------------------
+
     private JMenu graphMenu;
     private JMenu algoritmsMenu;
     private JMenu directedGraphAlgorithms;
@@ -120,7 +120,8 @@ public class JGraphFrame extends JFrame {
     private JCheckBox setVertexNameCheckBox;
     private JCheckBox setEdgeWeightCheckBox;
 
-    public final PopupService popupService = new PopupService();
+    private final PopupService popupService = new PopupService();
+    private final JsonGraphWriter jsonGraphWriter = new JsonGraphWriter();
 
     private AlgorithmsResultsPanel algorithmsResultsPanel;
 
@@ -354,10 +355,11 @@ public class JGraphFrame extends JFrame {
 
             try {
                 GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
+                fileChooser.setJsonFilter();
                 fileChooser.setSelectedFile(new File(EMPTY));
                 File file = fileChooser.openFile(JGraphFrame.this);
                 if (file != null) {
-                    graphPanel.read(file.getPath());
+                    graphPanel.read(file);
                     setInfo();
                     setAlgorithmsEnabledFlag();
                 }
@@ -372,10 +374,9 @@ public class JGraphFrame extends JFrame {
             try {
                 GraphFileChooser fileChooser = SingletonRegistry.getSingleton(GraphFileChooser.class);
                 fileChooser.setSelectedFile(new File("graph"));
-                File file = fileChooser.saveFile(JGraphFrame.this);
+                File file = fileChooser.saveJsonFile(JGraphFrame.this);
                 if (file != null) {
-                    GraphParser writer = new GraphParser();
-                    writer.write(graph(), file.getPath());
+                    jsonGraphWriter.write(file, graph());
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(JGraphFrame.this, ex.getMessage(),

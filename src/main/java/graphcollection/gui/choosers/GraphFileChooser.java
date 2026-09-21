@@ -15,14 +15,19 @@ public class GraphFileChooser {
         chooser.setAcceptAllFileFilterUsed(false);
     }
 
-    private void setTextFilter() {
+    public void setTextFilter() {
         chooser.resetChoosableFileFilters();
         chooser.setFileFilter(new FileNameExtensionFilter("Txt files", "txt"));
     }
 
-    private void setImageFilter() {
+    public void setImageFilter() {
         chooser.resetChoosableFileFilters();
         chooser.setFileFilter(new FileNameExtensionFilter("PNG files", "png"));
+    }
+
+    public void setJsonFilter() {
+        chooser.resetChoosableFileFilters();
+        chooser.setFileFilter(new FileNameExtensionFilter("Json files", "json"));
     }
 
     public void setSelectedFile(File file) {
@@ -46,7 +51,6 @@ public class GraphFileChooser {
     }
 
     public File openFile(Component parent) {
-        setTextFilter();
         return (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION ?
                 chooser.getSelectedFile() : null);
     }
@@ -61,4 +65,8 @@ public class GraphFileChooser {
         return getFile(parent);
     }
 
+    public File saveJsonFile(Component parent) {
+        setJsonFilter();
+        return getFile(parent);
+    }
 }

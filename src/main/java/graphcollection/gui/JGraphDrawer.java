@@ -22,6 +22,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -122,9 +123,9 @@ public class JGraphDrawer extends JPanel {
         r.generateDoubleWeights(graph, a, b);
     }
 
-    public void read(String fileName) {
-        GraphParser p = new GraphParser();
-        Graph<Vertex, Edge2D> g = p.read(fileName);
+    public void read(File file) {
+        JsonGraphReader graphReader = new JsonGraphReader();
+        Graph<Vertex, Edge2D> g = graphReader.read(file);
         fillGraph(g);
     }
 
