@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import graphcollection.gui.config.ConfigurationService;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
@@ -19,6 +15,7 @@ import java.util.Locale;
 
 public class GraphCollection {
 
+    private static final ConfigurationService CONFIG_SERVICE = ConfigurationService.getApplicationConfigService();
     private static final Locale RUSSIAN_LOCALE = new Locale("ru", "RU");
 
     /**
@@ -28,6 +25,7 @@ public class GraphCollection {
         Locale.setDefault(RUSSIAN_LOCALE);
         // Sets Look and feel UI theme
         UIManager.setLookAndFeel(new FlatLightLaf());
+        CONFIG_SERVICE.loadUiTextProperties();
         // Register FontAwesome icon fonts
         IconFontSwing.register(FontAwesome.getIconFont());
         JGraphFrame graph = new JGraphFrame();
