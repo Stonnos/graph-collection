@@ -38,7 +38,7 @@ public class ClusteringAlgorithmInputDialog extends JDialog {
         this.add(numClustersText, new GridBagConstraints(1, 0, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 5, 10, 5), 0, 0));
         this.add(distancesMatrixLabel, new GridBagConstraints(0, 1, 2, 1, 0, 0,
-                GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(5, 5, 5, 5), 0, 0));
+                GridBagConstraints.CENTER, GridBagConstraints.CENTER, new Insets(5, 5, 2, 5), 0, 0));
         this.add(distancesMatrixText, new GridBagConstraints(0, 2, 1, 1, 0, 0,
                 GridBagConstraints.WEST, GridBagConstraints.WEST, new Insets(10, 10, 10, 5), 0, 0));
 
