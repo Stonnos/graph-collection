@@ -1,0 +1,23 @@
+<assembly>
+    <id>bundle</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <outputDirectory>app</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+                <include>lib/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>app</outputDirectory>
+            <includes>
+                <include>graph-collection.sh</include>
+                <include>graphs/*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

@@ -1,0 +1,1 @@
+java -jar graph-collection-3.0.jar
