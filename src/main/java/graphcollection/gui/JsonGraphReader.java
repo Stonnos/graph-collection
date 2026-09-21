@@ -26,7 +26,7 @@ public class JsonGraphReader {
     private static final String EMPTY_VERTEX_NAME_ERROR = "Не задано имя для вершины!";
     private static final String EMPTY_VERTEX_ID_ERROR = "Не задан идентификатор для вершины!";
     private static final String INVALID_VERTEX_NAME_FORMAT_ERROR =
-            "Имя вершины должно содержать только цифры и символы!";
+            "Имя вершины должно содержать только цифры и символы, максимум 10";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

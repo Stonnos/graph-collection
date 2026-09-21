@@ -37,6 +37,7 @@ import static graphcollection.gui.util.GuiUtils.showToolTipProgrammatically;
 public class JGraphDrawer extends JPanel {
 
     public static final int MAX_VERTEX_COUNT = 100;
+    public static final int VERTEX_NAME_LENGTH = 10;
     private static final double FORCE_DETECTED_AREA_PADDING = 15.0; // Отступ от краев рамок
     private static final int EDGE_WEIGHT_TEXT_LENGTH = 8;
     private static final int POPUP_MARGIN = 50;
@@ -1034,7 +1035,7 @@ public class JGraphDrawer extends JPanel {
             vertexNameText.setHorizontalAlignment(JTextField.CENTER);
             vertexNameText.setFont(new Font("Arial", Font.BOLD, VERTEX_NAME_FONT_SIZE));
             vertexNameText.setBackground(Color.WHITE);
-            vertexNameText.setDocument(new VertexNameDocument(10));
+            vertexNameText.setDocument(new VertexNameDocument(VERTEX_NAME_LENGTH));
             vertexNameText.setText(vertex.getName());
             vertexNameText.addActionListener(e -> {
                 hide();
