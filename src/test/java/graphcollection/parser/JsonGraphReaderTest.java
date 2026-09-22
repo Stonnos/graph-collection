@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static graphcollection.parser.TestHelperUtils.getGraphFile;
+import static graphcollection.TestHelperUtils.getGraphFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

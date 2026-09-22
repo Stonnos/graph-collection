@@ -1,0 +1,113 @@
+{
+  "directed": false,
+  "vertices": [
+    {
+      "id": "a",
+      "name": "a"
+    },
+    {
+      "id": "b",
+      "name": "b"
+    },
+    {
+      "id": "c",
+      "name": "c"
+    },
+    {
+      "id": "d",
+      "name": "d"
+    },
+    {
+      "id": "e",
+      "name": "e"
+    },
+    {
+      "id": "f",
+      "name": "f"
+    },
+    {
+      "id": "g",
+      "name": "g"
+    },
+    {
+      "id": "h",
+      "name": "h"
+    },
+    {
+      "id": "i",
+      "name": "i"
+    }
+  ],
+  "edges": [
+    {
+      "source": "a",
+      "target": "b",
+      "weight": 4.0
+    },
+    {
+      "source": "a",
+      "target": "h",
+      "weight": 8.0
+    },
+    {
+      "source": "b",
+      "target": "c",
+      "weight": 8.0
+    },
+    {
+      "source": "b",
+      "target": "h",
+      "weight": 11.0
+    },
+    {
+      "source": "c",
+      "target": "d",
+      "weight": 7.0
+    },
+    {
+      "source": "c",
+      "target": "f",
+      "weight": 4.0
+    },
+    {
+      "source": "d",
+      "target": "e",
+      "weight": 9.0
+    },
+    {
+      "source": "d",
+      "target": "f",
+      "weight": 14.0
+    },
+    {
+      "source": "f",
+      "target": "e",
+      "weight": 10.0
+    },
+    {
+      "source": "g",
+      "target": "f",
+      "weight": 2.0
+    },
+    {
+      "source": "h",
+      "target": "i",
+      "weight": 7.0
+    },
+    {
+      "source": "h",
+      "target": "g",
+      "weight": 1.0
+    },
+    {
+      "source": "i",
+      "target": "c",
+      "weight": 2.0
+    },
+    {
+      "source": "i",
+      "target": "g",
+      "weight": 6.0
+    }
+  ]
+}

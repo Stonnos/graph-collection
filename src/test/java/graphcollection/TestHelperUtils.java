@@ -1,8 +1,9 @@
-package graphcollection.parser;
+package graphcollection;
 
 import graphcollection.graph.Graph;
 import graphcollection.gui.model.Edge2D;
 import graphcollection.gui.model.Vertex;
+import graphcollection.parser.JsonGraphReader;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
