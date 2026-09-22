@@ -1,0 +1,119 @@
+{
+  "directed": false,
+  "vertices": [
+    {
+      "id": "11",
+      "name": "11"
+    },
+    {
+      "id": "26",
+      "name": "26"
+    },
+    {
+      "id": "48",
+      "name": "48"
+    },
+    {
+      "id": "59",
+      "name": "59"
+    },
+    {
+      "id": "27",
+      "name": "27"
+    },
+    {
+      "id": "39",
+      "name": "39"
+    },
+    {
+      "id": "29",
+      "name": "29"
+    },
+    {
+      "id": "7",
+      "name": "7"
+    }
+  ],
+  "edges": [
+    {
+      "source": "11",
+      "target": "26",
+      "weight": null
+    },
+    {
+      "source": "11",
+      "target": "39",
+      "weight": null
+    },
+    {
+      "source": "11",
+      "target": "29",
+      "weight": null
+    },
+    {
+      "source": "26",
+      "target": "48",
+      "weight": null
+    },
+    {
+      "source": "48",
+      "target": "59",
+      "weight": null
+    },
+    {
+      "source": "48",
+      "target": "11",
+      "weight": null
+    },
+    {
+      "source": "48",
+      "target": "27",
+      "weight": null
+    },
+    {
+      "source": "48",
+      "target": "29",
+      "weight": null
+    },
+    {
+      "source": "59",
+      "target": "27",
+      "weight": null
+    },
+    {
+      "source": "27",
+      "target": "26",
+      "weight": null
+    },
+    {
+      "source": "27",
+      "target": "7",
+      "weight": null
+    },
+    {
+      "source": "39",
+      "target": "26",
+      "weight": null
+    },
+    {
+      "source": "39",
+      "target": "48",
+      "weight": null
+    },
+    {
+      "source": "39",
+      "target": "29",
+      "weight": null
+    },
+    {
+      "source": "29",
+      "target": "59",
+      "weight": null
+    },
+    {
+      "source": "7",
+      "target": "59",
+      "weight": null
+    }
+  ]
+}

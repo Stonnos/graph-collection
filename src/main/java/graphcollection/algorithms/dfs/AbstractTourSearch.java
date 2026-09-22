@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphcollection.algorithms.dfs;
 
 import graphcollection.algorithms.GraphAlgorithm;
 import graphcollection.graph.Edge;
 import graphcollection.graph.Graph;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.LinkedList;
 
 /**
@@ -38,7 +33,7 @@ public abstract class AbstractTourSearch<V, E extends Edge<V>>
         return decision;
     }
 
-    public Collection<V> tour() {
+    public List<V> tour() {
         return decision() ? tour : null;
     }
 
