@@ -241,50 +241,36 @@ public class JGraphDrawer extends JPanel {
         }
     }
 
-    private class VertexDrawer extends SwingWorker<Void, Void> {
+    private class VertexDrawer {
         private final Vertex v;
         private final boolean manuallySetName;
-        private static final int FLASH_COUNT = 6;
 
         public VertexDrawer(Vertex v, boolean manuallySetName) {
             this.v = v;
             this.manuallySetName = manuallySetName;
         }
 
-        @Override
-        protected Void doInBackground() throws Exception {
+        public Void draw() {
             Graphics2D g = (Graphics2D) JGraphDrawer.this.getGraphics();
-            try {
-                setStrokeForVertex(g);
-                setFont(g, (int) v.getWidth() / 2);
-                double x = v.getX(), y = v.getY(), r = v.getWidth();
-                for (int i = FLASH_COUNT; i >= 1; i--) {
-                    v.ellipse.setFrame(x - r / (2 * i), y - r / (2 * i),
-                            r / i, r / i);
-                    g.clearRect((int) v.getX(), (int) v.getY(),
-                            (int) v.getWidth(), (int) v.getWidth());
-                    g.setPaint(getBackground());
-                    g.fillRect((int) v.getX(), (int) v.getY(),
-                            (int) v.getWidth(), (int) v.getWidth());
-                    v.drawVertex(g);
-                    v.drawVertexBorder(g);
-                    Thread.sleep(80);
-                }
-            } catch (InterruptedException ignored) {
-            }
+            setStrokeForVertex(g);
+            setFont(g, (int) v.getWidth() / 2);
+            double x = v.getX(), y = v.getY(), r = v.getWidth();
+            v.ellipse.setFrame(x - r / 2, y - r / 2, r , r);
+            g.clearRect((int) v.getX(), (int) v.getY(),
+                    (int) v.getWidth(), (int) v.getWidth());
+            g.setPaint(getBackground());
+            g.fillRect((int) v.getX(), (int) v.getY(),
+                    (int) v.getWidth(), (int) v.getWidth());
+            v.drawVertex(g);
+            v.drawVertexBorder(g);
             v.drawVertexName(g);
             repaint();
-            return null;
-        }
-
-        @Override
-        protected void done() {
             if (manuallySetName) {
                 vertexNamePopup = new VertexNamePopup(v);
                 vertexNamePopup.show();
             }
+            return null;
         }
-
     }
 
     private void setStrokeForVertex(Graphics2D g) {
@@ -349,7 +335,7 @@ public class JGraphDrawer extends JPanel {
                             vertexIdMap.put(v.getId(), v);
                             vertexNameMap.put(v.getName(), v);
                             VertexDrawer vertexDrawer = new VertexDrawer(v, manuallySetVertexName);
-                            vertexDrawer.execute();
+                            vertexDrawer.draw();
                             notifyUpdateGraphEvent();
                         }
                     }
