@@ -1,0 +1,20 @@
+{
+  "directed": true,
+  "vertices": [
+    { "id": "A", "name": "A" },
+    { "id": "B", "name": "B" },
+    { "id": "C", "name": "C" },
+    { "id": "D", "name": "D" },
+    { "id": "E", "name": "E" },
+    { "id": "F", "name": "F" }
+  ],
+  "edges": [
+    { "source": "A", "target": "B", "weight": 2.5 },
+    { "source": "B", "target": "C", "weight": 1.0 },
+    { "source": "C", "target": "D", "weight": 4.0 },
+    { "source": "D", "target": "E", "weight": 1.5 },
+    { "source": "E", "target": "A", "weight": 3.0 },
+    { "source": "B", "target": "F", "weight": 5.0 },
+    { "source": "F", "target": "D", "weight": 0.5 }
+  ]
+}
