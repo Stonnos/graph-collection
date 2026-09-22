@@ -14,6 +14,7 @@ class PrimMinimumSpanningTreeTest {
 
     @Test
     void testTree() {
+        // example from page 645 Kormen_Tomas_Algoritmy_postroenie_i_analiz
         Graph<Vertex, Edge2D> graph = readGraph("mst.json");
         PrimMinimumSpanningTree<Vertex, Edge2D> kruskalMinimumSpanningTree =
                 new PrimMinimumSpanningTree<>(graph, graph.iterator().next());

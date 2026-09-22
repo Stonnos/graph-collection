@@ -14,6 +14,7 @@ class KruskalMinimumSpanningTreeTest {
 
     @Test
     void testTree() {
+        // example from page 645 Kormen_Tomas_Algoritmy_postroenie_i_analiz
         Graph<Vertex, Edge2D> graph = readGraph("mst.json");
         KruskalMinimumSpanningTree<Vertex, Edge2D> kruskalMinimumSpanningTree = new KruskalMinimumSpanningTree<>(graph);
         assertEquals(EXPECTED_TREE_WEIGHT, kruskalMinimumSpanningTree.getMinimumSpanningTreeWeight().doubleValue());
