@@ -1,4 +1,4 @@
-package graphcollection.gui;
+package graphcollection.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import graphcollection.graph.Graph;

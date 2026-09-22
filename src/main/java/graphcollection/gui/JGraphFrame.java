@@ -53,6 +53,7 @@ import graphcollection.gui.parse.MatrixParser;
 import graphcollection.gui.parse.NumberParser;
 import graphcollection.gui.popup.PopupService;
 import graphcollection.gui.util.PanelBorderUtils;
+import graphcollection.parser.JsonGraphWriter;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import lombok.Setter;

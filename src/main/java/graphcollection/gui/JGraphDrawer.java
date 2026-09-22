@@ -10,6 +10,7 @@ import graphcollection.gui.text.VertexNameDocument;
 import graphcollection.gui.util.ButtonUtils;
 import graphcollection.gui.util.GuiUtils;
 import graphcollection.gui.util.PanelBorderUtils;
+import graphcollection.parser.JsonGraphReader;
 import lombok.Getter;
 import lombok.Setter;
 
