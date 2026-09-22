@@ -1,0 +1,16 @@
+{
+  "directed": false,
+  "vertices": [
+    {
+      "id": "v1",
+      "name": "Vert1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "v1",
+      "target": "non_existent_id",
+      "weight": 1.0
+    }
+  ]
+}

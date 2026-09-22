@@ -1,0 +1,14 @@
+{
+  "directed": false,
+  "vertices": [
+    {
+      "id": "v1",
+      "name": "VeryLongNameMoreThan10Chars"
+    },
+    {
+      "id": "v2",
+      "name": "Name!@#"
+    }
+  ],
+  "edges": []
+}

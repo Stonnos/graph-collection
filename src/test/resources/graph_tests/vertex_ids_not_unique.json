@@ -1,0 +1,14 @@
+{
+  "directed": false,
+  "vertices": [
+    {
+      "id": "v1",
+      "name": "Vert1"
+    },
+    {
+      "id": "v1",
+      "name": "Vert2"
+    }
+  ],
+  "edges": []
+}
