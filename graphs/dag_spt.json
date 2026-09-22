@@ -1,0 +1,23 @@
+{
+  "directed": true,
+  "vertices": [
+    { "id": "r", "name": "r" },
+    { "id": "s", "name": "s" },
+    { "id": "t", "name": "t" },
+    { "id": "x", "name": "x" },
+    { "id": "y", "name": "y" },
+    { "id": "z", "name": "z" }
+  ],
+  "edges": [
+    { "source": "r", "target": "s", "weight": 5 },
+    { "source": "r", "target": "t", "weight": 3 },
+    { "source": "s", "target": "t", "weight": 2 },
+    { "source": "s", "target": "x", "weight": 6 },
+    { "source": "t", "target": "x", "weight": 7 },
+    { "source": "t", "target": "y", "weight": 4 },
+    { "source": "t", "target": "z", "weight": 2 },
+    { "source": "x", "target": "y", "weight": -1 },
+    { "source": "x", "target": "z", "weight": 1 },
+    { "source": "y", "target": "z", "weight": -2 }
+  ]
+}
