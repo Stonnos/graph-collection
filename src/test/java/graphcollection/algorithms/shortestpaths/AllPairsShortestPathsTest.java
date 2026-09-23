@@ -3,6 +3,7 @@ package graphcollection.algorithms.shortestpaths;
 import graphcollection.graph.Graph;
 import graphcollection.gui.model.Edge2D;
 import graphcollection.gui.model.Vertex;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Map;
 import static graphcollection.TestHelperUtils.readGraph;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FloydWarshallAllPairsShortestPathsTest {
+class AllPairsShortestPathsTest {
 
     private final Vertex a = new Vertex("A");
     private final Vertex b = new Vertex("B");
@@ -60,12 +61,28 @@ class FloydWarshallAllPairsShortestPathsTest {
             )
     );
 
+    private Graph<Vertex, Edge2D> graph;
+
+    @BeforeEach
+    void init() {
+        graph = readGraph("all_spt.json");
+    }
+
     @Test
-    void testShortestPaths() {
-        Graph<Vertex, Edge2D> graph = readGraph("metrics_graph.json");
+    void testFloydWarshallAllShortestPaths() {
         FloydWarshallAllPairsShortestPaths<Vertex, Edge2D> shortestPaths =
                 new FloydWarshallAllPairsShortestPaths<>(graph);
+        testAllShortestPaths(shortestPaths);
+    }
 
+    @Test
+    void testJohnsonAllShortestPaths() {
+        JohnsonAllPairsShortestPaths<Vertex, Edge2D> shortestPaths =
+                new JohnsonAllPairsShortestPaths<>(graph, new Vertex("fictive"));
+        testAllShortestPaths(shortestPaths);
+    }
+
+    private void testAllShortestPaths(AllPairsShortestPaths<Vertex, Edge2D> shortestPaths) {
         for (Vertex src : allVertices) {
             for (Vertex dst : allVertices) {
                 // 1. check distance
@@ -76,6 +93,5 @@ class FloydWarshallAllPairsShortestPathsTest {
                 assertEquals(expectedPath, shortestPaths.getPath(src, dst));
             }
         }
-
     }
 }
