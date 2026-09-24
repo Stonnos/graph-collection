@@ -506,6 +506,7 @@ public class JGraphDrawer extends JPanel {
             public void mousePressed(MouseEvent me) {
                 hideErrorPopup();
                 if (me.getButton() == MouseEvent.BUTTON1) {
+                    hideEdgeWeightPopup();
                     u = searchVertex(me.getX(), me.getY());
                     if (u != null) {
                         u.borderColor = Color.RED;
