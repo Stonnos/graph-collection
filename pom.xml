@@ -313,6 +313,7 @@
                             <headerType>gui</headerType>
                             <outfile>target/${exe.file.name}.exe</outfile>
                             <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                            <icon>src/main/resources/images/Icon.ico</icon>
                             <singleInstance>
                                 <mutexName>${exe.file.name}</mutexName>
                             </singleInstance>
